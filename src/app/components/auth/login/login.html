@@ -1,0 +1,40 @@
+
+<header class="login-header">
+    <div class="left-nav">
+        <span class="icon">👥</span>
+        <span class="BRIMS">BRIMS</span>
+    </div> 
+
+    <div class="right-nav">
+        <a routerLink="about">About</a> 
+        <a routerLink="contact">Contact</a>
+    </div>
+</header> 
+
+<div class="login-container">
+  <div class="login-box">
+    <h2>Login</h2>
+
+    <form (ngSubmit)="login()">
+      <input
+        type="text"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Email"
+        required
+      />
+
+      <input
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        placeholder="Password"
+        required
+      />
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p>{{ message }}</p>
+  </div>
+</div>
