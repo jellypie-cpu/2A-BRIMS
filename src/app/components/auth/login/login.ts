@@ -14,7 +14,7 @@ export class Login {
   message = '';
 
 login() {
-    if (this.email === 'maniscan@brims.com' && this.password === '1234') {
+    if (this.email === 'maniscan@brims.com' && this.password === '1234' && this.role === 'admin') {
       this.message = 'Login successful!';
     } else {
       this.message = 'Invalid email or password';
