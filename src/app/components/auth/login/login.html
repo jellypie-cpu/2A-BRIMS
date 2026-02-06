@@ -15,6 +15,20 @@
   <div class="login-box">
     <h2>Login</h2>
 
+     <!-- Error message box -->
+    @if (message && message.includes('Invalid')) {
+      <div class="error-message">
+        {{ message }}
+      </div>
+    }
+
+     <!-- Success message box -->
+    @if (message && message.includes('successful')) {
+      <div class="success-message">
+        {{ message }}
+      </div>
+    }
+
     <form (ngSubmit)="login()">
       <input
         type="text"
@@ -35,6 +49,5 @@
       <button type="submit">Login</button>
     </form>
 
-    <p>{{ message }}</p>
   </div>
 </div>
