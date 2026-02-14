@@ -3,8 +3,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  }
-
+  background-image: url('/public/zz.webp');
+}
 
 .login-header {
     margin: 0;
@@ -99,16 +99,6 @@
   border: 1px solid #cccccc;
   border-radius: 30px;
   font-size: 16px;
-}
-
-.role-selection {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.role-selection input {
-  margin-right: 8px;
 }
 
 .login-box button {
