@@ -1,0 +1,23 @@
+<header class="topbar">
+  <div class="left">
+    <img src="bg.png" alt="Logo" class="logo" />
+     <span class="title">
+      <span class="big">B</span>ARANGGAY
+      <span class="big">R</span>ESIDENTS
+      <span class="big">I</span>NFORMATION
+      <span class="big">M</span>ANAGEMENT
+      <span class="big">S</span>YSTEM
+    </span>
+  </div>
+
+<div class="right">
+   <img src="bg.png" class="logo" />
+    <div class="user-menu" (click)="toggleDropdown()">
+      {{ username }} ▼
+      <div class="dropdown" *ngIf="showDropdown">
+        <button (click)="goToProfile()">👤 Profile</button>
+        <button (click)="logout()">🔑 Logout</button>
+      </div>
+    </div>
+  </div>
+</header>
