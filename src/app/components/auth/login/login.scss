@@ -39,7 +39,7 @@
   display: flex;
   align-items: center;
   height: calc(100vh - 70px);
-  background-image: url('/bg.jpg'); 
+  background-image: url('/vbg.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -48,9 +48,10 @@
 
 .left-content {
   flex: 1;
-  font-size: 45px;
-  font-weight: 900;
-  color: hsl(0, 0%, 100%);
+  font-style: playfair display, serif;
+  font-size: 50px;
+  font-weight: 100;
+  color: hsl(231, 100%, 4%);
 }
 
 .error-message {

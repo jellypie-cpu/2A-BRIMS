@@ -48,9 +48,19 @@
   font-weight: 600;
   user-select: none;
 
+  display: flex;          // ADD THIS
+  align-items: center;    // ADD THIS
+  gap: 8px;               // ADD THIS
+
   &:hover {
     background: #e3f2fd;
   }
+}
+.profile-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .dropdown {
