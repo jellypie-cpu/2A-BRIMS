@@ -20,7 +20,7 @@ export class Login {
   login() {
     let user: User | null = null;
 
-    // Hardcoded example users
+    //  Saample users
     if (this.email === 'maniscan@brims.com' && this.password === '1234') {
       user = { username: 'Jelly Quen', role: 'admin' };
     } else if (this.email === 'staff@brims.com' && this.password === '1234') {

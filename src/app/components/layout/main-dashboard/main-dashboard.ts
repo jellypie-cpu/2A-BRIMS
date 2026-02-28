@@ -16,4 +16,4 @@ import { SidebarComponent } from '../sidebar/sidebar';
   templateUrl: './main-dashboard.html',
   styleUrls: ['./main-dashboard.scss'],
 })
-export class Dashboard {}
+export class DashboardLayout {}

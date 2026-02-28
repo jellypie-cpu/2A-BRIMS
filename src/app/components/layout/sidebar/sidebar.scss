@@ -2,11 +2,12 @@
   width: 220px;
   transition: width 0.5s;
   background-color: #001a33;
-  color: white;
+  color: rgb(0, 0, 0);
   height: 100vh;
   padding: 1rem;
-  position: relative; // required for absolute positioning inside
+  position: relative; 
   overflow: hidden;
+  font-family: 'roboto';
 
   &.collapsed {
     width: 60px;
@@ -28,12 +29,12 @@
     width: 160px;   // slightly bigger looks better centered
     height: 160px;
     object-fit: contain;
-    flex-shrink: 0; // IMPORTANT
+    flex-shrink: 0;  // prevent shrinking when sidebar collapses
   }
 }
 
   .logo-text {
-    white-space: nowrap; // IMPORTANT
+    white-space: nowrap; 
   }
 }
 
@@ -47,7 +48,7 @@
     background-color: rgb(5, 0, 31);
     border-radius: 1px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     justify-content: space-between;
     cursor: pointer;
 
