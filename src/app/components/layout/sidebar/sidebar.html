@@ -18,7 +18,9 @@
   <ul>
     <li *ngFor="let item of menu" routerLinkActive="active">
       <a [routerLink]="item.routerLink">
-        <span class="icon">{{ item.icon }}</span>
+        <span class="icon">
+  <i [class]="item.icon"></i>
+</span>
         <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
       </a>
     </li>

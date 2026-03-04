@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService, User } from '../../../core/services/auth';
 import { CommonModule, NgIf } from '@angular/common';
+import { ButtonModule } from 'primeng/button'; // ← PrimeNG
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule, NgIf],
+  imports: [RouterLink, RouterLinkActive, CommonModule, NgIf, ButtonModule],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss'],
 })
@@ -21,22 +22,22 @@ export class SidebarComponent {
 
     if (user.role === 'admin') {
   this.menu = [
-    { label: 'Dashboard', routerLink: '/dashboard', icon: '🏠' },
-    { label: 'Residents Information', routerLink: 'residents-infor', icon: '📄' },
-    { label: 'Barangay Certificates', routerLink: '/dashboard/brngy-cer', icon: '📜' },
-    { label: 'Certificate Requests', routerLink: '/dashboard/coi', icon: '📬' },
-    { label: 'Blotter Records', routerLink: '/dashboard/blotter-records', icon: '📝' },
-    { label: 'Manage Users', routerLink: '/dashboard/users', icon: '👥' },
-    { label: 'Settings', routerLink: '/dashboard/system-info', icon: '⚙️' },
+    { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
+    { label: 'Residents Information', routerLink: '/dashboard/residents-infor', icon: 'pi pi-users' },
+    { label: 'Barangay Certificates', routerLink: '/dashboard/brngy-cer', icon: 'pi pi-file' },
+    { label: 'Certificate Requests', routerLink: '/dashboard/coi', icon: 'pi pi-envelope' },
+    { label: 'Blotter Records', routerLink: '/dashboard/blotter-records', icon: 'pi pi-pencil' },
+    { label: 'Manage Users', routerLink: '/dashboard/users', icon: 'pi pi-user-edit' },
+    { label: 'Settings', routerLink: '/dashboard/system-info', icon: 'pi pi-cog' },
   ];
     } else if (user.role === 'staff') {
       this.menu = [
-        { label: 'Dashboard', routerLink: '/dashboard', icon: '🏠' },
-        { label: 'Residents Information', routerLink: '/dashboard/residents-infor', icon: '👤' },
+        { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
+        { label: 'Residents Information', routerLink: '/dashboard/residents-infor', icon: 'pi pi-users' },
       ];
     } else {
       this.menu = [
-        { label: 'Dashboard', routerLink: '/dashboard', icon: '🏠' },
+        { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
       ];
     }
   }
