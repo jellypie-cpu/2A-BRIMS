@@ -22,7 +22,7 @@ export class SidebarComponent {
     if (user.role === 'admin') {
   this.menu = [
     { label: 'Dashboard', routerLink: '/dashboard', icon: '🏠' },
-    { label: 'Residents Information', routerLink: '/dashboard/resident-infor', icon: '📄' },
+    { label: 'Residents Information', routerLink: 'residents-infor', icon: '📄' },
     { label: 'Barangay Certificates', routerLink: '/dashboard/brngy-cer', icon: '📜' },
     { label: 'Certificate Requests', routerLink: '/dashboard/coi', icon: '📬' },
     { label: 'Blotter Records', routerLink: '/dashboard/blotter-records', icon: '📝' },

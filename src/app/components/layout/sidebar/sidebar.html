@@ -1,18 +1,20 @@
 <nav [class.collapsed]="isCollapsed" class="sidebar">
 
-   <!-- Logo Section -->
+  <!-- Logo Section -->
   <div class="sidebar-logo" *ngIf="!isCollapsed">
     <img src="vbg.jpg" alt="Logo" />
   </div>
 
-   <!-- Toggle Button -->
-  <div class="toggle-btn" (click)="toggleSidebar()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+  <!-- Toggle Button -->
+  <button
+    pButton
+    type="button"
+    icon="pi pi-bars"
+    class="p-button-text toggle-btn"
+    (click)="toggleSidebar()">
+  </button>
 
-    <!-- kini kay menu -->
+  <!-- Menu -->
   <ul>
     <li *ngFor="let item of menu" routerLinkActive="active">
       <a [routerLink]="item.routerLink">

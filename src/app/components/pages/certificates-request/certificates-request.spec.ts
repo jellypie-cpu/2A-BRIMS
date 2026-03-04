@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SystemInfo } from './system-info';
+import { CertificatesRequest } from './certificates-request';
 
-describe('SystemInfo', () => {
-  let component: SystemInfo;
-  let fixture: ComponentFixture<SystemInfo>;
+describe('CertificatesRequest', () => {
+  let component: CertificatesRequest;
+  let fixture: ComponentFixture<CertificatesRequest>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SystemInfo]
+      imports: [CertificatesRequest]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SystemInfo);
+    fixture = TestBed.createComponent(CertificatesRequest);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

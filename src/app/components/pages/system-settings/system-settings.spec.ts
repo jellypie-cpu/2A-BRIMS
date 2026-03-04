@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResidentsInfor } from './residents-infor';
+import { SystemSettings } from './system-settings';
 
-describe('ResidentsInfor', () => {
-  let component: ResidentsInfor;
-  let fixture: ComponentFixture<ResidentsInfor>;
+describe('SystemSettings', () => {
+  let component: SystemSettings;
+  let fixture: ComponentFixture<SystemSettings>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResidentsInfor]
+      imports: [SystemSettings]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ResidentsInfor);
+    fixture = TestBed.createComponent(SystemSettings);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
