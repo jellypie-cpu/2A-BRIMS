@@ -1,0 +1,27 @@
+<nav [class.collapsed]="isCollapsed" class="sidebar">
+
+  <!-- Logo -->
+  <div class="sidebar-logo" *ngIf="!isCollapsed">
+    <img src="vbg.jpg" alt="Logo" />
+  </div>
+
+  <!-- Toggle button -->
+  <button
+    type="button"
+    pButton
+    icon="pi pi-bars"
+    class="p-button-text toggle-btn"
+    (click)="toggleSidebar()">
+  </button>
+
+  <!-- Menu -->
+  <ul>
+    <li *ngFor="let item of menu" routerLinkActive="active">
+      <a [routerLink]="item.routerLink">
+        <i [class]="item.icon"></i>
+        <span *ngIf="!isCollapsed">{{ item.label }}</span>
+      </a>
+    </li>
+  </ul>
+
+</nav>

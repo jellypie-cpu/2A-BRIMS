@@ -1,0 +1,25 @@
+<header class="topbar">
+  <div class="left">
+    <img src="vbg.jpg" alt="Logo" class="logo" />
+     <span class="title">
+      <span class="big">B</span>ARANGGAY
+      <span class="big">R</span>ESIDENTS
+      <span class="big">I</span>NFORMATION
+      <span class="big">M</span>ANAGEMENT
+      <span class="big">S</span>YSTEM
+    </span>
+  </div>
+
+<div class="right">
+  <div class="user-menu" (click)="toggleDropdown()">
+    <img src="bg.png" alt="Profile" class="profile-img" />
+    <span class="username">{{ username }} ▼</span>
+
+    <div class="dropdown" *ngIf="showDropdown">
+  <button (click)="goToProfile()">
+    <i class="pi pi-user"></i> Profile
+  </button>
+  <button (click)="logout()">
+    <i class="pi pi-sign-out"></i> Logout
+  </button>
+</div>

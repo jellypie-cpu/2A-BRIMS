@@ -1,0 +1,110 @@
+/* Sidebar container */
+.sidebar {
+  width: 220px;
+  transition: width 0.5s;
+  background-color: #001a33;
+  color: white;
+  height: 100vh;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+  font-family: 'playfair display', serif;
+
+  &.collapsed   {
+    width: 60px;
+
+    /* Fade out labels */
+    ul li .label {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, width 0.3s ease;
+    }
+
+    /* Shrink logo */
+    .sidebar-logo {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+  }
+
+  /* Logo section */
+  .sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 1;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+    img {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      flex-shrink: 0;
+      transition: transform 0.5s ease;
+    }
+  }
+
+  /* Toggle button (PrimeNG pButton) */
+  .toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #05001f;
+    border-radius: 4px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: none;
+    z-index: 10;
+  }
+
+  /* Menu items */
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+
+    li {
+      margin-bottom: 1rem;
+
+      a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        padding: 0.25rem;
+        border-radius: 4px;
+        transition: background 0.3s;
+ 
+        &:hover {
+          background: #0056b3;
+        }
+
+        .icon {
+          width: 30px;
+          text-align: center;
+
+          i {
+            font-size: 1.3rem;
+            display: inline-block;
+          }
+        }
+
+        .label {
+          margin-left: 0.5rem;
+          transition: opacity 0.3s ease, width 0.3s ease;
+        }
+      }
+    }
+  }
+}
