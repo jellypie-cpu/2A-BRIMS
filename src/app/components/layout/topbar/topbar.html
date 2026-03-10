@@ -16,8 +16,10 @@
     <span class="username">{{ username }} ▼</span>
 
     <div class="dropdown" *ngIf="showDropdown">
-      <button (click)="goToProfile()">👤 Profile</button>
-      <button (click)="logout()">🔑 Logout</button>
-    </div>
-  </div>
+  <button (click)="goToProfile()">
+    <i class="pi pi-user"></i> Profile
+  </button>
+  <button (click)="logout()">
+    <i class="pi pi-sign-out"></i> Logout
+  </button>
 </div>

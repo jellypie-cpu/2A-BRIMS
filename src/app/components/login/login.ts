@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, User } from '../../../core/services/auth';
+import { AuthService, User } from '../../core/services/auth';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -30,11 +31,23 @@ export class Login {
     }
 
     if (user) {
-      this.authService.login(user);
-      this.message = `Login successful! Role: ${user.role}`;
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.message = 'Invalid credentials!';
-    }
+    this.authService.login(user);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Login Successful',
+      text: `Welcome, ${user.username}! Role: ${user.role}`,
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
+    this.router.navigate(['/dashboard']);
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Login Failed',
+      text: 'Invalid credentials!',
+    });
+  }
   }
 }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService, User } from '../../../core/services/auth';
 import { CommonModule, NgIf } from '@angular/common';
-import { ButtonModule } from 'primeng/button'; // ← PrimeNG
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button'; // ← PrimeNG
   styleUrls: ['./sidebar.scss'],
 })
 export class SidebarComponent {
-  isCollapsed = false; // Sidebar starts expanded
+  isCollapsed = false;
 
   menu: { label: string; routerLink: string; icon: string }[] = [];
 
@@ -21,23 +21,23 @@ export class SidebarComponent {
     if (!user) return;
 
     if (user.role === 'admin') {
-  this.menu = [
-    { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
-    { label: 'Residents Information', routerLink: '/dashboard/residents-infor', icon: 'pi pi-users' },
-    { label: 'Barangay Certificates', routerLink: '/dashboard/brngy-cer', icon: 'pi pi-file' },
-    { label: 'Certificate Requests', routerLink: '/dashboard/coi', icon: 'pi pi-envelope' },
-    { label: 'Blotter Records', routerLink: '/dashboard/blotter-records', icon: 'pi pi-pencil' },
-    { label: 'Manage Users', routerLink: '/dashboard/users', icon: 'pi pi-user-edit' },
-    { label: 'Settings', routerLink: '/dashboard/system-info', icon: 'pi pi-cog' },
-  ];
+      this.menu = [
+        { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
+        { label: 'Residents Information', routerLink: '/dashboard/residents-information', icon: 'pi pi-users' },
+        { label: 'Barangay Certificates', routerLink: '/dashboard/barangay-certificates', icon: 'pi pi-file' },
+        { label: 'Certificate Requests', routerLink: '/dashboard/certificate-of-indigency', icon: 'pi pi-envelope' },
+        { label: 'Blotter Records', routerLink: '/dashboard/blotter-records', icon: 'pi pi-pencil' },
+        { label: 'Manage Users', routerLink: '/dashboard/users', icon: 'pi pi-user-edit' },
+        { label: 'Settings', routerLink: '/dashboard/system-settings', icon: 'pi pi-cog' }
+      ];
     } else if (user.role === 'staff') {
       this.menu = [
         { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
-        { label: 'Residents Information', routerLink: '/dashboard/residents-infor', icon: 'pi pi-users' },
+        { label: 'Residents Information', routerLink: '/dashboard/residents-information', icon: 'pi pi-users' }
       ];
     } else {
       this.menu = [
-        { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
+        { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' }
       ];
     }
   }

@@ -3,6 +3,7 @@ import { AuthService, User } from '../../../core/services/auth';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-topbar',
@@ -40,11 +41,32 @@ export class TopbarComponent implements OnDestroy {
   }
 
   logout() {
-    this.authService.logout();
-    this.showDropdown = false;
-    console.log('Logged out');
-    this.router.navigate(['/login']);
-  }
+  // Hide dropdown immediately
+  this.showDropdown = false;
+
+  // Show confirmation dialog
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will be logged out!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, logout!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+
+      // Optional: small success message
+      Swal.fire({
+        icon: 'success',
+        title: 'Logged out',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+  });
+}
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
