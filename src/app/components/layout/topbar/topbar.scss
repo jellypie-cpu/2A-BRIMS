@@ -28,8 +28,8 @@
 }
 
 .title .big {
-  font-size: 20px;   /* bigger letters */
-  color: white;    /* optional: make initials a different color */
+  font-size: 20px;  
+  color: white;    
   margin-right: 1px;
 }
 
@@ -48,9 +48,9 @@
   font-weight: 600;
   user-select: none;
 
-  display: flex;          // ADD THIS
-  align-items: center;    // ADD THIS
-  gap: 8px;               // ADD THIS
+  display: flex;          
+  align-items: center;    
+  gap: 8px;               
 
   &:hover {
     background: #e3f2fd;

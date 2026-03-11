@@ -7,6 +7,7 @@ import { BarangayCertificates } from './components/pages/barangay-certificates/b
 import { BaranggayPermit } from './components/pages/baranggay-permit/baranggay-permit';
 import { CertificateOfIndigency } from './components/pages/certificate-of-indigency/certificate-of-indigency';
 import { BlotterRecords } from './components/pages/blotter-records/blotter-records';
+import { Profile } from './components/pages/profile/profile';
 import { SystemSettings } from './components/pages/system-settings/system-settings';
 import { Users } from './components/pages/users/users';
 
@@ -25,6 +26,7 @@ export const routes: Routes = [
       { path: 'barangay-permit', component: BaranggayPermit },
       { path: 'certificate-of-indigency', component: CertificateOfIndigency },
       { path: 'blotter-records', component: BlotterRecords },
+      { path: 'profile', component: Profile },
       { path: 'system-settings', component: SystemSettings },
       { path: 'users', component: Users }
     ]

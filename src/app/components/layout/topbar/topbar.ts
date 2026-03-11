@@ -36,9 +36,9 @@ export class TopbarComponent implements OnDestroy {
   }
 
   goToProfile() {
-    console.log('Go to profile page');
-    this.showDropdown = false;
-  }
+  this.showDropdown = false;
+  this.router.navigate(['/dashboard/profile']);
+}
 
   logout() {
   // Hide dropdown immediately
