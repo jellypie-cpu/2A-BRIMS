@@ -1,1 +1,61 @@
-<p>residents-information works!</p>
+<div class="residents-container">
+
+  <!-- HEADER -->
+  <div class="header-section">
+
+    <div class="zone-select">
+      <label>Select Zone:</label>
+      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+        <option *ngFor="let zone of zones" [value]="zone">Zone {{ zone }}</option>
+      </select>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-resident">
+      <input 
+        type="text" 
+        placeholder="Search resident by name..." 
+        [(ngModel)]="searchText" 
+        (input)="onSearchChange()"
+      />
+    </div>
+
+    <button class="add-btn" (click)="addResident()">
+      + New Resident
+    </button>
+
+  </div>
+
+  <h2>Zone {{ selectedZone }} Records</h2>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Resident ID</th>
+          <th>Full Name</th>
+          <th>Birthdate</th>
+          <th>Civil Status</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let resident of residents">
+          <td>{{ resident.id }}</td>
+          <td>{{ resident.fullname }}</td>
+          <td>{{ resident.birthdate }}</td>
+          <td>{{ resident.civilStatus }}</td>
+          <td>{{ resident.address }}</td>
+          <td class="actions">
+            <button class="view-edit" (click)="openResident(resident)">View / Update</button>
+            <button class="delete" (click)="deleteResident(resident)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

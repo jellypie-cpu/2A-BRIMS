@@ -1,1 +1,35 @@
-tisting
+<div class="profile-layout">
+
+  <!-- Profile Sidebar -->
+  <div class="profile-sidebar">
+    <h3 class="profile-title">Profile</h3>
+
+    <ul>
+      <li routerLink="overview" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="pi pi-user"></i>
+        <span>Overview</span>
+      </li>
+
+      <li routerLink="my-information" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="pi pi-id-card"></i>
+        <span>My Information</span>
+      </li>
+
+      <li routerLink="account-settings" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="pi pi-cog"></i>
+        <span>Account Settings</span>
+      </li>
+
+      <li routerLink="help" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="pi pi-question-circle"></i>
+        <span>Help</span>
+      </li>
+    </ul>
+  </div>
+
+  
+  <div class="profile-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

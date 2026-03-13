@@ -1,1 +1,27 @@
-<p>users works!</p>
+<div class="manage-users-container">
+  <h2>Manage Users</h2>
+
+  <!-- Summary -->
+  <div class="summary">
+    <strong>Total logins today:</strong> {{ totalLoginsToday }}
+  </div>
+
+  <!-- Login History Table -->
+  <p-table [value]="loginHistory" [paginator]="true" [rows]="10">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Login Time</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-record>
+      <tr>
+        <td>{{ record.username }}</td>
+        <td>{{ record.role }}</td>
+        <td>{{ record.loginTime | date:'short' }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

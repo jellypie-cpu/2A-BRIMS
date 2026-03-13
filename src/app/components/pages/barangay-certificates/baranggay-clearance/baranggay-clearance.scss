@@ -1,0 +1,87 @@
+.clearance-container {
+  padding: 20px;
+  background-color: #f8f9fa; // light background for contrast
+  min-height: 80vh;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.header-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zone-select label {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.zone-select select,
+.search-resident input {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-resident input {
+  width: 220px;
+}
+
+.resident-list {
+  margin-top: 10px;
+}
+
+.resident-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: background-color 0.2s, transform 0.1s;
+
+  &:hover {
+    background-color: #e9f5ff;
+    transform: translateY(-1px);
+  }
+}
+
+.resident-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* PrimeNG button tweaks */
+.p-button {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+}
+.p-button-success {
+  background-color: #007ad9;
+  border-color: #007ad9;
+}
+.p-button-success:hover {
+  background-color: #005fa3;
+  border-color: #005fa3;
+}
+
+/* Optional: zone header */
+.zone-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #001a33;
+  border-bottom: 2px solid #007ad9;
+  padding-bottom: 4px;
+}

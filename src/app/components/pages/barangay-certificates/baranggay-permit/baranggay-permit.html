@@ -1,0 +1,40 @@
+<div class="permit-container">
+
+  <div class="header-section">
+
+  
+    <div class="zone-select">
+      <label>Select Zone:</label>
+      <select [(ngModel)]="selectedZone" (change)="filterBusinesses()">
+        <option value="">All Zones</option>
+        <option *ngFor="let zone of zones" [value]="zone">{{ zone }}</option>
+      </select>
+    </div>
+
+    <div class="search-resident">
+      <input 
+        type="text" 
+        placeholder="Search business or owner..." 
+        [(ngModel)]="searchText" 
+        (input)="filterBusinesses()"
+      />
+    </div>
+
+  </div>
+
+  <!-- Business List -->
+  <div class="resident-list">
+    <div class="resident-row" *ngFor="let biz of filteredBusinesses">
+      <span class="resident-name">
+        {{ biz.businessName }} (Owner: {{ biz.ownerName }})
+      </span>
+      <button pButton 
+              type="button" 
+              label="Print" 
+              class="p-button-warning"
+              (click)="printPermit(biz)">
+      </button>
+    </div>
+  </div>
+
+</div>

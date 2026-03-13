@@ -1,0 +1,41 @@
+<div class="clearance-container">
+
+  <div class="header-section">
+
+    <!-- Zone Dropdown -->
+    <div class="zone-select">
+      <label>Select Zone:</label>
+      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+        <option value="">All Zones</option>
+        <option *ngFor="let zone of zones" [value]="zone">{{ zone }}</option>
+      </select>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-resident">
+      <input 
+        type="text" 
+        placeholder="Search resident by name..." 
+        [(ngModel)]="searchText" 
+        (input)="filterResidents()"
+      />
+    </div>
+
+  </div>
+
+  <!-- Resident List -->
+  <div class="resident-list">
+    <div class="resident-row" *ngFor="let resident of filteredResidents">
+      <span class="resident-name">
+        {{ resident.firstName }} {{ resident.lastName }}
+      </span>
+      <button pButton 
+              type="button" 
+              label="Generate" 
+              class="p-button-success"
+              (click)="generateClearance(resident)">
+      </button>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,87 @@
+.residents-container{
+  padding: 20px;
+}
+
+/* HEADER */
+
+.header-section{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-section h2{
+  font-weight: 600;
+}
+
+/* ADD BUTTON */
+
+.add-btn{
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-btn:hover{
+  background: #0b5ed7;
+}
+
+/* TABLE */
+
+.table-container{
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead{
+  background: #001a33;
+  color: white;
+}
+
+th, td{
+  padding: 12px;
+  text-align: center;
+}
+
+tbody tr{
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover{
+  background: #f7f7f7;
+}
+
+/* ACTION BUTTONS */
+
+.actions button{
+  margin: 3px;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* VIEW + UPDATE */
+
+.view-edit{
+  background: #17a2b8;
+  color: white;
+}
+
+/* DELETE */
+
+.delete{
+  background: #dc3545;
+  color: white;
+}
