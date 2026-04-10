@@ -1,74 +1,145 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ResidentForm } from './residents-form/residents-form';
 
 @Component({
   selector: 'app-residents-information',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ResidentForm],
   templateUrl: './residents-information.html',
   styleUrls: ['./residents-information.scss'],
 })
-export class ResidentsInformation {
+export class ResidentsInformation implements OnInit {
 
+  // ======================
+  // DATA
+  // ======================
   zones = [1,2,3,4,5,6,7,8,9,10,11,12];
-  selectedZone = 1;
+  selectedZone: number = 1;
 
-  allResidents = [
-    { id: 'RES-001', fullname: 'Juan Dela Cruz', birthdate: '1990-05-12', civilStatus: 'Single', address: 'Zone 1', zone: 1 },
-    { id: 'RES-002', fullname: 'Maria Santos', birthdate: '1995-08-22', civilStatus: 'Married', address: 'Zone 2', zone: 2 },
-    { id: 'RES-003', fullname: 'Pedro Reyes', birthdate: '1985-01-10', civilStatus: 'Married', address: 'Zone 1', zone: 1 }
-  ];
-
+  allResidents: any[] = [];
   residents: any[] = [];
+  searchText = '';
 
-  searchText = ''; // NEW: search input
+  // ======================
+  // MODAL STATE
+  // ======================
+  showForm = false;
+  selectedResident: any = null;
+  isEditMode: boolean = false;
 
-  constructor() {
+  // ======================
+  // INIT
+  // ======================
+  ngOnInit() {
+    this.loadResidents();
     this.filterResidents();
   }
 
-  filterResidents() {
-    // Filter by selected zone
-    let filtered = this.allResidents.filter(r => r.zone === this.selectedZone);
+  // ======================
+  // LOAD FROM STORAGE
+  // ======================
+  loadResidents() {
+    const data = localStorage.getItem('residents');
+    this.allResidents = data ? JSON.parse(data) : [];
+  }
 
-    // If search text is not empty, further filter by fullname
-    if (this.searchText.trim() !== '') {
+  // ======================
+  // SAVE TO STORAGE
+  // ======================
+  saveToStorage() {
+    localStorage.setItem('residents', JSON.stringify(this.allResidents));
+  }
+
+  // ======================
+  // FILTER
+  // ======================
+  filterResidents() {
+
+    let filtered = this.allResidents.filter(
+      r => Number(r.address?.zone) === Number(this.selectedZone)
+    );
+
+    if (this.searchText.trim()) {
       const lower = this.searchText.toLowerCase();
-      filtered = filtered.filter(r => r.fullname.toLowerCase().includes(lower));
+      filtered = filtered.filter(r =>
+        r.fullname.toLowerCase().includes(lower)
+      );
     }
 
     this.residents = filtered;
   }
 
   onSearchChange() {
-    this.filterResidents(); // called whenever search text changes
-  }
-
-  openResident(resident: any) {
-    alert('View / Update ' + resident.fullname);
-  }
-
-  deleteResident(resident: any) {
-    const confirmDelete = confirm('Delete ' + resident.fullname + '?');
-    if (confirmDelete) {
-      this.allResidents = this.allResidents.filter(r => r !== resident);
-      this.filterResidents();
-    }
-  }
-
-  addResident() {
-    const newId = 'RES-' + (this.allResidents.length + 1).toString().padStart(3, '0');
-    const newResident = {
-      id: newId,
-      fullname: 'New Resident ' + newId,
-      birthdate: '2000-01-01',
-      civilStatus: 'Single',
-      address: 'Zone ' + this.selectedZone,
-      zone: this.selectedZone
-    };
-    this.allResidents.push(newResident);
     this.filterResidents();
   }
 
+  // ======================
+  // ADD RESIDENT
+  // ======================
+  addResident() {
+    this.selectedResident = null;
+    this.isEditMode = true; // ADD MODE
+    this.showForm = true;
+  }
+
+  // ======================
+  // VIEW RESIDENT
+  // ======================
+  openResident(resident: any) {
+    this.selectedResident = structuredClone(resident);
+    this.isEditMode = false; // VIEW MODE FIRST
+    this.showForm = true;
+  }
+
+  // ======================
+  // CLOSE MODAL
+  // ======================
+  closeForm() {
+    this.showForm = false;
+  }
+
+  // ======================
+  // SAVE (ADD + UPDATE)
+  // ======================
+  saveResident(resident: any) {
+
+    const index = this.allResidents.findIndex(r => r.id === resident.id);
+
+    if (index !== -1) {
+      // UPDATE
+      this.allResidents[index] = resident;
+    } else {
+      // ADD NEW
+      const newId =
+        'RES-' +
+        (this.allResidents.length + 1).toString().padStart(3, '0');
+
+      resident.id = newId;
+      this.allResidents.push(resident);
+    }
+
+    this.saveToStorage();
+    this.loadResidents();
+    this.filterResidents();
+    this.closeForm();
+  }
+
+  // ======================
+  // DELETE
+  // ======================
+  deleteResident(resident: any) {
+
+    const confirmDelete = confirm('Delete ' + resident.fullname + '?');
+
+    if (confirmDelete) {
+      this.allResidents = this.allResidents.filter(
+        r => r.id !== resident.id
+      );
+
+      this.saveToStorage();
+      this.filterResidents();
+    }
+  }
 }

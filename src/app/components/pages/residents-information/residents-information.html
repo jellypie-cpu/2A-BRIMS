@@ -3,23 +3,27 @@
   <!-- HEADER -->
   <div class="header-section">
 
+    <!-- ZONE SELECT -->
     <div class="zone-select">
       <label>Select Zone:</label>
       <select [(ngModel)]="selectedZone" (change)="filterResidents()">
-        <option *ngFor="let zone of zones" [value]="zone">Zone {{ zone }}</option>
+        <option *ngFor="let zone of zones" [value]="zone">
+          Zone {{ zone }}
+        </option>
       </select>
     </div>
 
-    <!-- SEARCH BAR -->
+    <!-- SEARCH -->
     <div class="search-resident">
-      <input 
-        type="text" 
-        placeholder="Search resident by name..." 
-        [(ngModel)]="searchText" 
+      <input
+        type="text"
+        placeholder="Search resident by name..."
+        [(ngModel)]="searchText"
         (input)="onSearchChange()"
       />
     </div>
 
+    <!-- ADD BUTTON -->
     <button class="add-btn" (click)="addResident()">
       + New Resident
     </button>
@@ -37,7 +41,9 @@
           <th>Full Name</th>
           <th>Birthdate</th>
           <th>Civil Status</th>
-          <th>Address</th>
+          <th>Zone</th>
+          <th>Street</th>
+          <th>Barangay</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -48,10 +54,19 @@
           <td>{{ resident.fullname }}</td>
           <td>{{ resident.birthdate }}</td>
           <td>{{ resident.civilStatus }}</td>
-          <td>{{ resident.address }}</td>
+
+          <td>{{ resident.address?.zone }}</td>
+          <td>{{ resident.address?.street }}</td>
+          <td>{{ resident.address?.barangay }}</td>
+
           <td class="actions">
-            <button class="view-edit" (click)="openResident(resident)">View / Update</button>
-            <button class="delete" (click)="deleteResident(resident)">Delete</button>
+            <button (click)="openResident(resident)">
+              View / Update
+            </button>
+
+            <button (click)="deleteResident(resident)">
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -59,3 +74,12 @@
   </div>
 
 </div>
+
+<!-- MODAL -->
+<app-resident-form
+  *ngIf="showForm"
+  [residentData]="selectedResident"
+  [isEditMode]="isEditMode"
+  (close)="closeForm()"
+  (save)="saveResident($event)">
+</app-resident-form>
