@@ -37,3 +37,10 @@
     </div>
   </div>
 </div>
+
+<!-- ✅ BLOTTER MODAL -->
+<app-blotter-form
+  *ngIf="showForm"
+  (close)="closeForm()"
+  (save)="saveCase($event)">
+</app-blotter-form>

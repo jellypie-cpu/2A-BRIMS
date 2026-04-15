@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { BlotterForm } from './blotter-form/blotter-form';
 
 interface BlotterCase {
-  id: number;
+  id: string;
   residentName: string;
   complaint: string;
   status: 'Active' | 'Settled' | 'Scheduled';
@@ -15,54 +16,114 @@ interface BlotterCase {
 @Component({
   selector: 'app-blotter-records',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule],
+  imports: [CommonModule, FormsModule, ButtonModule, CardModule, BlotterForm],
   templateUrl: './blotter-records.html',
   styleUrls: ['./blotter-records.scss']
 })
 export class BlotterRecords implements OnInit {
 
-  blotterCases: BlotterCase[] = [
-    { id: 1, residentName: 'Juan Dela Cruz', complaint: 'Noise Complaint', status: 'Active', date: '2026-03-13' },
-    { id: 2, residentName: 'Maria Santos', complaint: 'Property Dispute', status: 'Settled', date: '2026-03-12' },
-    { id: 3, residentName: 'Pedro Reyes', complaint: 'Vandalism', status: 'Scheduled', date: '2026-03-14' },
-  ];
-
+  blotterCases: BlotterCase[] = [];
   filteredCases: BlotterCase[] = [];
+
   selectedStatus: string = '';
   searchText: string = '';
 
-  constructor() { }
+  showForm = false;
 
   ngOnInit() {
-    this.filteredCases = this.blotterCases;
+    this.loadCases();
+    this.filterCases();
   }
 
+  // ======================
+  // 💾 LOAD FROM STORAGE
+  // ======================
+  loadCases() {
+    const data = localStorage.getItem('blotters');
+    this.blotterCases = data ? JSON.parse(data) : [];
+  }
+
+  // ======================
+  // 💾 SAVE TO STORAGE
+  // ======================
+  saveToStorage() {
+    localStorage.setItem('blotters', JSON.stringify(this.blotterCases));
+  }
+
+  // ======================
+  // 🔍 FILTER
+  // ======================
   filterCases() {
     this.filteredCases = this.blotterCases.filter(b => {
       const matchesStatus = this.selectedStatus ? b.status === this.selectedStatus : true;
+
       const matchesName = this.searchText
-        ? b.residentName.toLowerCase().includes(this.searchText.toLowerCase())
+        ? b.residentName?.toLowerCase().includes(this.searchText.toLowerCase())
         : true;
+
       return matchesStatus && matchesName;
     });
   }
 
+  // ======================
+  // ➕ OPEN MODAL
+  // ======================
   addCase() {
-    // logic to open a modal or navigate to add case page
-    console.log('Add new blotter case');
+    this.showForm = true;
   }
 
+  closeForm() {
+    this.showForm = false;
+  }
+
+  // ======================
+  // 💾 SAVE FROM MODAL
+  // ======================
+  saveCase(data: any) {
+
+    const newCase: BlotterCase = {
+      id: data.id,
+      residentName: data.victims, // 👈 using victims as display name
+      complaint: data.complaint,
+      status: data.status,
+      date: data.date
+    };
+
+    this.blotterCases.push(newCase);
+
+    this.saveToStorage();
+    this.filterCases();
+    this.closeForm();
+  }
+
+  // ======================
+  // 👁 VIEW
+  // ======================
   viewCase(blotter: BlotterCase) {
-    // logic to view case details
-    console.log('View case:', blotter);
+    alert(
+      `Name: ${blotter.residentName}
+Complaint: ${blotter.complaint}
+Status: ${blotter.status}
+Date: ${blotter.date}`
+    );
   }
 
+  // ======================
+  // 🗑 DELETE
+  // ======================
   deleteCase(blotter: BlotterCase) {
-    this.blotterCases = this.blotterCases.filter(b => b.id !== blotter.id);
-    this.filterCases(); // update filtered list
-    console.log('Deleted case:', blotter);
+    const confirmDelete = confirm('Delete this case?');
+
+    if (confirmDelete) {
+      this.blotterCases = this.blotterCases.filter(b => b.id !== blotter.id);
+      this.saveToStorage();
+      this.filterCases();
+    }
   }
 
+  // ======================
+  // 📊 COUNTS
+  // ======================
   getCount(status: 'Active' | 'Settled' | 'Scheduled') {
     return this.blotterCases.filter(b => b.status === status).length;
   }
