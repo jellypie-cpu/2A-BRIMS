@@ -1,56 +1,112 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 
-interface Resident {
-  firstName: string;
-  lastName: string;
-  zone: string;
-}
+import { ResidentService } from '../../../../core/services/resident';
+import { CertificateService } from '../../../../core/services/certificate';
+import { BaranggayClearanceForm } from './baranggay-clearance-form/baranggay-clearance-form';
 
 @Component({
   selector: 'app-baranggay-clearance',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule],
+  imports: [CommonModule, FormsModule, ButtonModule, BaranggayClearanceForm],
   templateUrl: './baranggay-clearance.html',
   styleUrls: ['./baranggay-clearance.scss']
 })
-export class BaranggayClearance {
+export class BaranggayClearance implements OnInit {
 
-  residents: Resident[] = [
-    { firstName: 'Juan', lastName: 'Dela Cruz', zone: 'Zone 1' },
-    { firstName: 'Maria', lastName: 'Santos', zone: 'Zone 1' },
-    { firstName: 'Pedro', lastName: 'Reyes', zone: 'Zone 2' },
-    { firstName: 'Ana', lastName: 'Quezon', zone: 'Zone 2' },
-    { firstName: 'Luis', lastName: 'Garcia', zone: 'Zone 3' }
-  ];
+  // ======================
+  // DATA
+  // ======================
+  residents: any[] = [];
+  filteredResidents: any[] = [];
 
-  zones: string[] = ['Zone 1', 'Zone 2', 'Zone 3'];
+  zones: string[] = [];
   selectedZone: string = '';
   searchText: string = '';
 
-  filteredResidents: Resident[] = [];
+  // ======================
+  // MODAL STATE
+  // ======================
+  selectedResident: any = null;
+  showModal: boolean = false;
 
-  constructor() {
-    // initially show all residents
+  constructor(
+    private residentService: ResidentService,
+    private certificateService: CertificateService
+  ) {}
+
+  // ======================
+  // INIT
+  // ======================
+  ngOnInit() {
+    this.residents = this.residentService.getAll();
     this.filteredResidents = this.residents;
+
+    this.zones = [...new Set(
+      this.residents
+        .map(r => r.address?.zone)
+        .filter(z => z)
+        .map(z => 'Zone ' + z)
+    )];
   }
 
+  // ======================
+  // FILTER
+  // ======================
   filterResidents() {
     this.filteredResidents = this.residents.filter(resident => {
-      const matchesZone = this.selectedZone ? resident.zone === this.selectedZone : true;
+
+      const zoneText = 'Zone ' + resident.address?.zone;
+
+      const matchesZone = this.selectedZone
+        ? zoneText === this.selectedZone
+        : true;
+
       const matchesName = this.searchText
-        ? (resident.firstName + ' ' + resident.lastName)
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase())
+        ? resident.fullname?.toLowerCase().includes(this.searchText.toLowerCase())
         : true;
 
       return matchesZone && matchesName;
     });
   }
 
-  generateClearance(resident: Resident) {
-    console.log('Generate clearance for:', resident.firstName, resident.lastName);
+  // ======================
+  // OPEN MODAL
+  // ======================
+  openClearance(resident: any) {
+    this.selectedResident = resident;
+    this.showModal = true;
+  }
+
+  // ======================
+  // CLOSE MODAL
+  // ======================
+  closePrint() {
+    this.selectedResident = null;
+    this.showModal = false;
+  }
+
+  // ======================
+  // GENERATE CERTIFICATE (SAVE LOG)
+  // ======================
+  generateClearance(resident: any) {
+
+    const certificate = {
+      id: 'CERT-' + Date.now(),
+      residentId: resident.id,
+      residentName: resident.fullname,
+      type: 'Barangay Clearance',
+      status: 'Pending',
+      date: new Date().toISOString()
+    };
+
+    this.certificateService.add(certificate);
+
+    // optional: open printable modal
+    this.openClearance(resident);
+
+    alert('Barangay Clearance generated for ' + resident.fullname);
   }
 }

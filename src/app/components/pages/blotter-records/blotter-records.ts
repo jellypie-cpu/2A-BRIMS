@@ -11,6 +11,7 @@ interface BlotterCase {
   complaint: string;
   status: 'Active' | 'Settled' | 'Scheduled';
   date: string;
+  description?: string;
 }
 
 @Component({
@@ -86,7 +87,8 @@ export class BlotterRecords implements OnInit {
       residentName: data.victims, // 👈 using victims as display name
       complaint: data.complaint,
       status: data.status,
-      date: data.date
+      date: data.date,
+      description: data.description
     };
 
     this.blotterCases.push(newCase);
@@ -100,13 +102,27 @@ export class BlotterRecords implements OnInit {
   // 👁 VIEW
   // ======================
   viewCase(blotter: BlotterCase) {
-    alert(
-      `Name: ${blotter.residentName}
-Complaint: ${blotter.complaint}
-Status: ${blotter.status}
-Date: ${blotter.date}`
-    );
+  const newStatus = prompt(
+    `Update status for ${blotter.residentName}\n\nType: Active / Settled / Scheduled`,
+    blotter.status
+  );
+
+  if (!newStatus) return;
+
+  if (!['Active', 'Settled', 'Scheduled'].includes(newStatus)) {
+    alert('Invalid status!');
+    return;
   }
+
+  // ✅ UPDATE STATUS
+  blotter.status = newStatus as any;
+
+  // ✅ SAVE + REFRESH
+  this.saveToStorage();
+  this.filterCases();
+
+  alert('Status updated!');
+}
 
   // ======================
   // 🗑 DELETE

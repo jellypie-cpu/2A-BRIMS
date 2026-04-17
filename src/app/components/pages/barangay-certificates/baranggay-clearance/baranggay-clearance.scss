@@ -1,87 +1,125 @@
 .clearance-container {
+  padding: 25px;
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* HEADER */
+.gov-header {
+  background: #0d47a1;
+  color: white;
   padding: 20px;
-  background-color: #f8f9fa; // light background for contrast
-  min-height: 80vh;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.header-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  border-radius: 10px;
   margin-bottom: 20px;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.zone-select label {
-  font-weight: 600;
-  margin-right: 8px;
+.gov-header h1 {
+  margin: 0;
+  font-size: 22px;
 }
 
-.zone-select select,
-.search-resident input {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.search-resident input {
-  width: 220px;
-}
-
-.resident-list {
-  margin-top: 10px;
-}
-
-.resident-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 15px;
-  margin-bottom: 8px;
-  background-color: #ffffff;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: background-color 0.2s, transform 0.1s;
-
-  &:hover {
-    background-color: #e9f5ff;
-    transform: translateY(-1px);
-  }
-}
-
-.resident-name {
-  font-size: 15px;
-  font-weight: 500;
-  color: #333;
-}
-
-/* PrimeNG button tweaks */
-.p-button {
+.gov-header p {
+  margin: 5px 0 0;
   font-size: 13px;
-  font-weight: 600;
-  padding: 0.3rem 0.8rem;
-  border-radius: 4px;
-}
-.p-button-success {
-  background-color: #007ad9;
-  border-color: #007ad9;
-}
-.p-button-success:hover {
-  background-color: #005fa3;
-  border-color: #005fa3;
+  opacity: 0.8;
 }
 
-/* Optional: zone header */
-.zone-title {
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+/* GRID */
+.resident-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 15px;
+}
+
+/* CARD */
+.resident-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+.resident-card:hover {
+  transform: translateY(-2px);
+}
+
+/* PHOTO */
+.photo img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #1976d2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* DETAILS */
+.details {
+  flex: 1;
+}
+
+.details h2 {
+  margin: 0;
   font-size: 16px;
-  font-weight: 700;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #001a33;
-  border-bottom: 2px solid #007ad9;
-  padding-bottom: 4px;
+  color: #1a1a1a;
+}
+
+.meta {
+  font-size: 12px;
+  color: #555;
+  margin-top: 3px;
+}
+
+/* BADGE */
+.badge {
+  background: #1976d2;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+/* BUTTON */
+.action button {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.action button:hover {
+  background: #1b5e20;
 }

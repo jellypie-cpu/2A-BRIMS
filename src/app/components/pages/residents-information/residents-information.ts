@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResidentForm } from './residents-form/residents-form';
+import { ResidentService } from '../../../core/services/resident';
 
 @Component({
   selector: 'app-residents-information',
@@ -12,9 +13,8 @@ import { ResidentForm } from './residents-form/residents-form';
 })
 export class ResidentsInformation implements OnInit {
 
-  // ======================
-  // DATA
-  // ======================
+  //data for the residents list
+
   zones = [1,2,3,4,5,6,7,8,9,10,11,12];
   selectedZone: number = 1;
 
@@ -22,39 +22,21 @@ export class ResidentsInformation implements OnInit {
   residents: any[] = [];
   searchText = '';
 
-  // ======================
-  // MODAL STATE
-  // ======================
+ //form for the resident details
+
   showForm = false;
   selectedResident: any = null;
   isEditMode: boolean = false;
 
-  // ======================
-  // INIT
-  // ======================
+  constructor(private residentService: ResidentService) {}
+ 
+// INIT
   ngOnInit() {
-    this.loadResidents();
+    this.allResidents = this.residentService.getAll();
     this.filterResidents();
   }
 
-  // ======================
-  // LOAD FROM STORAGE
-  // ======================
-  loadResidents() {
-    const data = localStorage.getItem('residents');
-    this.allResidents = data ? JSON.parse(data) : [];
-  }
-
-  // ======================
-  // SAVE TO STORAGE
-  // ======================
-  saveToStorage() {
-    localStorage.setItem('residents', JSON.stringify(this.allResidents));
-  }
-
-  // ======================
-  // FILTER
-  // ======================
+//filtering the residents list based on zone and search text
   filterResidents() {
 
     let filtered = this.allResidents.filter(
@@ -75,70 +57,56 @@ export class ResidentsInformation implements OnInit {
     this.filterResidents();
   }
 
-  // ======================
-  // ADD RESIDENT
-  // ======================
+ //add resident
+
   addResident() {
     this.selectedResident = null;
     this.isEditMode = true; // ADD MODE
     this.showForm = true;
   }
 
-  // ======================
-  // VIEW RESIDENT
-  // ======================
+ //view resident
+
   openResident(resident: any) {
     this.selectedResident = structuredClone(resident);
     this.isEditMode = false; // VIEW MODE FIRST
     this.showForm = true;
   }
 
-  // ======================
-  // CLOSE MODAL
-  // ======================
+  //close form
+
   closeForm() {
     this.showForm = false;
   }
-
-  // ======================
+ 
   // SAVE (ADD + UPDATE)
-  // ======================
+  
   saveResident(resident: any) {
-
-    const index = this.allResidents.findIndex(r => r.id === resident.id);
+    const all = this.residentService.getAll();
+    const index = all.findIndex(r => r.id === resident.id);
 
     if (index !== -1) {
+      
       // UPDATE
-      this.allResidents[index] = resident;
+      all[index] = resident;
     } else {
-      // ADD NEW
-      const newId =
-        'RES-' +
-        (this.allResidents.length + 1).toString().padStart(3, '0');
 
-      resident.id = newId;
-      this.allResidents.push(resident);
+      // ADD NEW
+          resident.id = 'RES-' + Date.now();
+      all.push(resident);
     }
 
-    this.saveToStorage();
-    this.loadResidents();
+    this.residentService.saveAll(all);
+
+    this.allResidents = all;
     this.filterResidents();
     this.closeForm();
   }
-
-  // ======================
-  // DELETE
-  // ======================
+  //delete resident
   deleteResident(resident: any) {
-
-    const confirmDelete = confirm('Delete ' + resident.fullname + '?');
-
-    if (confirmDelete) {
-      this.allResidents = this.allResidents.filter(
-        r => r.id !== resident.id
-      );
-
-      this.saveToStorage();
+    if (confirm('Delete ' + resident.fullname + '?')) {
+      this.residentService.delete(resident.id);
+      this.allResidents = this.residentService.getAll();
       this.filterResidents();
     }
   }
