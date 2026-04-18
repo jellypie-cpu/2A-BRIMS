@@ -1,55 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 
-interface Business {
-  businessName: string;
-  ownerName: string;
-  zone: string;
-  permitNumber: string;
-}
+import { ResidentService } from '../../../../core/services/resident';
+import { CertificateService } from '../../../../core/services/certificate';
+import { BaranggayPermitForm } from './baranggay-permit-form/baranggay-permit-form';
 
 @Component({
   selector: 'app-baranggay-permit',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule],
+  imports: [CommonModule, FormsModule, ButtonModule, BaranggayPermitForm],
   templateUrl: './baranggay-permit.html',
   styleUrls: ['./baranggay-permit.scss']
 })
-export class BaranggayPermit {
+export class BaranggayPermit implements OnInit {
 
-  // Example List of registered businesses
-  businesses: Business[] = [
-    { businessName: 'Juan Trading', ownerName: 'Juan Dela Cruz', zone: 'Zone 1', permitNumber: 'BP-001' },
-    { businessName: 'Maria Sweets', ownerName: 'Maria Santos', zone: 'Zone 1', permitNumber: 'BP-002' },
-    { businessName: 'Pedro Repair Shop', ownerName: 'Pedro Reyes', zone: 'Zone 2', permitNumber: 'BP-003' }
-  ];
+  residents: any[] = [];
+  filteredResidents: any[] = [];
 
-  zones: string[] = ['Zone 1', 'Zone 2', 'Zone 3'];
   selectedZone: string = '';
   searchText: string = '';
 
-  filteredBusinesses: Business[] = [];
+  selectedResident: any = null;
+  showModal: boolean = false;
 
-  constructor() {
-    this.filteredBusinesses = this.businesses;
+  constructor(
+    private residentService: ResidentService,
+    private certificateService: CertificateService
+  ) {}
+
+  ngOnInit() {
+    this.residents = this.residentService.getAll();
+    this.filteredResidents = this.residents;
   }
 
-  filterBusinesses() {
-    this.filteredBusinesses = this.businesses.filter(biz => {
-      const matchesZone = this.selectedZone ? biz.zone === this.selectedZone : true;
-      const matchesName = this.searchText
-        ? (biz.businessName + ' ' + biz.ownerName)
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase())
+  filterResidents() {
+    this.filteredResidents = this.residents.filter(r => {
+
+      const matchesZone = this.selectedZone
+        ? 'Zone ' + r.address?.zone === this.selectedZone
         : true;
+
+      const matchesName = this.searchText
+        ? r.fullname?.toLowerCase().includes(this.searchText.toLowerCase())
+        : true;
+
       return matchesZone && matchesName;
     });
   }
 
-  printPermit(business: Business) {
-    console.log(`Printing permit for: ${business.businessName}, Owner: ${business.ownerName}`);
-  
+  openPermit(resident: any) {
+    this.selectedResident = resident;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedResident = null;
+  }
+
+  savePermit(data: any) {
+
+    const permit = {
+      id: 'PERMIT-' + Date.now(),
+      residentId: data.resident.id,
+      residentName: data.resident.fullname,
+      businessName: data.businessName,
+      businessType: data.businessType,
+      address: data.address,
+      status: 'Approved',
+      type: 'Barangay Business Permit',
+      date: new Date().toISOString()
+    };
+
+    this.certificateService.add(permit);
+
+    alert('Permit issued to ' + data.resident.fullname);
   }
 }

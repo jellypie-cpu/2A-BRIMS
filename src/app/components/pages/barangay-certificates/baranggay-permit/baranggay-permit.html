@@ -1,40 +1,42 @@
 <div class="permit-container">
 
+  <!-- HEADER -->
   <div class="header-section">
 
-  
-    <div class="zone-select">
-      <label>Select Zone:</label>
-      <select [(ngModel)]="selectedZone" (change)="filterBusinesses()">
-        <option value="">All Zones</option>
-        <option *ngFor="let zone of zones" [value]="zone">{{ zone }}</option>
-      </select>
-    </div>
-
-    <div class="search-resident">
-      <input 
-        type="text" 
-        placeholder="Search business or owner..." 
-        [(ngModel)]="searchText" 
-        (input)="filterBusinesses()"
-      />
-    </div>
+    <input 
+      type="text"
+      placeholder="Search resident..."
+      [(ngModel)]="searchText"
+      (input)="filterResidents()"
+    />
 
   </div>
 
-  <!-- Business List -->
+  <!-- LIST -->
   <div class="resident-list">
-    <div class="resident-row" *ngFor="let biz of filteredBusinesses">
-      <span class="resident-name">
-        {{ biz.businessName }} (Owner: {{ biz.ownerName }})
-      </span>
-      <button pButton 
-              type="button" 
-              label="Print" 
-              class="p-button-warning"
-              (click)="printPermit(biz)">
+
+    <div class="resident-card" *ngFor="let resident of filteredResidents">
+
+      <h3>{{ resident.fullname }}</h3>
+      <p>Zone {{ resident.address?.zone }}</p>
+
+      <button 
+        pButton
+        label="Create Permit"
+        class="p-button-warning"
+        (click)="openPermit(resident)">
       </button>
+
     </div>
+
   </div>
 
 </div>
+
+<!-- MODAL -->
+<app-barangay-permit-form
+  *ngIf="showModal"
+  [selectedResident]="selectedResident"
+  (close)="closeModal()"
+  (save)="savePermit($event)">
+</app-barangay-permit-form>

@@ -1,17 +1,20 @@
 <div class="indigency-container">
 
+  <!-- HEADER -->
   <div class="header-section">
 
-    <!-- Zone Dropdown -->
+    <!-- ZONE FILTER -->
     <div class="zone-select">
       <label>Select Zone:</label>
       <select [(ngModel)]="selectedZone" (change)="filterResidents()">
         <option value="">All Zones</option>
-        <option *ngFor="let zone of zones" [value]="zone">{{ zone }}</option>
+        <option *ngFor="let zone of zones" [value]="zone">
+          {{ zone }}
+        </option>
       </select>
     </div>
 
-    <!-- Search Bar -->
+    <!-- SEARCH -->
     <div class="search-resident">
       <input 
         type="text" 
@@ -23,19 +26,39 @@
 
   </div>
 
-  <!-- Resident List -->
+  <!-- RESIDENT LIST -->
   <div class="resident-list">
+
     <div class="resident-row" *ngFor="let resident of filteredResidents">
+
+      <!-- NAME -->
       <span class="resident-name">
-        {{ resident.firstName }} {{ resident.lastName }}
+        {{ resident.fullname }}
       </span>
-      <button pButton 
-              type="button" 
-              label="Generate" 
-              class="p-button-success"
-              (click)="generateIndigency(resident)">
+
+      <!-- ADDRESS -->
+      <span class="resident-zone">
+        Zone {{ resident.address?.zone }}
+      </span>
+
+      <!-- BUTTON -->
+      <button 
+        pButton 
+        type="button" 
+        label="Generate Indigency"
+        class="p-button-success"
+        (click)="openIndigency(resident)">
       </button>
+
     </div>
+
   </div>
 
 </div>
+
+<!-- ✅ MODAL CONNECTION -->
+<app-barangay-indigency-form
+  *ngIf="showModal"
+  [selectedResident]="selectedResident"
+  (close)="closeModal()">
+</app-barangay-indigency-form>

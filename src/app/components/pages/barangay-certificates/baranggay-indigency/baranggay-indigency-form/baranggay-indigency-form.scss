@@ -1,0 +1,52 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.print-container {
+  padding: 40px;
+  border: 2px solid black;
+}
+
+.header {
+  text-align: center;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.body {
+  margin-top: 30px;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.footer {
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}

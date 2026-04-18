@@ -1,0 +1,57 @@
+<div class="modal">
+
+  <div class="modal-content">
+
+    <!-- FORM -->
+    <div *ngIf="!selectedResident?.printMode">
+
+      <h2>Business Permit Request</h2>
+
+      <p><strong>Resident:</strong> {{ selectedResident?.fullname }}</p>
+
+      <input placeholder="Business Name" [(ngModel)]="businessName" />
+      <input placeholder="Business Type" [(ngModel)]="businessType" />
+      <input placeholder="Business Address" [(ngModel)]="address" />
+
+      <button (click)="submitPermit()">Submit</button>
+      <button (click)="closeModal()">Cancel</button>
+
+    </div>
+
+    <!-- PRINT AREA -->
+    <div id="printArea" *ngIf="selectedResident">
+
+      <h2>BARANGAY BUSINESS PERMIT</h2>
+
+      <p>
+        This certifies that
+        <strong>{{ selectedResident?.fullname }}</strong>
+        is granted permission to operate:
+
+        <br><br>
+
+        Business Name: <strong>{{ businessName }}</strong><br>
+        Business Type: <strong>{{ businessType }}</strong><br>
+        Location: <strong>{{ address }}</strong><br>
+
+        <br>
+
+        Approved this {{ today | date:'longDate' }}
+      </p>
+
+      <br><br>
+
+      <p>________________________</p>
+      <p>Barangay Captain</p>
+
+    </div>
+
+    <!-- ACTION -->
+    <div class="buttons">
+      <button (click)="printPermit()">Print</button>
+      <button (click)="closeModal()">Close</button>
+    </div>
+
+  </div>
+
+</div>
