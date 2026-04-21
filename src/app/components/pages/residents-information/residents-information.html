@@ -41,6 +41,8 @@
           <th>Full Name</th>
           <th>Birthdate</th>
           <th>Civil Status</th>
+          <th>Gender</th>
+          <th>Voter</th>
           <th>Zone</th>
           <th>Street</th>
           <th>Barangay</th>
@@ -54,6 +56,14 @@
           <td>{{ resident.fullname }}</td>
           <td>{{ resident.birthdate }}</td>
           <td>{{ resident.civilStatus }}</td>
+
+          <td>{{ resident.gender }}</td>
+
+    <td>
+      <span [class.voter]="resident.isVoter" [class.non-voter]="!resident.isVoter">
+        {{ resident.isVoter ? 'Registered' : 'Not Registered' }}
+      </span>
+    </td>
 
           <td>{{ resident.address?.zone }}</td>
           <td>{{ resident.address?.street }}</td>

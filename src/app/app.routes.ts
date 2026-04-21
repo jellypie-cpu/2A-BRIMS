@@ -15,6 +15,7 @@ import { ProfileOverview } from './components/pages/profile/overview/overview';
 import { ProfileMyInformation } from './components/pages/profile/my-information/my-information';
 import { ProfileHelp } from './components/pages/profile/help/help';
 import { ProfileAccountSettings } from './components/pages/profile/account-settings/account-settings';
+import { CertificatesRequest } from './components/pages/certificates-request/certificates-request';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -27,6 +28,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: DashboardHome },
       { path: 'residents-information', component: ResidentsInformation },
+      { path: 'certificates-request', component: CertificatesRequest },
       { path: 'blotter-records', component: BlotterRecords },
       { path: 'system-settings', component: SystemSettings },
       { path: 'users', component: Users },

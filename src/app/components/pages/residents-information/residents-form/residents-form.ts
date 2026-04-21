@@ -40,6 +40,8 @@ export class ResidentForm implements OnChanges {
       fullname: '',
       birthdate: '',
       civilStatus: '',
+      gender: '',
+      isVoter: false,
       address: {
         zone: null,
         street: '',

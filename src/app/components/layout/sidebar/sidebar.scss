@@ -20,33 +20,6 @@
       overflow: hidden;
       transition: opacity 0.3s ease, width 0.3s ease;
     }
-
-    /* Shrink logo */
-    .sidebar-logo {
-      opacity: 0;
-      transform: scale(0.7);
-    }
-  }
-
-  /* Logo section */
-  .sidebar-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    opacity: 1;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-
-    img {
-      width: 160px;
-      height: 160px;
-      object-fit: contain;
-      flex-shrink: 0;
-      transition: transform 0.5s ease;
-    }
   }
 
   /* Toggle button (PrimeNG pButton) */

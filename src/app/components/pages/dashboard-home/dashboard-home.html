@@ -1,5 +1,5 @@
 <div class="stats-container">
-  <div class="stat-card">
+  <div class="stat-card clickable" [routerLink]="['/dashboard/residents-information']">
     <h3>Total Population</h3>
     <p>{{ totalPopulation }}</p>
   </div>
@@ -31,7 +31,7 @@
     <p>Check resident messages</p>
   </div>
 
-  <div class="dashboard-tile counseling">
+  <div class="dashboard-tile counseling clickable" [routerLink]="['/dashboard/blotter-records']">
     <div class="icon">🧑‍⚕️</div>
     <h3>Counseling</h3>
     <p>Manage counseling requests</p>
