@@ -10,7 +10,8 @@
   overflow: hidden;
   font-family: 'playfair display', serif;
 
- 
+  &.collapsed {
+    width: 60px;
 
     /* Fade out labels */
     ul li .label {
