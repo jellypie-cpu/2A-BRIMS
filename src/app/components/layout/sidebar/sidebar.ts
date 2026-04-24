@@ -40,7 +40,7 @@ export class SidebarComponent {
             { label: 'Barangay Permit', routerLink: '/dashboard/barangay-certificates/BaranggayPermit' }
           ]
         },
-        { label: 'Certificate Requests', routerLink: '/dashboard/certificate-of-indigency', icon: 'pi pi-envelope' },
+        { label: 'Certificate Requests', routerLink: '/dashboard/certificates-request', icon: 'pi pi-envelope' },
         { label: 'Blotter Records', routerLink: '/dashboard/blotter-records', icon: 'pi pi-pencil' },
         { label: 'Manage Users', routerLink: '/dashboard/users', icon: 'pi pi-user-edit' },
         { label: 'Settings', routerLink: '/dashboard/system-settings', icon: 'pi pi-cog' }

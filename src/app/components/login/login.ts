@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../core/services/auth';
 import Swal from 'sweetalert2';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
@@ -49,5 +50,9 @@ export class Login {
       text: 'Invalid credentials!',
     });
   }
+}
+  refreshPage() {
+    window.location.reload();
   }
+
 }
