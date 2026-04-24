@@ -23,7 +23,7 @@ import { ProfileAccountSettings } from './components/pages/profile/account-setti
 export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'about', component: About },
-  { path: 'Contacts', component: Contacts },
+  { path: 'contacts', component: Contacts },
 
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
