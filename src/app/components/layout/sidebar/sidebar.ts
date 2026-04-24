@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService, User } from '../../../core/services/auth';
+import { AuthService} from '../../../core/services/auth';
 import { CommonModule, NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { AppUser } from '../../../core/models/user.model';
 
 interface MenuItem {
   label: string;
@@ -24,7 +25,7 @@ export class SidebarComponent {
   menu: MenuItem[] = [];
 
   constructor(private auth: AuthService) {
-    const user: User | null = this.auth.getCurrentUser();
+    const user: AppUser | null = this.auth.getCurrentUser();
     if (!user) return;
 
     if (user.role === 'admin') {

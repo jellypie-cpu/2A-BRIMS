@@ -1,65 +1,75 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AppUser, UserRole } from '../models/user.model';
 
-export type UserRole = 'admin' | 'staff' | 'resident';
-
-export interface User {
-  username: string;
-  role: UserRole;
-}
-
-// Each login is tracked here
 export interface LoginRecord {
   username: string;
   role: UserRole;
   loginTime: Date;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  private currentUserSubject = new BehaviorSubject<AppUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  // Store all login events
   private loginHistory: LoginRecord[] = [];
 
-  // User logs in
-  login(user: User) {
+  constructor() {
+    this.loadSession();
+  }
+
+  // LOGIN
+  login(user: AppUser) {
     this.currentUserSubject.next(user);
 
-    // Track login event
+    localStorage.setItem('currentUser', JSON.stringify(user));
+
     this.loginHistory.push({
       username: user.username,
       role: user.role,
       loginTime: new Date()
     });
-
-    console.log(`User logged in: ${user.username} (${user.role})`);
   }
 
-  // User logs out
+  // LOGOUT
   logout() {
     this.currentUserSubject.next(null);
+    localStorage.removeItem('currentUser');
   }
 
-  // Get currently logged-in user
-  getCurrentUser(): User | null {
+  // GET CURRENT USER
+  getCurrentUser(): AppUser | null {
     return this.currentUserSubject.getValue();
   }
 
-  // Get full login history
+  // LOGIN HISTORY
   getLoginHistory(): LoginRecord[] {
     return this.loginHistory;
   }
 
-  // Count how many users logged in today
-  getTodaysLogins(): number {
-    const today = new Date();
-    return this.loginHistory.filter(record => {
-      const login = record.loginTime;
-      return login.getFullYear() === today.getFullYear() &&
-             login.getMonth() === today.getMonth() &&
-             login.getDate() === today.getDate();
-    }).length;
+  // RESTORE SESSION
+  private loadSession() {
+    const data = localStorage.getItem('currentUser');
+
+    if (data) {
+      this.currentUserSubject.next(JSON.parse(data));
+    }
   }
+getTodaysLogins(): number {
+  const today = new Date();
+
+  return this.loginHistory.filter(record => {
+    const login = new Date(record.loginTime);
+
+    return (
+      login.getFullYear() === today.getFullYear() &&
+      login.getMonth() === today.getMonth() &&
+      login.getDate() === today.getDate()
+    );
+  }).length;
+}
+
 }

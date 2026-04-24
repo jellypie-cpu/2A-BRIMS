@@ -1,17 +1,17 @@
-
 <header class="login-header">
-    <div class="left-nav">
-        <span class="icon">👥</span>
-        <span class="BRIMS" (click)="refreshPage()">BRIMS</span>
-    </div> 
+  <div class="left-nav">
+    <span class="icon">👥</span>
+    <span class="BRIMS" (click)="refreshPage()">BRIMS</span>
+  </div>
 
-    <div class="right-nav">
-        <a routerLink="/about">About</a> 
-        <a routerLink="/Contacts">Contact</a>
-    </div>
-</header> 
+  <div class="right-nav">
+    <a routerLink="/about">About</a>
+    <a routerLink="/contacts">Contact</a>
+  </div>
+</header>
 
 <div class="login-container">
+
   <!-- LEFT SIDE -->
   <div class="left-content">
     <h2>BARANGGAY</h2>
@@ -20,30 +20,18 @@
     <h2>MANAGEMENT</h2>
     <h2>SYSTEM</h2>
   </div>
-  
+
+  <!-- RIGHT SIDE -->
   <div class="login-box">
     <h2>Login</h2>
 
-     <!-- Error message box -->
-    @if (message && message.includes('Invalid')) {
-      <div class="error-message">
-        {{ message }}
-      </div>
-    }
-
-     <!-- Success message box -->
-    @if (message && message.includes('successful')) {
-      <div class="success-message">
-        {{ message }}
-      </div>
-    }
-
     <form (ngSubmit)="login()">
+
       <input
-        type="text"
+        type="email"
         [(ngModel)]="email"
         name="email"
-        placeholder="Email"
+        placeholder="Enter your email"
         required
       />
 
@@ -51,13 +39,15 @@
         type="password"
         [(ngModel)]="password"
         name="password"
-        placeholder="Password"
+        placeholder="Enter your password"
         required
       />
 
- 
-      <button type="submit">Login</button>
-    </form>
+      <button type="submit">
+        Login
+      </button>
 
+    </form>
   </div>
+
 </div>
