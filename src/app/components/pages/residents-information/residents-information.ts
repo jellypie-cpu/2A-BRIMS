@@ -16,7 +16,7 @@ export class ResidentsInformation implements OnInit {
   //data for the residents list
 
   zones = [1,2,3,4,5,6,7,8,9,10,11,12];
-  selectedZone: number = 1;
+  selectedZone: number | null = null;
 
   allResidents: any[] = [];
   residents: any[] = [];
@@ -37,25 +37,29 @@ export class ResidentsInformation implements OnInit {
   }
 
 //filtering the residents list based on zone and search text
-  filterResidents() {
+filterResidents() {
 
-    let filtered = this.allResidents.filter(
-      r => Number(r.address?.zone) === Number(this.selectedZone)
+  let filtered = this.allResidents;
+
+  // ONLY FILTER IF NOT NULL
+  if (this.selectedZone !== null) {
+    filtered = filtered.filter(
+      r => Number(r.address?.zone) === this.selectedZone
     );
-
-    if (this.searchText.trim()) {
-      const lower = this.searchText.toLowerCase();
-      filtered = filtered.filter(r =>
-        r.fullname.toLowerCase().includes(lower)
-      );
-    }
-
-    this.residents = filtered;
   }
 
-  onSearchChange() {
-    this.filterResidents();
+  if (this.searchText.trim()) {
+    const lower = this.searchText.toLowerCase();
+    filtered = filtered.filter(r =>
+      r.fullname.toLowerCase().includes(lower)
+    );
   }
+
+  this.residents = filtered;
+}
+onSearchChange() {
+  this.filterResidents()
+}
 
  //add resident
 

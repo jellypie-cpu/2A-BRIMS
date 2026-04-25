@@ -71,5 +71,8 @@ getTodaysLogins(): number {
     );
   }).length;
 }
-
+getUserRole(): UserRole | '' {
+  const user = this.getCurrentUser();
+  return user ? user.role : '';
+}
 }

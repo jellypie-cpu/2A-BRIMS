@@ -64,10 +64,42 @@ export class SidebarComponent {
         { label: 'Settings', routerLink: '/dashboard/system-settings', icon: 'pi pi-cog' }
       ];
     } else {
-      this.menu = [
-        { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' }
-      ];
+  this.menu = [
+    {
+      label: 'Dashboard',
+      routerLink: '/dashboard',
+      icon: 'pi pi-home'
+    },
+    {
+      label: 'My Profile',
+      routerLink: '/dashboard/my-profile',
+      icon: 'pi pi-user'
+    },
+    {
+      label: 'Request Documents',
+      icon: 'pi pi-file',
+      subMenu: [
+        {
+          label: 'Barangay Clearance',
+          routerLink: '/dashboard/request/barangay-clearance'
+        },
+        {
+          label: 'Barangay Indigency',
+          routerLink: '/dashboard/request/barangay-indigency'
+        },
+        {
+          label: 'Business Permit',
+          routerLink: '/dashboard/request/business-permit'
+        }
+      ]
+    },
+    {
+      label: 'My Request History',
+      routerLink: '/dashboard/my-requests',
+      icon: 'pi pi-history'
     }
+  ];
+}
   }
 
   toggleSidebar() {

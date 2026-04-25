@@ -89,6 +89,12 @@ export class UserService {
         email: 'resident@brims.com',
         password: '1234',
         role: 'resident'
+      },
+      {
+        username: 'Elbert Lood',
+        email: 'luod@brims.com',
+        password: '1234',
+        role: 'resident'
       }
     ];
 

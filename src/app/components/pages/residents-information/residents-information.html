@@ -7,10 +7,11 @@
     <div class="zone-select">
       <label>Select Zone:</label>
       <select [(ngModel)]="selectedZone" (change)="filterResidents()">
-        <option *ngFor="let zone of zones" [value]="zone">
-          Zone {{ zone }}
-        </option>
-      </select>
+         <option [ngValue]="null">All Zones</option>
+  <option *ngFor="let zone of zones" [ngValue]="zone">
+   Zone {{ zone }}
+</option>
+</select>
     </div>
 
     <!-- SEARCH -->
@@ -30,7 +31,11 @@
 
   </div>
 
-  <h2>Zone {{ selectedZone }} Records</h2>
+  <h2>
+  {{ selectedZone === null
+      ? 'All Zone Records'
+      : 'Zone ' + selectedZone + ' Records' }}
+</h2>
 
   <!-- TABLE -->
   <div class="table-container">
