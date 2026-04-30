@@ -1,0 +1,35 @@
+<nav [class.collapsed]="isCollapsed" class="sidebar">
+
+
+  <!-- Toggle button -->
+  <button type="button" pButton icon="pi pi-bars" class="p-button-text toggle-btn" (click)="toggleSidebar()">
+  </button>
+
+  <!-- Menu -->
+  <ul>
+    <li *ngFor="let item of menu" class="menu-item" routerLinkActive="active">
+
+      <!-- If item has submenu -->
+      <div *ngIf="item.subMenu" class="has-submenu">
+        <span>
+          <i [class]="item.icon"></i>
+          <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
+        </span>
+
+        <ul class="submenu">
+          <li *ngFor="let sub of item.subMenu" routerLinkActive="active">
+            <a [routerLink]="sub.routerLink">{{ sub.label }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Normal menu item -->
+      <a *ngIf="!item.subMenu" [routerLink]="item.routerLink">
+        <i [class]="item.icon"></i>
+        <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
+      </a>
+
+    </li>
+  </ul>
+
+</nav>

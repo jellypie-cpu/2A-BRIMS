@@ -1,0 +1,28 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  width: 700px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}

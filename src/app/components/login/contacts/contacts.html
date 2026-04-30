@@ -1,0 +1,93 @@
+<header class="contact-header">
+  <div class="left-nav">
+    <span class="icon" aria-hidden="true">👥</span>
+    <span class="brand">BRIMS</span>
+  </div>
+
+  <button class="back-btn" type="button" (click)="goBack()" aria-label="Go back">
+    ← Back
+  </button>
+</header>
+
+<main class="contact-container">
+
+  <section class="contact-card" aria-labelledby="contact-title">
+
+    <header class="contact-title">
+      <h2 id="contact-title">Contact Us</h2>
+      <p>We’d love to hear from you. Send us a message anytime.</p>
+    </header>
+
+    <!-- Contact Info -->
+    <div class="contact-details" role="contentinfo">
+      <div class="info-item">
+        <span class="icon">📍</span>
+        <span>Barangay Hall, City Center</span>
+      </div>
+
+      <div class="info-item">
+        <span class="icon">📞</span>
+        <span>+63 900 123 4567</span>
+      </div>
+
+      <div class="info-item">
+        <span class="icon">📧</span>
+        <span>support@brims.com</span>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form class="contact-form" (ngSubmit)="sendMessage()" #form="ngForm">
+
+      <div class="input-group">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          placeholder="Enter your full name"
+          required
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="message">Message</label>
+        <textarea
+          id="message"
+          [(ngModel)]="message"
+          name="message"
+          placeholder="Write your message here..."
+          rows="5"
+          required
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="form.invalid"
+      >
+        Send Message
+      </button>
+
+      <p class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </p>
+
+    </form>
+
+  </section>
+</main>

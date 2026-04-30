@@ -1,0 +1,72 @@
+<div class="modal" (click)="closePrint()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <!-- PRINT AREA -->
+    <div id="printArea" class="print-container">
+
+      <!-- HEADER -->
+      <div class="header">
+        <h2>Republic of the Philippines</h2>
+        <h3>Province of Misamis Oriental</h3>
+        <h3>Municipality of Villanueva</h3>
+        <h2 class="barangay-name">BARANGAY SAN MARTIN</h2>
+
+        <h1 class="title">BARANGAY INDIGENCY</h1>
+      </div>
+
+      <hr>
+
+      <!-- BODY -->
+      <div class="body">
+
+        <p class="cert-no">
+          <strong>Certificate No:</strong> {{ certificateNo }}
+        </p>
+
+        <p>TO WHOM IT MAY CONCERN:</p>
+
+        <p>
+          This is to certify that <strong>{{ selectedResident?.fullname }}</strong>,
+          of legal age, Filipino, and a bonafide resident of
+          Zone {{ selectedResident?.address?.zone }},
+          {{ selectedResident?.address?.street }},
+          {{ selectedResident?.address?.barangay }},
+          is known to be an indigent resident of this barangay.
+        </p>
+
+        <p>
+          This certification is issued upon request for whatever legal purpose it may serve.
+        </p>
+
+        <p>
+          Issued this <strong>{{ today | date:'longDate' }}</strong>.
+        </p>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+
+        <div class="signature">
+          <p>__________________________</p>
+          <p><strong>Barangay Captain</strong></p>
+        </div>
+
+        <!-- QR / CODE -->
+        <div class="qr">
+          <p>Verify Code:</p>
+          <strong>{{ certificateNo }}</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+      <button (click)="printIndigency()">🖨 Print</button>
+      <button (click)="closePrint()">Close</button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="indigency-container">
+
+  <!-- HEADER -->
+  <div class="header-section">
+
+    <!-- ZONE FILTER -->
+    <div class="zone-select">
+      <label>Select Zone:</label>
+      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+        <option value="">All Zones</option>
+        <option *ngFor="let zone of zones" [value]="zone">
+          {{ zone }}
+        </option>
+      </select>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-resident">
+      <input 
+        type="text" 
+        placeholder="Search resident by name..." 
+        [(ngModel)]="searchText" 
+        (input)="filterResidents()"
+      />
+    </div>
+
+  </div>
+
+  <!-- RESIDENT LIST -->
+  <div class="resident-list">
+
+    <div class="resident-row" *ngFor="let resident of filteredResidents">
+
+      <!-- NAME -->
+      <span class="resident-name">
+        {{ resident.fullname }}
+      </span>
+
+      <!-- ADDRESS -->
+      <span class="resident-zone">
+        Zone {{ resident.address?.zone }}
+      </span>
+
+      <!-- BUTTON -->
+      <button 
+        pButton 
+        type="button" 
+        label="Generate Indigency"
+        class="p-button-success"
+        (click)="openIndigency(resident)">
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ✅ MODAL CONNECTION -->
+<app-barangay-indigency-form
+  *ngIf="showModal"
+  [selectedResident]="selectedResident"
+  (close)="closeModal()">
+</app-barangay-indigency-form>

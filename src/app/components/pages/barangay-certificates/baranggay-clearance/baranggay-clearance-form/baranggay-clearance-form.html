@@ -1,0 +1,79 @@
+<div class="modal" *ngIf="selectedResident">
+
+  <div class="modal-content">
+
+    <!-- ====================== -->
+    <!-- PRINT AREA (OFFICIAL DOC) -->
+    <!-- ====================== -->
+    <div id="printArea" class="print-container">
+
+      <!-- HEADER -->
+      <div class="header">
+        <h2>Republic of the Philippines</h2>
+        <h3>Province of Misamis Oriental</h3>
+        <h3>Barangay Clearance Certificate</h3>
+        <p>Office of the Barangay Captain</p>
+      </div>
+
+      <hr />
+
+      <!-- BODY -->
+      <div class="body">
+
+        <p>
+          <strong>Full Name:</strong>
+          {{ selectedResident.fullname }}
+        </p>
+
+        <p>
+          <strong>Address:</strong>
+          Zone {{ selectedResident.address?.zone }},
+          {{ selectedResident.address?.street }},
+          {{ selectedResident.address?.barangay }}
+        </p>
+
+        <p>
+          <strong>Date Issued:</strong>
+          {{ today | date:'fullDate' }}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+          <span style="font-weight:bold;">CLEARED</span>
+        </p>
+
+        <br />
+
+        <p>
+          This is to certify that the above-named person is a bonafide resident
+          of this barangay and has no derogatory record on file.
+        </p>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <br><br>
+        <p>__________________________</p>
+        <p><strong>Barangay Captain</strong></p>
+      </div>
+
+    </div>
+
+    <!-- ====================== -->
+    <!-- ACTION BUTTONS -->
+    <!-- ====================== -->
+    <div class="buttons">
+
+      <button (click)="printClearance()">
+        🖨 Print Clearance
+      </button>
+
+      <button (click)="closePrint()">
+        Close
+      </button>
+
+    </div>
+
+  </div>
+</div>

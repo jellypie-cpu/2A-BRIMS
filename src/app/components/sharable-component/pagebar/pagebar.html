@@ -1,0 +1,11 @@
+<div class="pagebar">
+  <span class="breadcrumb">
+    <a routerLink="/dashboard">Home</a>
+    <span *ngIf="pageSegments.length"> > </span>
+    <ng-container *ngFor="let segment of pageSegments; let last = last">
+      <a *ngIf="!last" [routerLink]="getSegmentLink(segment)">{{ formatSegment(segment) }}</a>
+      <span *ngIf="last">{{ formatSegment(segment) }}</span>
+      <span *ngIf="!last"> > </span>
+    </ng-container>
+  </span>
+</div>

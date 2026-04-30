@@ -1,0 +1,125 @@
+.clearance-container {
+  padding: 25px;
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* HEADER */
+.gov-header {
+  background: #0d47a1;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.gov-header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.gov-header p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+/* GRID */
+.resident-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 15px;
+}
+
+/* CARD */
+.resident-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+.resident-card:hover {
+  transform: translateY(-2px);
+}
+
+/* PHOTO */
+.photo img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #1976d2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* DETAILS */
+.details {
+  flex: 1;
+}
+
+.details h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.meta {
+  font-size: 12px;
+  color: #555;
+  margin-top: 3px;
+}
+
+/* BADGE */
+.badge {
+  background: #1976d2;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+/* BUTTON */
+.action button {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.action button:hover {
+  background: #1b5e20;
+}

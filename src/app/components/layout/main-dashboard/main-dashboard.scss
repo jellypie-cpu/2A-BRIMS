@@ -1,0 +1,26 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh; /* full viewport height */
+}
+
+/* Sidebar default (expanded) */
+app-sidebar {
+  width: 250px;       /* expanded width */
+  flex-shrink: 0;     /* prevents shrinking */
+  transition: width 0.3s ease;
+}
+
+/* Sidebar collapsed */
+app-sidebar.collapsed {
+  width: 60px;        /* slim strip with icons */
+  overflow: hidden;   /* hide labels */
+}
+
+/* Main content always fills remaining space */
+.main-content {
+  flex: 1;            /* fills all remaining horizontal space */
+  padding: 30px;
+  background-color: #fff;
+  min-width: 0;       /* prevents flex overflow issues */
+  overflow-y: auto;   /* scroll if content is taller than viewport */
+}

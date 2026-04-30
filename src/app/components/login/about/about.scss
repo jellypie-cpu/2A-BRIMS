@@ -1,0 +1,57 @@
+.about-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #1f3b57;
+  color: white;
+}
+
+.left-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.icon {
+  font-size: 20px;
+}
+
+.right-nav .back-btn {
+  background-color: #ff4d4d;
+  border: none;
+  padding: 8px 15px;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.right-nav .back-btn:hover {
+  background-color: #e60000;
+}
+
+.about-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+.about-card {
+  background: white;
+  padding: 30px;
+  width: 70%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.about-card h1 {
+  color: #1f3b57;
+}
+
+.about-card ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}

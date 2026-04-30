@@ -1,0 +1,100 @@
+<div class="residents-container">
+
+  <!-- HEADER -->
+  <div class="header-section">
+
+    <!-- ZONE SELECT -->
+    <div class="zone-select">
+      <label>Select Zone:</label>
+      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+         <option [ngValue]="null">All Zones</option>
+  <option *ngFor="let zone of zones" [ngValue]="zone">
+   Zone {{ zone }}
+</option>
+</select>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-resident">
+      <input
+        type="text"
+        placeholder="Search resident by name..."
+        [(ngModel)]="searchText"
+        (input)="onSearchChange()"
+      />
+    </div>
+
+    <!-- ADD BUTTON -->
+    <button class="add-btn" (click)="addResident()">
+      + New Resident
+    </button>
+
+  </div>
+
+  <h2>
+  {{ selectedZone === null
+      ? 'All Zone Records'
+      : 'Zone ' + selectedZone + ' Records' }}
+</h2>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Resident ID</th>
+          <th>Full Name</th>
+          <th>Birthdate</th>
+          <th>Civil Status</th>
+          <th>Gender</th>
+          <th>Voter</th>
+          <th>Zone</th>
+          <th>Street</th>
+          <th>Barangay</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let resident of residents">
+          <td>{{ resident.id }}</td>
+          <td>{{ resident.fullname }}</td>
+          <td>{{ resident.birthdate }}</td>
+          <td>{{ resident.civilStatus }}</td>
+
+          <td>{{ resident.gender }}</td>
+
+    <td>
+      <span [class.voter]="resident.isVoter" [class.non-voter]="!resident.isVoter">
+        {{ resident.isVoter ? 'Registered' : 'Not Registered' }}
+      </span>
+    </td>
+
+          <td>{{ resident.address?.zone }}</td>
+          <td>{{ resident.address?.street }}</td>
+          <td>{{ resident.address?.barangay }}</td>
+
+          <td class="actions">
+            <button (click)="openResident(resident)">
+              View / Update
+            </button>
+
+            <button (click)="deleteResident(resident)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<app-resident-form
+  *ngIf="showForm"
+  [residentData]="selectedResident"
+  [isEditMode]="isEditMode"
+  (close)="closeForm()"
+  (save)="saveResident($event)">
+</app-resident-form>
