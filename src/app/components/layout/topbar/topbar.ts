@@ -1,8 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AuthService, User } from '../../../core/services/auth';
+import { AuthService} from '../../../core/services/auth';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AppUser } from '../../../core/models/user.model';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -20,7 +21,7 @@ export class TopbarComponent implements OnDestroy {
 
   constructor(private authService: AuthService, private router: Router) {
     // Subscribe to current user changes
-    this.subscription = this.authService.currentUser$.subscribe((user: User | null) => {
+    this.subscription = this.authService.currentUser$.subscribe((user: AppUser | null) => {
       if (user) {
         this.username = user.username;
         this.userRole = user.role;
@@ -36,9 +37,9 @@ export class TopbarComponent implements OnDestroy {
   }
 
   goToProfile() {
-    console.log('Go to profile page');
-    this.showDropdown = false;
-  }
+  this.showDropdown = false;
+  this.router.navigate(['/dashboard/profile']);
+}
 
   logout() {
   // Hide dropdown immediately

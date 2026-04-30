@@ -1,1 +1,106 @@
-<p>dashboard-home works!</p>
+<!-- ========================= -->
+<!-- STAFF / ADMIN DASHBOARD -->
+<!-- ========================= -->
+<div *ngIf="role === 'admin' || role === 'staff'">
+
+  <!-- Stats -->
+  <div class="stats-container">
+    <div class="stat-card clickable" [routerLink]="['/dashboard/residents-information']">
+      <h3>Total Population</h3>
+      <p>{{ totalPopulation }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Total Voters</h3>
+      <p>{{ totalVoters }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Total Males</h3>
+      <p>{{ totalMales }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Total Females</h3>
+      <p>{{ totalFemales }}</p>
+    </div>
+  </div>
+
+  <!-- Dashboard Tiles -->
+  <div class="dashboard-container">
+
+    <div class="dashboard-tile notification">
+      <div class="icon">🔔</div>
+      <h3>Notifications</h3>
+      <p>View system alerts and updates</p>
+    </div>
+
+    <div class="dashboard-tile messages">
+      <div class="icon">💬</div>
+      <h3>Request Messages</h3>
+      <p>Check resident messages</p>
+    </div>
+
+    <div class="dashboard-tile counseling clickable"
+         [routerLink]="['/dashboard/blotter-records']">
+      <div class="icon">🧑‍⚕️</div>
+      <h3>Counseling</h3>
+      <p>Manage counseling requests</p>
+    </div>
+
+    <div class="dashboard-tile documents"
+         [routerLink]="['/dashboard/certificates-request']">
+      <div class="icon">📄</div>
+      <h3>Document Request</h3>
+      <p>View requested documents</p>
+    </div>
+
+    <div class="dashboard-tile residency">
+      <div class="icon">🏠</div>
+      <h3>Residency Request</h3>
+      <p>Review residency applications</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ========================= -->
+<!-- RESIDENT DASHBOARD -->
+<!-- ========================= -->
+<div *ngIf="role === 'resident'" class="resident-dashboard">
+
+  <h2>Welcome to your Dashboard</h2>
+
+  <div class="dashboard-container">
+
+    <div class="dashboard-tile clickable"
+         [routerLink]="['/dashboard/my-profile']">
+      <div class="icon">👤</div>
+      <h3>My Profile</h3>
+      <p>View your personal information</p>
+    </div>
+
+    <div class="dashboard-tile clickable"
+         [routerLink]="['/dashboard/request/barangay-clearance']">
+      <div class="icon">📄</div>
+      <h3>Request Documents</h3>
+      <p>Barangay Clearance, Indigency, Permit</p>
+    </div>
+
+    <div class="dashboard-tile clickable"
+         [routerLink]="['/dashboard/my-requests']">
+      <div class="icon">📌</div>
+      <h3>My Request History</h3>
+      <p>Track your request status</p>
+    </div>
+
+    <div class="dashboard-tile">
+      <div class="icon">🔳</div>
+      <h3>My QR Code</h3>
+      <p>Your unique resident ID</p>
+    </div>
+
+  </div>
+
+</div>

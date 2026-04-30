@@ -1,1 +1,47 @@
-<p>blotter-records works!</p>
+<div class="blotter-container">
+
+  <!-- Left summary boxes -->
+  <div class="summary-boxes">
+    <p-card header="Active Cases" class="summary-card">
+      <h2>{{ getCount('Active') }}</h2>
+    </p-card>
+    <p-card header="Settled Cases" class="summary-card">
+      <h2>{{ getCount('Settled') }}</h2>
+    </p-card>
+    <p-card header="Scheduled Cases" class="summary-card">
+      <h2>{{ getCount('Scheduled') }}</h2>
+    </p-card>
+  </div>
+
+  <!-- Right case list -->
+  <div class="case-list">
+    <div class="header">
+      <button pButton type="button" label="Add Case" icon="pi pi-plus" (click)="addCase()" class="p-button-success"></button>
+
+      <input type="text" placeholder="Search by resident name..." [(ngModel)]="searchText" (input)="filterCases()" />
+      <select [(ngModel)]="selectedStatus" (change)="filterCases()">
+        <option value="">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Settled">Settled</option>
+        <option value="Scheduled">Scheduled</option>
+      </select>
+    </div>
+
+    <div class="case-row" *ngFor="let blotter of filteredCases">
+      <span class="resident-name">{{ blotter.residentName }}</span>
+      <span class="complaint">{{ blotter.complaint }}</span>
+      <span class="status">{{ blotter.status }}</span>
+      <span class="description">{{ blotter.description }}</span>
+      <span class="date">{{ blotter.date }}</span>
+      <button pButton type="button" label="View" class="p-button-info" (click)="viewCase(blotter)"></button>
+      <button pButton type="button" label="Delete" class="p-button-danger" (click)="deleteCase(blotter)"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ BLOTTER MODAL -->
+<app-blotter-form
+  *ngIf="showForm"
+  (close)="closeForm()"
+  (save)="saveCase($event)">
+</app-blotter-form>
