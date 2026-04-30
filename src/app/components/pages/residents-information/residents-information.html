@@ -95,6 +95,7 @@
   *ngIf="showForm"
   [residentData]="selectedResident"
   [isEditMode]="isEditMode"
+   [allResidents]="allResidents"
   (close)="closeForm()"
   (save)="saveResident($event)">
 </app-resident-form>

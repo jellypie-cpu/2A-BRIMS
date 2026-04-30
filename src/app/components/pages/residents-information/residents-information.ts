@@ -60,6 +60,14 @@ filterResidents() {
 onSearchChange() {
   this.filterResidents()
 }
+//chck duplicate
+ checkDuplicateLive(resident: any): boolean {
+    return this.allResidents.some(r =>
+      r.id !== resident.id &&
+      r.fullname?.trim().toLowerCase() === resident.fullname?.trim().toLowerCase() &&
+      r.birthdate === resident.birthdate
+    );
+  }   
 
  //add resident
 
@@ -86,26 +94,36 @@ onSearchChange() {
   // SAVE (ADD + UPDATE)
   
   saveResident(resident: any) {
-    const all = this.residentService.getAll();
-    const index = all.findIndex(r => r.id === resident.id);
+  const all = this.residentService.getAll();
 
-    if (index !== -1) {
-      
-      // UPDATE
-      all[index] = resident;
-    } else {
+  const isDuplicate = all.some(r =>
+    r.id !== resident.id && // ignore self when updating
+    r.fullname.trim().toLowerCase() === resident.fullname.trim().toLowerCase() &&
+    r.birthdate === resident.birthdate &&
+    r.address?.zone === resident.address?.zone &&
+    r.address?.street?.toLowerCase() === resident.address?.street?.toLowerCase()
+  );
 
-      // ADD NEW
-          resident.id = 'RES-' + Date.now();
-      all.push(resident);
-    }
-
-    this.residentService.saveAll(all);
-
-    this.allResidents = all;
-    this.filterResidents();
-    this.closeForm();
+  if (isDuplicate) {
+    alert('This resident already exists in the system.');
+    return;
   }
+
+  const index = all.findIndex(r => r.id === resident.id);
+
+  if (index !== -1) {
+    all[index] = resident;
+  } else {
+    resident.id = 'RES-' + crypto.randomUUID();
+    all.push(resident);
+  }
+
+  this.residentService.saveAll(all);
+
+  this.allResidents = all;
+  this.filterResidents();
+  this.closeForm();
+}
   //delete resident
   deleteResident(resident: any) {
     if (confirm('Delete ' + resident.fullname + '?')) {

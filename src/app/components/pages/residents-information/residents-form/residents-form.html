@@ -5,6 +5,11 @@
       {{ isEditMode ? (residentData ? 'Edit Resident' : 'Add Resident') : 'Resident Details' }}
     </h2>
 
+<!-- DUPLICATE WARNING -->
+<div *ngIf="checkDuplicateLive()" class="warning">
+  ⚠ This resident already exists in the system
+</div>
+
     <form (ngSubmit)="onSubmit()" #residentForm="ngForm">
 
       <!-- FULL NAME -->

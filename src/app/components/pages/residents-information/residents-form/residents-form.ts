@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-resident-form',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, QRCodeModule],
   templateUrl: './residents-form.html',
   styleUrls: ['./residents-form.scss'],
 })
@@ -13,6 +14,7 @@ export class ResidentForm implements OnChanges {
 
   @Input() residentData: any = null;
   @Input() isEditMode: boolean = false;
+  @Input() allResidents: any[] = [];
 
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<any>();
@@ -21,9 +23,8 @@ export class ResidentForm implements OnChanges {
 
   resident: any = this.getEmptyResident();
 
-  // =========================
   // LOAD DATA (ADD / VIEW / EDIT)
-  // =========================
+ 
   ngOnChanges() {
     if (this.residentData) {
       this.resident = structuredClone(this.residentData);
@@ -32,9 +33,8 @@ export class ResidentForm implements OnChanges {
     }
   }
 
-  // =========================
   // EMPTY TEMPLATE
-  // =========================
+ 
   getEmptyResident() {
     return {
       fullname: '',
@@ -51,30 +51,36 @@ export class ResidentForm implements OnChanges {
     };
   }
 
-  // =========================
+
   // ENABLE EDIT (from VIEW mode)
-  // =========================
   enableEdit() {
     this.isEditMode = true;
   }
 
-  // =========================
+    // LIVE DUPLICATE CHECK
+     checkDuplicateLive(): boolean {
+    return this.allResidents.some(r =>
+      r.id !== this.resident.id &&
+      r.fullname?.trim().toLowerCase() === this.resident.fullname?.trim().toLowerCase() &&
+      r.birthdate === this.resident.birthdate
+    );
+  }
+
   // SAVE
-  // =========================
+
   onSubmit() {
     this.save.emit(this.resident);
   }
 
-  // =========================
+
   // CLOSE
-  // =========================
   onClose() {
     this.close.emit();
   }
 
-  // =========================
+
   // PHOTO UPLOAD
-  // =========================
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
@@ -86,9 +92,8 @@ export class ResidentForm implements OnChanges {
     reader.readAsDataURL(file);
   }
 
-  // =========================
   // CAMERA
-  // =========================
+
   openCamera() {
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
