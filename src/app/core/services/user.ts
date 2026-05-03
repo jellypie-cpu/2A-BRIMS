@@ -11,41 +11,38 @@ export class UserService {
     this.loadFromStorage();
 
     // Auto create default users if empty
-    if (this.users.length === 0) {
+    if (!localStorage.getItem('users')) {
       this.seedDefaultUsers();
+      this.saveToStorage();
     }
   }
 
-  // ======================
-  // GET ALL USERS
-  // ======================
+  //get all users
   getUsers(): AppUser[] {
     return this.users;
   }
-
-  // ======================
-  // FIND USER BY EMAIL
-  // ======================
+//find users
   findByEmail(email: string): AppUser | undefined {
-    return this.users.find(
-      user => user.email.toLowerCase() === email.toLowerCase()
-    );
+  this.loadFromStorage();
+
+  const cleanEmail = email?.trim().toLowerCase();
+
+  return this.users.find((user) => {
+    const userEmail = user.email?.trim().toLowerCase();
+    return userEmail === cleanEmail;
+  });
   }
 
-  // ======================
-  // ADD USER
-  // ======================
+  //add users
   addUser(user: AppUser) {
-    user.id = 'USR-' + Date.now();
+    user.id = 'USR-' + Date.now() + '-' + Math.random().toString(36).substring(2);
     user.createdAt = new Date();
 
     this.users.push(user);
     this.saveToStorage();
   }
 
-  // ======================
-  // UPDATE USER
-  // ======================
+  //update users
   updateUser(id: string, updatedData: Partial<AppUser>) {
     const index = this.users.findIndex(user => user.id === id);
 
@@ -59,57 +56,94 @@ export class UserService {
     }
   }
 
-  // ======================
-  // DELETE USER
-  // ======================
+ //delete users
   deleteUser(id: string) {
     this.users = this.users.filter(user => user.id !== id);
     this.saveToStorage();
   }
 
-  // ======================
-  // DEFAULT USERS
-  // ======================
+  //users
   private seedDefaultUsers() {
     const defaultUsers: AppUser[] = [
       {
-        username: 'Jelly Quen',
+        username: 'Jelly Quen Maniscan',
         email: 'maniscan@brims.com',
         password: '1234',
-        role: 'admin'
+        role: 'admin',
+        createdAt: new Date()
       },
       {
-        username: 'Staff Member',
-        email: 'staff@brims.com',
+        username: 'Elbert C.Lood',
+        email: 'lood@brims.com',
         password: '1234',
-        role: 'staff'
+        role: 'staff',
+        createdAt: new Date()
       },
       {
-        username: 'Resident',
-        email: 'resident@brims.com',
+        username: 'Nina P. Daasin',
+        email: 'daasin@brims.com',
         password: '1234',
-        role: 'resident'
+        role: 'staff',
+        createdAt: new Date()
       },
       {
-        username: 'Elbert Lood',
-        email: 'luod@brims.com',
+        username: 'Angelica Ricaforte',
+        email: 'ricaforte@brims.com',
         password: '1234',
-        role: 'resident'
+        role: 'staff',
+        createdAt: new Date()
+      },
+      {
+        username: 'Jillane Kate S.Ejem',
+        email: 'ejem@brims.com',
+        password: '1234',
+        role: 'resident',
+        createdAt: new Date()
+      },
+      {
+        username: 'HazelJoy Unabia',
+        email: 'unabia@brims.com',
+        password: '1234',
+        role: 'resident',
+        createdAt: new Date()
+      },
+      {
+        username: 'Angel Piollo',
+        email: 'piollo@brims.com',
+        password: '1234',
+        role: 'resident',
+        createdAt: new Date()
+      },
+      {
+        username: 'Juliet Ondag',
+        email: 'ondag@brims.com',
+        password: '1234',
+        role: 'resident',
+        createdAt: new Date()
       }
     ];
 
     defaultUsers.forEach(user => this.addUser(user));
   }
 
-  // ======================
-  // LOCAL STORAGE
-  // ======================
+  //save to local storage
   private saveToStorage() {
     localStorage.setItem('users', JSON.stringify(this.users));
   }
 
   private loadFromStorage() {
-    const data = localStorage.getItem('users');
-    this.users = data ? JSON.parse(data) : [];
+  const data = localStorage.getItem('users');
+
+  if (!data) {
+    this.users = [];
+    return;
   }
+
+  try {
+    this.users = JSON.parse(data);
+  } catch (e) {
+    console.error('Error parsing users from storage', e);
+    this.users = [];
+  }
+}
 }

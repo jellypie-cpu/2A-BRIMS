@@ -24,9 +24,16 @@ export class Login {
   ) {}
 
   login() {
-    const user = this.userService.findByEmail(this.email);
+     const email = this.email.trim();// trim to remove spaces
+    const password = this.password.trim(); // also this trim too
+    const user = this.userService.findByEmail(email);
 
-    if (user && user.password === this.password) {
+    console.log('ALL USERS:', this.userService.getUsers());
+    console.log('Trying login:', email);
+    console.log('Users:', this.userService.getUsers());
+    console.log('Found:', user);
+
+    if (user && user.password === password) {
       this.authService.login(user);
 
       Swal.fire({

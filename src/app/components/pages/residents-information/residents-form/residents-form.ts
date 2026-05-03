@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { QRCodeModule } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-resident-form',
   standalone: true,
-  imports: [FormsModule, CommonModule, QRCodeModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './residents-form.html',
   styleUrls: ['./residents-form.scss'],
 })
