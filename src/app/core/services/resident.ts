@@ -17,11 +17,31 @@ export class ResidentService {
     localStorage.setItem(this.key, JSON.stringify(data));
   }
 
-  // ADD RESIDENT
+  // ADD RESIDENT + CREATE USER
   add(resident: any): void {
     const data = this.getAll();
+
+    // create resident id
+    resident.id = 'RES-' + Date.now();
+    
+
     data.push(resident);
     this.saveAll(data);
+
+    // create linked user
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    const newUser = {
+      id: 'USR-' + Date.now(),
+      username: resident.fullname,
+      email: resident.fullname.toLowerCase().replace(/\s/g, '') + '@brgyvillanueva.com',
+      password: '1234',
+      role: 'resident',
+      residentId: resident.id
+    };
+
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
   }
 
   // DELETE RESIDENT

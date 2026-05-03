@@ -7,4 +7,6 @@ export interface AppUser {
   password: string;
   role: UserRole;
   createdAt?: Date;
+
+  residentId?: string; // For residents, link to their resident profile
 }
