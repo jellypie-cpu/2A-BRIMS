@@ -19,13 +19,14 @@ export class UserService {
 
   //get all users
   getUsers(): AppUser[] {
+    this.loadFromStorage(); // Ensure we have the latest data from storage
     return this.users;
   }
 //find users
   findByEmail(email: string): AppUser | undefined {
   this.loadFromStorage();
 
-  const cleanEmail = email?.trim().toLowerCase();
+  const cleanEmail = email?.trim().toLowerCase();//trim to remove spaces and also to lower case for case-insensitive comparison
 
   return this.users.find((user) => {
     const userEmail = user.email?.trim().toLowerCase();
@@ -35,7 +36,8 @@ export class UserService {
 
   //add users
   addUser(user: AppUser) {
-    user.id = 'USR-' + Date.now() + '-' + Math.random().toString(36).substring(2);
+    this.loadFromStorage();
+    user.id = 'USR-' + Date.now() + '-' + Math.random().toString(36).substring(2);// generate unique id
     user.createdAt = new Date();
 
     this.users.push(user);

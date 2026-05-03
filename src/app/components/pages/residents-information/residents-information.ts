@@ -29,11 +29,15 @@ export class ResidentsInformation implements OnInit {
   isEditMode: boolean = false;
 
   constructor(private residentService: ResidentService) {}
- 
+  
+ loadResidents() {
+  this.residents = this.residentService.getAll();
+}
 // INIT
   ngOnInit() {
     this.allResidents = this.residentService.getAll();
     this.filterResidents();
+    this.loadResidents();
   }
 
 //filtering the residents list based on zone and search text

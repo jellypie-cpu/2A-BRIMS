@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { UserService } from './user';
 
 @Injectable({
   providedIn: 'root'
+  
 })
 export class ResidentService {
 
   private key = 'residents';
+   constructor(private userService: UserService) {}
 
   // GET ALL RESIDENTS
   getAll(): any[] {
@@ -23,26 +26,28 @@ export class ResidentService {
 
     // create resident id
     resident.id = 'RES-' + Date.now();
-    
+
+    resident = {
+      ...resident,
+      address: {
+        zone: resident.zone,
+        street: resident.street,
+        barangay: resident.barangay
+      }
+    };
 
     data.push(resident);
     this.saveAll(data);
 
-    // create linked user
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-    const newUser = {
-      id: 'USR-' + Date.now(),
+    this.userService.addUser({
       username: resident.fullname,
       email: resident.fullname.toLowerCase().replace(/\s/g, '') + '@brgyvillanueva.com',
       password: '1234',
       role: 'resident',
       residentId: resident.id
-    };
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
+    });
   }
+
 
   // DELETE RESIDENT
   delete(id: string): void {
