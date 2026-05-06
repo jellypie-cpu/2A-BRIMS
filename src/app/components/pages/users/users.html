@@ -1,27 +1,36 @@
 <div class="manage-users-container">
   <h2>Manage Users</h2>
 
-  <!-- Summary -->
-  <div class="summary">
-    <strong>Total logins today:</strong> {{ totalLoginsToday }}
-  </div>
-
-  <!-- Login History Table -->
-  <p-table [value]="loginHistory" [paginator]="true" [rows]="10">
+  <p-table [value]="users" [paginator]="true" [rows]="10">
+    
     <ng-template pTemplate="header">
       <tr>
         <th>Username</th>
+        <th>Email</th>
         <th>Role</th>
-        <th>Login Time</th>
+        <th>Resident ID</th>
+        <th>Action</th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-record>
+    <ng-template pTemplate="body" let-user>
       <tr>
-        <td>{{ record.username }}</td>
-        <td>{{ record.role }}</td>
-        <td>{{ record.loginTime | date:'short' }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+  {{ user.role === 'resident' ? user.residentId : '—' }}
+</td>
+        <td>
+          <button pButton 
+                  label="Delete" 
+                  icon="pi pi-trash"
+                  class="p-button-danger"
+                  (click)="deleteUser(user.id!)">
+          </button>
+        </td>
       </tr>
     </ng-template>
+
   </p-table>
 </div>

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, LoginRecord } from '../../../core/services/auth';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { UserService } from '../../../core/services/user';
+import { AppUser } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-manage-users',
@@ -12,14 +13,21 @@ import { ButtonModule } from 'primeng/button';
   styleUrls: ['./users.scss']
 })
 export class Users implements OnInit {
-  loginHistory: LoginRecord[] = [];
-  totalLoginsToday: number = 0;
 
-  constructor(private authService: AuthService) {}
+  users: AppUser[] = [];
+
+  constructor(private userService: UserService) {}
 
   ngOnInit() {
-    // Load login history and total logins today
-    this.loginHistory = this.authService.getLoginHistory();
-    this.totalLoginsToday = this.authService.getTodaysLogins();
+    this.loadUsers();
+  }
+
+  loadUsers() {
+    this.users = this.userService.getUsers();
+  }
+
+  deleteUser(id: string) {
+    this.userService.deleteUser(id);
+    this.loadUsers(); // refresh UI
   }
 }

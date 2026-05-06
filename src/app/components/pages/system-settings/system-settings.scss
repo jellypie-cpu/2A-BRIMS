@@ -1,0 +1,83 @@
+/* PAGE WRAPPER */
+:host {
+  display: block;
+  padding: 20px;
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+/* TITLE */
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1f2937;
+  letter-spacing: 0.3px;
+}
+
+/* LAYOUT CONTAINER (SIDEBAR STYLE) */
+.settings-layout {
+  display: flex;
+  gap: 20px;
+}
+
+/* LEFT MENU (LIKE REAL SETTINGS SIDEBAR) */
+.settings-menu {
+  width: 220px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+/* MENU ITEMS */
+.settings-menu a {
+  display: block;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  color: #374151;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+/* HOVER */
+.settings-menu a:hover {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+/* ACTIVE STATE */
+.settings-menu a.active {
+  background: #e0ecff;
+  color: #1d4ed8;
+  border-left: 3px solid #1d4ed8;
+}
+
+/* RIGHT CONTENT AREA */
+.settings-content {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* makes long archive lists feel contained */
+  overflow-x: auto;
+}
+
+/* OPTIONAL: SCROLL LOOK IMPROVEMENT */
+.settings-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}

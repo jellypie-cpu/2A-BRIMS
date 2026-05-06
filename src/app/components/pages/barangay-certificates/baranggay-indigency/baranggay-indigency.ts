@@ -41,7 +41,7 @@ export class BaranggayIndigency implements OnInit {
   // INIT
   // ======================
   ngOnInit() {
-    this.residents = this.residentService.getAll();
+    this.residents = this.residentService.getAll().filter(r => !r.isArchived);
     this.filterResidents();
 
     // auto-create zones from residents

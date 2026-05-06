@@ -65,16 +65,14 @@
 </div>
 
 
-<!-- ========================= -->
-<!-- RESIDENT DASHBOARD -->
-<!-- ========================= -->
+//resident dashboard
 <div *ngIf="role === 'resident'" class="resident-dashboard">
 
   <h2>Welcome to your Dashboard</h2>
 
   <div class="dashboard-container">
 
-    <div class="dashboard-tile clickable"
+    <div class="dashboard-tile clickable" 
          [routerLink]="['/dashboard/my-profile']">
       <div class="icon">👤</div>
       <h3>My Profile</h3>

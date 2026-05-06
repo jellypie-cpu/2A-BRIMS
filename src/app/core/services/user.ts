@@ -10,8 +10,11 @@ export class UserService {
   constructor() {
     this.loadFromStorage();
 
+     const stored = localStorage.getItem('users');
+
     // Auto create default users if empty
-    if (!localStorage.getItem('users')) {
+     if (!stored || JSON.parse(stored).length === 0) {
+       this.users = [];
       this.seedDefaultUsers();
       this.saveToStorage();
     }
@@ -132,7 +135,7 @@ export class UserService {
   private saveToStorage() {
     localStorage.setItem('users', JSON.stringify(this.users));
   }
-
+  
   private loadFromStorage() {
   const data = localStorage.getItem('users');
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserService } from './user';
+import { AppUser } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,31 +23,40 @@ export class ResidentService {
 
   // ADD RESIDENT + CREATE USER
   add(resident: any): void {
-    const data = this.getAll();
+  const data = this.getAll();
 
-    // create resident id
-    resident.id = 'RES-' + Date.now();
+  resident.id = 'RES-' + Date.now();
 
-    resident = {
-      ...resident,
-      address: {
-        zone: resident.zone,
-        street: resident.street,
-        barangay: resident.barangay
-      }
-    };
+  resident = {
+    ...resident,
+    address: {
+      zone: resident.zone,
+      street: resident.street,
+      barangay: resident.barangay
+    }
+  };
 
-    data.push(resident);
-    this.saveAll(data);
+  data.push(resident);
+  this.saveAll(data);
 
-    this.userService.addUser({
-      username: resident.fullname,
-      email: resident.fullname.toLowerCase().replace(/\s/g, '') + '@brgyvillanueva.com',
-      password: '1234',
-      role: 'resident',
-      residentId: resident.id
-    });
-  }
+  // CREATE USER 
+ const newUser: AppUser = {
+  username: resident.fullname,
+  email: resident.fullname.toLowerCase().replace(/\s/g, '') + '@brgyvillanueva.com',
+  password: '1234',
+  role: 'resident',
+  residentId: resident.id
+};
+
+  this.userService.addUser(newUser);
+
+  //  LINK BACK USER ID TO RESIDENT
+  const users = this.userService.getUsers();
+  const createdUser = users[users.length - 1];
+
+  resident.userId = createdUser.id;
+  this.saveAll(data);
+}
 
 
   // DELETE RESIDENT

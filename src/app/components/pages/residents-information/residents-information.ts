@@ -31,20 +31,20 @@ export class ResidentsInformation implements OnInit {
   constructor(private residentService: ResidentService) {}
   
  loadResidents() {
-  this.residents = this.residentService.getAll();
+   const all = this.residentService.getAll();
+  this.residents = all.filter(r => !r.isArchived);
 }
-// INIT
+
   ngOnInit() {
-    this.allResidents = this.residentService.getAll();
-    this.filterResidents();
-    this.loadResidents();
-  }
+  this.allResidents = this.residentService.getAll().filter(r => !r.isArchived);
+  this.filterResidents();
+}
 
 //filtering the residents list based on zone and search text
 filterResidents() {
 
-  let filtered = this.allResidents;
-
+  let filtered = this.residentService.getAll().filter(r => !r.isArchived);
+  
   // ONLY FILTER IF NOT NULL
   if (this.selectedZone !== null) {
     filtered = filtered.filter(
@@ -128,12 +128,22 @@ onSearchChange() {
   this.filterResidents();
   this.closeForm();
 }
-  //delete resident
-  deleteResident(resident: any) {
-    if (confirm('Delete ' + resident.fullname + '?')) {
-      this.residentService.delete(resident.id);
-      this.allResidents = this.residentService.getAll();
-      this.filterResidents();
+  //archive resident
+  archiveResident(resident: any) {
+  if (confirm('Archive ' + resident.fullname + '?')) {
+
+    const all = this.residentService.getAll();
+
+    const index = all.findIndex(r => r.id === resident.id);
+
+    if (index !== -1) {
+      all[index].isArchived = true; // 👈 soft delete
     }
+
+    this.residentService.saveAll(all);
+
+    this.allResidents = all;
+    this.filterResidents();
   }
 }
+  }

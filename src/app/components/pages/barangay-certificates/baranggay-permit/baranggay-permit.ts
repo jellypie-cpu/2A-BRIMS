@@ -31,7 +31,7 @@ export class BaranggayPermit implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.residents = this.residentService.getAll();
+    this.residents = this.residentService.getAll().filter(r => !r.isArchived);
     this.filteredResidents = this.residents;
   }
 

@@ -41,7 +41,7 @@ export class BaranggayClearance implements OnInit {
   // INIT
   // ======================
   ngOnInit() {
-    this.residents = this.residentService.getAll();
+    this.residents = this.residentService.getAll().filter(r => !r.isArchived);
     this.filteredResidents = this.residents;
 
     this.zones = [...new Set(
