@@ -30,37 +30,40 @@ export class ResidentsInformation implements OnInit {
 
   constructor(private residentService: ResidentService) {}
   
- loadResidents() {
-   const all = this.residentService.getAll();
-  this.residents = all.filter(r => !r.isArchived);
-}
 
   ngOnInit() {
-  this.allResidents = this.residentService.getAll().filter(r => !r.isArchived);
-  this.filterResidents();
+  this.residentService.getAll().subscribe((residents: any[]) => {
+
+    const safeResidents = residents || [];
+
+    this.allResidents = safeResidents.filter((r: any) => !r.isArchived);
+
+    this.filterResidents();
+  });
 }
 
 //filtering the residents list based on zone and search text
 filterResidents() {
 
-  let filtered = this.residentService.getAll().filter(r => !r.isArchived);
-  
-  // ONLY FILTER IF NOT NULL
+  let filtered = [...this.allResidents];
+
   if (this.selectedZone !== null) {
-    filtered = filtered.filter(
-      r => Number(r.address?.zone) === this.selectedZone
+    filtered = filtered.filter((r: any) =>
+      Number(r.address?.zone) === this.selectedZone
     );
   }
 
   if (this.searchText.trim()) {
     const lower = this.searchText.toLowerCase();
-    filtered = filtered.filter(r =>
-      r.fullname.toLowerCase().includes(lower)
+
+    filtered = filtered.filter((r: any) =>
+      r.fullname?.toLowerCase().includes(lower)
     );
   }
 
   this.residents = filtered;
 }
+
 onSearchChange() {
   this.filterResidents()
 }
@@ -97,53 +100,35 @@ onSearchChange() {
  
   // SAVE (ADD + UPDATE)
   
-  saveResident(resident: any) {
-  const all = this.residentService.getAll();
+  async saveResident(resident: any) {
 
-  const isDuplicate = all.some(r =>
-    r.id !== resident.id && // ignore self when updating
-    r.fullname.trim().toLowerCase() === resident.fullname.trim().toLowerCase() &&
-    r.birthdate === resident.birthdate &&
-    r.address?.zone === resident.address?.zone &&
-    r.address?.street?.toLowerCase() === resident.address?.street?.toLowerCase()
+  const isDuplicate = this.allResidents.some(r =>
+    r.id !== resident.id &&
+    r.fullname?.trim().toLowerCase() === resident.fullname?.trim().toLowerCase() &&
+    r.birthdate === resident.birthdate
   );
 
   if (isDuplicate) {
-    alert('This resident already exists in the system.');
+    alert('This resident already exists.');
     return;
   }
 
-  const index = all.findIndex(r => r.id === resident.id);
-
-  if (index !== -1) {
-    all[index] = resident;
+  if (resident.id) {
+    await this.residentService.update(resident.id, resident);
   } else {
-    resident.id = 'RES-' + crypto.randomUUID();
-    all.push(resident);
+    await this.residentService.add(resident);
   }
 
-  this.residentService.saveAll(all);
-
-  this.allResidents = all;
-  this.filterResidents();
   this.closeForm();
 }
+
   //archive resident
-  archiveResident(resident: any) {
-  if (confirm('Archive ' + resident.fullname + '?')) {
+ async archiveResident(resident: any) {
+  if (confirm(`Archive ${resident.fullname}?`)) {
 
-    const all = this.residentService.getAll();
-
-    const index = all.findIndex(r => r.id === resident.id);
-
-    if (index !== -1) {
-      all[index].isArchived = true; // 👈 soft delete
-    }
-
-    this.residentService.saveAll(all);
-
-    this.allResidents = all;
-    this.filterResidents();
+    await this.residentService.update(resident.id, {
+      isArchived: true
+    });
   }
 }
   }

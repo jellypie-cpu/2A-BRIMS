@@ -1,78 +1,98 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from '@angular/fire/auth';
+
+import {
+  Firestore,
+  doc,
+  getDoc
+} from '@angular/fire/firestore';
+
 import { BehaviorSubject } from 'rxjs';
 import { AppUser, UserRole } from '../models/user.model';
-
-export interface LoginRecord {
-  username: string;
-  role: UserRole;
-  loginTime: Date;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
+
   private currentUserSubject = new BehaviorSubject<AppUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  private loginHistory: LoginRecord[] = [];
-
   constructor() {
-    this.loadSession();
+    this.restoreUser();
   }
 
   // LOGIN
-  login(user: AppUser) {
-    this.currentUserSubject.next(user);
+  async login(email: string, password: string) {
 
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    const credential = await signInWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
 
-    this.loginHistory.push({
-      username: user.username,
-      role: user.role,
-      loginTime: new Date()
-    });
+    const uid = credential.user.uid;
+
+    // GET USER DATA FROM FIRESTORE
+    const userRef = doc(this.firestore, `users/${uid}`);
+    const snapshot = await getDoc(userRef);
+
+    if (snapshot.exists()) {
+      const userData = snapshot.data() as AppUser;
+
+      this.currentUserSubject.next({
+        id: uid,
+        ...userData
+      });
+
+      return userData;
+    }
+
+    throw new Error('User data not found');
   }
 
   // LOGOUT
-  logout() {
+  async logout() {
+    await signOut(this.auth);
     this.currentUserSubject.next(null);
-    localStorage.removeItem('currentUser');
-  }
-
-  // GET CURRENT USER
-  getCurrentUser(): AppUser | null {
-    return this.currentUserSubject.getValue();
-  }
-
-  // LOGIN HISTORY
-  getLoginHistory(): LoginRecord[] {
-    return this.loginHistory;
   }
 
   // RESTORE SESSION
-  private loadSession() {
-    const data = localStorage.getItem('currentUser');
+  private restoreUser() {
+    onAuthStateChanged(this.auth, async (firebaseUser) => {
 
-    if (data) {
-      this.currentUserSubject.next(JSON.parse(data));
-    }
+      if (!firebaseUser) {
+        this.currentUserSubject.next(null);
+        return;
+      }
+
+      const userRef = doc(this.firestore, `users/${firebaseUser.uid}`);
+      const snapshot = await getDoc(userRef);
+
+      if (snapshot.exists()) {
+        const userData = snapshot.data() as AppUser;
+
+        this.currentUserSubject.next({
+          id: firebaseUser.uid,
+          ...userData
+        });
+      }
+    });
   }
-getTodaysLogins(): number {
-  const today = new Date();
 
-  return this.loginHistory.filter(record => {
-    const login = new Date(record.loginTime);
+  getCurrentUser(): AppUser | null {
+    return this.currentUserSubject.value;
+  }
 
-    return (
-      login.getFullYear() === today.getFullYear() &&
-      login.getMonth() === today.getMonth() &&
-      login.getDate() === today.getDate()
-    );
-  }).length;
-}
-getUserRole(): UserRole | '' {
-  const user = this.getCurrentUser();
-  return user ? user.role : '';
-}
+  getUserRole(): UserRole | '' {
+    return this.currentUserSubject.value?.role || '';
+  }
 }

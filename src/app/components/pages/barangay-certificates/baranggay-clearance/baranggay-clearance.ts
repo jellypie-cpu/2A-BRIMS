@@ -16,9 +16,7 @@ import { BaranggayClearanceForm } from './baranggay-clearance-form/baranggay-cle
 })
 export class BaranggayClearance implements OnInit {
 
-  // ======================
-  // DATA
-  // ======================
+  //datas for residents list and filtering
   residents: any[] = [];
   filteredResidents: any[] = [];
 
@@ -26,9 +24,7 @@ export class BaranggayClearance implements OnInit {
   selectedZone: string = '';
   searchText: string = '';
 
-  // ======================
-  // MODAL STATE
-  // ======================
+  //for the clearance form modal
   selectedResident: any = null;
   showModal: boolean = false;
 
@@ -37,64 +33,62 @@ export class BaranggayClearance implements OnInit {
     private certificateService: CertificateService
   ) {}
 
-  // ======================
-  // INIT
-  // ======================
+  //init method to load residents and setup zones
   ngOnInit() {
-    this.residents = this.residentService.getAll().filter(r => !r.isArchived);
-    this.filteredResidents = this.residents;
+    this.residentService.getAll().subscribe((residents: any[]) => {
 
-    this.zones = [...new Set(
-      this.residents
-        .map(r => r.address?.zone)
-        .filter(z => z)
-        .map(z => 'Zone ' + z)
-    )];
+      const safe = residents || [];
+
+      this.residents = safe.filter(r => !r.isArchived);
+      this.filteredResidents = [...this.residents];
+
+      this.zones = [...new Set(
+        this.residents
+          .map(r => r.address?.zone)
+          .filter(Boolean)
+          .map(z => 'Zone ' + z)
+      )];
+    });
   }
 
-  // ======================
-  // FILTER
-  // ======================
+  //filter residents based on zone and search text
   filterResidents() {
+
+    const zone = this.selectedZone;
+
     this.filteredResidents = this.residents.filter(resident => {
 
       const zoneText = 'Zone ' + resident.address?.zone;
 
-      const matchesZone = this.selectedZone
-        ? zoneText === this.selectedZone
+      const matchesZone = zone
+        ? zoneText === zone
         : true;
 
       const matchesName = this.searchText
-        ? resident.fullname?.toLowerCase().includes(this.searchText.toLowerCase())
+        ? (resident.fullname || '')
+            .toLowerCase()
+            .includes(this.searchText.toLowerCase())
         : true;
 
       return matchesZone && matchesName;
     });
   }
 
-  // ======================
-  // OPEN MODAL
-  // ======================
+  // open clearance form
   openClearance(resident: any) {
     this.selectedResident = resident;
     this.showModal = true;
   }
 
-  // ======================
-  // CLOSE MODAL
-  // ======================
+  //close form
   closePrint() {
     this.selectedResident = null;
     this.showModal = false;
   }
-
-  // ======================
-  // GENERATE CERTIFICATE (SAVE LOG)
-  // ======================
-  generateClearance(resident: any) {
+//generate clearance
+  async generateClearance(resident: any) {
 
     const certificate = {
-      id: 'CERT-' + Date.now(),
       residentId: resident.id,
       residentName: resident.fullname,
       type: 'Barangay Clearance',
@@ -102,11 +96,10 @@ export class BaranggayClearance implements OnInit {
       date: new Date().toISOString()
     };
 
-    this.certificateService.add(certificate);
+    await this.certificateService.add(certificate);
 
-    // optional: open printable modal
     this.openClearance(resident);
 
-    alert('Barangay Clearance generated for ' + resident.fullname);
+    alert(`Clearance generated for ${resident.fullname}`);
   }
 }

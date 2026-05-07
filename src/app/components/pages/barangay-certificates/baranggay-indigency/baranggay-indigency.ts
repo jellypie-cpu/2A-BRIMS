@@ -16,9 +16,6 @@ import { BaranggayIndigencyForm } from './baranggay-indigency-form/baranggay-ind
 })
 export class BaranggayIndigency implements OnInit {
 
-  // ======================
-  // DATA
-  // ======================
   residents: any[] = [];
   filteredResidents: any[] = [];
 
@@ -26,9 +23,6 @@ export class BaranggayIndigency implements OnInit {
   selectedZone: string = '';
   searchText: string = '';
 
-  // ======================
-  // MODAL
-  // ======================
   selectedResident: any = null;
   showModal: boolean = false;
 
@@ -37,25 +31,23 @@ export class BaranggayIndigency implements OnInit {
     private certificateService: CertificateService
   ) {}
 
-  // ======================
-  // INIT
-  // ======================
   ngOnInit() {
-    this.residents = this.residentService.getAll().filter(r => !r.isArchived);
-    this.filterResidents();
+    this.residentService.getAll().subscribe((residents: any[]) => {
 
-    // auto-create zones from residents
-    this.zones = [...new Set(
-      this.residents
-        .map(r => r.address?.zone)
-        .filter(z => z)
-        .map(z => 'Zone ' + z)
-    )];
+      const safe = residents || [];
+
+      this.residents = safe.filter(r => !r.isArchived);
+      this.filteredResidents = [...this.residents];
+
+      this.zones = [...new Set(
+        this.residents
+          .map(r => r.address?.zone)
+          .filter(Boolean)
+          .map(z => 'Zone ' + z)
+      )];
+    });
   }
 
-  // ======================
-  // FILTER
-  // ======================
   filterResidents() {
     this.filteredResidents = this.residents.filter(resident => {
 
@@ -66,8 +58,8 @@ export class BaranggayIndigency implements OnInit {
         : true;
 
       const matchesName = this.searchText
-        ? resident.fullname
-            ?.toLowerCase()
+        ? (resident.fullname || '')
+            .toLowerCase()
             .includes(this.searchText.toLowerCase())
         : true;
 
@@ -75,29 +67,19 @@ export class BaranggayIndigency implements OnInit {
     });
   }
 
-  // ======================
-  // OPEN MODAL
-  // ======================
   openIndigency(resident: any) {
     this.selectedResident = resident;
     this.showModal = true;
   }
 
-  // ======================
-  // CLOSE MODAL
-  // ======================
   closeModal() {
     this.showModal = false;
     this.selectedResident = null;
   }
 
-  // ======================
-  // GENERATE CERTIFICATE
-  // ======================
-  generateIndigency(resident: any) {
+  async generateIndigency(resident: any) {
 
     const certificate = {
-      id: 'CERT-' + Date.now(),
       residentId: resident.id,
       residentName: resident.fullname,
       type: 'Barangay Indigency',
@@ -105,8 +87,10 @@ export class BaranggayIndigency implements OnInit {
       date: new Date().toISOString()
     };
 
-    this.certificateService.add(certificate);
+    await this.certificateService.add(certificate);
 
-    alert('Barangay Indigency issued to ' + resident.fullname);
+    this.openIndigency(resident);
+
+    alert(`Barangay Indigency issued to ${resident.fullname}`);
   }
 }

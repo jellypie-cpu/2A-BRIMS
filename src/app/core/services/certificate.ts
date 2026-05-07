@@ -1,48 +1,35 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+  doc,
+  updateDoc
+} from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CertificateService {
 
-  private key = 'certificates';
+  private firestore = inject(Firestore);
+  private certRef = collection(this.firestore, 'certificates');
 
-  getAll(): any[] {
-    return JSON.parse(localStorage.getItem(this.key) || '[]');
+  getAll(): Observable<any[]> {
+    return collectionData(this.certRef, { idField: 'id' }) as Observable<any[]>;
   }
 
-  saveAll(data: any[]): void {
-    localStorage.setItem(this.key, JSON.stringify(data));
+  async add(cert: any) {
+    return await addDoc(this.certRef, {
+      ...cert,
+      createdAt: new Date()
+    });
   }
 
-  add(cert: any): void {
-    const data = this.getAll();
-    data.push(cert);
-    this.saveAll(data);
-  }
-
-  createDefaultCertificates(residentId: string, residentName: string): void {
-    const certificates = this.getAll();
-
-    const newCerts = [
-      {
-        id: 'CERT-' + Date.now() + '-C',
-        residentId,
-        residentName,
-        type: 'Barangay Clearance',
-        status: 'Pending',
-        dateCreated: new Date().toISOString()
-      },
-      {
-        id: 'CERT-' + Date.now() + '-R',
-        residentId,
-        residentName,
-        type: 'Barangay Residency',
-        status: 'Pending',
-        dateCreated: new Date().toISOString()
-      }
-    ];
-
-    this.saveAll([...certificates, ...newCerts]);
+  async update(id: string, data: any) {
+    const ref = doc(this.firestore, `certificates/${id}`);
+    return updateDoc(ref, data);
   }
 }

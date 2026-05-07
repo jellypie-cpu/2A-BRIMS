@@ -31,22 +31,27 @@ export class BaranggayPermit implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.residents = this.residentService.getAll().filter(r => !r.isArchived);
-    this.filteredResidents = this.residents;
+    this.residentService.getAll().subscribe((residents: any[]) => {
+
+      const safe = residents || [];
+
+      this.residents = safe.filter(r => !r.isArchived);
+      this.filteredResidents = [...this.residents];
+    });
   }
 
   filterResidents() {
     this.filteredResidents = this.residents.filter(r => {
 
-      const matchesZone = this.selectedZone
+      const zoneMatch = this.selectedZone
         ? 'Zone ' + r.address?.zone === this.selectedZone
         : true;
 
-      const matchesName = this.searchText
-        ? r.fullname?.toLowerCase().includes(this.searchText.toLowerCase())
+      const nameMatch = this.searchText
+        ? (r.fullname || '').toLowerCase().includes(this.searchText.toLowerCase())
         : true;
 
-      return matchesZone && matchesName;
+      return zoneMatch && nameMatch;
     });
   }
 
@@ -60,22 +65,31 @@ export class BaranggayPermit implements OnInit {
     this.selectedResident = null;
   }
 
-  savePermit(data: any) {
+  async savePermit(data: any) {
+
+    if (!data.businessName || !data.businessType || !data.address) {
+      alert('Please complete all business details.');
+      return;
+    }
 
     const permit = {
-      id: 'PERMIT-' + Date.now(),
       residentId: data.resident.id,
       residentName: data.resident.fullname,
+
       businessName: data.businessName,
       businessType: data.businessType,
-      address: data.address,
-      status: 'Approved',
+      businessAddress: data.address,
+
       type: 'Barangay Business Permit',
-      date: new Date().toISOString()
+      status: 'Approved',
+
+      issuedAt: new Date().toISOString()
     };
 
-    this.certificateService.add(permit);
+    await this.certificateService.add(permit);
 
-    alert('Permit issued to ' + data.resident.fullname);
+    this.closeModal();
+
+    alert(`Permit issued to ${data.resident.fullname}`);
   }
 }

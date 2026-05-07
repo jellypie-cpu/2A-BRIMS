@@ -3,16 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { BlotterForm } from './blotter-form/blotter-form';
 
-interface BlotterCase {
-  id: string;
-  residentName: string;
-  complaint: string;
-  status: 'Active' | 'Settled' | 'Scheduled';
-  date: string;
-  description?: string;
-}
+import { BlotterService } from '../../../core/services/blotter';
+import { BlotterForm } from './blotter-form/blotter-form';
 
 @Component({
   selector: 'app-blotter-records',
@@ -23,52 +16,42 @@ interface BlotterCase {
 })
 export class BlotterRecords implements OnInit {
 
-  blotterCases: BlotterCase[] = [];
-  filteredCases: BlotterCase[] = [];
+  blotterCases: any[] = [];
+  filteredCases: any[] = [];
 
   selectedStatus: string = '';
   searchText: string = '';
 
   showForm = false;
 
+  constructor(private blotterService: BlotterService) {}
+
   ngOnInit() {
-    this.loadCases();
-    this.filterCases();
-  }
+    this.blotterService.getAll().subscribe((data: any[]) => {
+      const safe = data || [];
 
-  // ======================
-  // 💾 LOAD FROM STORAGE
-  // ======================
-  loadCases() {
-    const data = localStorage.getItem('blotters');
-    this.blotterCases = data ? JSON.parse(data) : [];
-  }
-
-  // ======================
-  // 💾 SAVE TO STORAGE
-  // ======================
-  saveToStorage() {
-    localStorage.setItem('blotters', JSON.stringify(this.blotterCases));
-  }
-
-  // ======================
-  // 🔍 FILTER
-  // ======================
-  filterCases() {
-    this.filteredCases = this.blotterCases.filter(b => {
-      const matchesStatus = this.selectedStatus ? b.status === this.selectedStatus : true;
-
-      const matchesName = this.searchText
-        ? b.residentName?.toLowerCase().includes(this.searchText.toLowerCase())
-        : true;
-
-      return matchesStatus && matchesName;
+      this.blotterCases = safe;
+      this.filteredCases = [...this.blotterCases];
     });
   }
 
-  // ======================
-  // ➕ OPEN MODAL
-  // ======================
+  filterCases() {
+    this.filteredCases = this.blotterCases.filter(b => {
+
+      const statusMatch = this.selectedStatus
+        ? b.status === this.selectedStatus
+        : true;
+
+      const nameMatch = this.searchText
+        ? (b.residentName || '')
+            .toLowerCase()
+            .includes(this.searchText.toLowerCase())
+        : true;
+
+      return statusMatch && nameMatch;
+    });
+  }
+
   addCase() {
     this.showForm = true;
   }
@@ -77,70 +60,64 @@ export class BlotterRecords implements OnInit {
     this.showForm = false;
   }
 
-  // ======================
-  // 💾 SAVE FROM MODAL
-  // ======================
-  saveCase(data: any) {
+  async saveCase(data: any) {
 
-    const newCase: BlotterCase = {
-      id: data.id,
-      residentName: data.victims, // 👈 using victims as display name
+    const blotter = {
+      id: 'BLT-' + Date.now(),
+
       complaint: data.complaint,
-      status: data.status,
+      victims: data.victims,
+      respondent: data.respondent,
+
+      type: data.type,
+      location: data.location,
       date: data.date,
-      description: data.description
+      time: data.time,
+
+      status: data.status,
+      description: data.description,
+
+      residentName: data.victims,
+
+      barangay: 'San Martin',
+      issuedAt: new Date().toISOString()
     };
 
-    this.blotterCases.push(newCase);
+    await this.blotterService.add(blotter);
 
-    this.saveToStorage();
-    this.filterCases();
     this.closeForm();
+
+    alert('Blotter case saved successfully!');
   }
 
-  // ======================
-  // 👁 VIEW
-  // ======================
-  viewCase(blotter: BlotterCase) {
-  const newStatus = prompt(
-    `Update status for ${blotter.residentName}\n\nType: Active / Settled / Scheduled`,
-    blotter.status
-  );
+  async viewCase(blotter: any) {
 
-  if (!newStatus) return;
+    const newStatus = prompt(
+      `Update status (Active / Settled / Scheduled)`,
+      blotter.status
+    );
 
-  if (!['Active', 'Settled', 'Scheduled'].includes(newStatus)) {
-    alert('Invalid status!');
-    return;
+    if (!newStatus) return;
+
+    if (!['Active', 'Settled', 'Scheduled'].includes(newStatus)) {
+      alert('Invalid status');
+      return;
+    }
+
+    await this.blotterService.update(blotter.id, {
+      status: newStatus
+    });
+
+    alert('Status updated!');
   }
 
-  // ✅ UPDATE STATUS
-  blotter.status = newStatus as any;
-
-  // ✅ SAVE + REFRESH
-  this.saveToStorage();
-  this.filterCases();
-
-  alert('Status updated!');
-}
-
-  // ======================
-  // 🗑 DELETE
-  // ======================
-  deleteCase(blotter: BlotterCase) {
-    const confirmDelete = confirm('Delete this case?');
-
-    if (confirmDelete) {
-      this.blotterCases = this.blotterCases.filter(b => b.id !== blotter.id);
-      this.saveToStorage();
-      this.filterCases();
+  async deleteCase(blotter: any) {
+    if (confirm('Delete this case?')) {
+      await this.blotterService.delete(blotter.id);
     }
   }
 
-  // ======================
-  // 📊 COUNTS
-  // ======================
-  getCount(status: 'Active' | 'Settled' | 'Scheduled') {
+  getCount(status: string) {
     return this.blotterCases.filter(b => b.status === status).length;
   }
 }
