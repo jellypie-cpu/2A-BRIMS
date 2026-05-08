@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-
 import { ResidentService } from '../../../../core/services/resident';
 import { CertificateService } from '../../../../core/services/certificate';
 import { BaranggayPermitForm } from './baranggay-permit-form/baranggay-permit-form';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-baranggay-permit',
@@ -26,6 +26,7 @@ export class BaranggayPermit implements OnInit {
   showModal: boolean = false;
 
   constructor(
+    private authService: AuthService,
     private residentService: ResidentService,
     private certificateService: CertificateService
   ) {}
@@ -67,29 +68,38 @@ export class BaranggayPermit implements OnInit {
 
   async savePermit(data: any) {
 
-    if (!data.businessName || !data.businessType || !data.address) {
-      alert('Please complete all business details.');
-      return;
-    }
-
-    const permit = {
-      residentId: data.resident.id,
-      residentName: data.resident.fullname,
-
-      businessName: data.businessName,
-      businessType: data.businessType,
-      businessAddress: data.address,
-
-      type: 'Barangay Business Permit',
-      status: 'Approved',
-
-      issuedAt: new Date().toISOString()
-    };
-
-    await this.certificateService.add(permit);
-
-    this.closeModal();
-
-    alert(`Permit issued to ${data.resident.fullname}`);
+  if (!data?.resident) {
+    alert('No resident selected');
+    return;
   }
+
+  if (!data.businessName || !data.businessType || !data.address) {
+    alert('Please complete all business details.');
+    return;
+  }
+
+  const currentUser = this.authService.getCurrentUser();
+
+  const permit = {
+    residentId: data.resident.id,
+    residentName: data.resident.fullname,
+
+    businessName: data.businessName,
+    businessType: data.businessType,
+    businessAddress: data.address,
+
+    type: 'Barangay Business Permit',
+    status: 'issued',
+
+    issuedBy: currentUser?.id || null,
+
+    createdAt: new Date() // OK here; service converts to serverTimestamp anyway
+  };
+
+  await this.certificateService.add(permit);
+
+  this.closeModal();
+
+  alert(`Permit successfully issued to ${data.resident.fullname}`);
+}
 }

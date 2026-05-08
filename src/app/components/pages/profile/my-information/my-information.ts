@@ -9,13 +9,12 @@ import { ResidentService } from '../../../../core/services/resident';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './my-information.html',
-  styleUrl: './my-information.scss',
+  styleUrls: ['./my-information.scss'],
 })
 export class ProfileMyInformation implements OnInit {
 
-  currentUser: any = null;
-  resident: any = null;
-
+  user: any;
+  resident: any;
   loading = true;
 
   constructor(
@@ -25,36 +24,31 @@ export class ProfileMyInformation implements OnInit {
 
   ngOnInit() {
 
-    const user = this.authService.getCurrentUser();
+    this.user = this.authService.getCurrentUser();
 
-    if (!user) {
+    if (!this.user) {
       this.loading = false;
       return;
     }
 
-    this.currentUser = user;
+    const userId = this.user.id;
 
-    // RESIDENT ACCOUNT
-    if (user.residentId) {
+    if (this.user.residentId) {
 
-      this.residentService
-        .getById(user.residentId)
-        .subscribe(resident => {
-
-          this.resident = resident;
+      this.residentService.getById(this.user.residentId)
+        .subscribe(data => {
+          this.resident = data;
           this.loading = false;
         });
 
-      return;
+    } else {
+
+      this.residentService.getByUserId(userId)
+        .subscribe(res => {
+          this.resident = res?.[0] || null;
+          this.loading = false;
+        });
+
     }
-
-    // FALLBACK USING userId FIELD
-    this.residentService
-      .getByUserId(user.id!)
-      .subscribe((residents: any[]) => {
-
-        this.resident = residents[0] || null;
-        this.loading = false;
-      });
   }
 }

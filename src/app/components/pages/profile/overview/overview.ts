@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AuthService } from '../../../../core/services/auth';
 import { UserService } from '../../../../core/services/user';
-
-import { AppUser } from '../../../../core/models/user.model';
+import { ActivityLogService } from '../../../../core/services/activity-log';
 
 @Component({
   selector: 'app-overview',
@@ -15,81 +14,28 @@ import { AppUser } from '../../../../core/models/user.model';
 })
 export class ProfileOverview implements OnInit {
 
-  currentUser: AppUser | null = null;
+  user: any;
+  logs: any[] = [];
 
-  adminName = '';
-  profileImage = '';
-
-  activityLogs: any[] = [];
-
-  loading = true;
+  profileImage: string = '';
 
   constructor(
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private logService: ActivityLogService
   ) {}
 
   ngOnInit() {
 
-    const user = this.authService.getCurrentUser();
+    this.user = this.authService.getCurrentUser();
 
-    if (!user?.id) {
-      this.loading = false;
-      return;
-    }
+    if (!this.user) return;
 
-    this.userService.getUserById(user.id)
-      .subscribe((data) => {
+    this.profileImage = this.user.profileImage || '';
 
-        this.currentUser = data;
-
-        this.adminName = data.username;
-        this.profileImage = data.profileImage || '';
-
-        this.activityLogs = data.activityLogs || [];
-
-        this.loading = false;
+    this.logService.getLogs(this.user.id!)
+      .subscribe(data => {
+        this.logs = data;
       });
-  }
-
-  // =========================
-  // UPLOAD PROFILE IMAGE
-  // =========================
-  async onFileSelected(event: Event) {
-
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files?.length || !this.currentUser?.id) {
-      return;
-    }
-
-    const file = input.files[0];
-
-    try {
-
-      this.loading = true;
-
-      const imageUrl = await this.userService.uploadProfileImage(
-        this.currentUser.id,
-        file
-      );
-
-      this.profileImage = imageUrl;
-
-      await this.userService.addActivityLog(
-        this.currentUser.id,
-        'Updated profile picture'
-      );
-
-      alert('Profile picture updated successfully.');
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert('Failed to upload image.');
-    }
-
-    this.loading = false;
   }
 }

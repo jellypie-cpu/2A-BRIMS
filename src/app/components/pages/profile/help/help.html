@@ -1,2 +1,49 @@
-<p>panabangiiiii</p>
-    
+<div class="help-container">
+
+  <h2>Help Center</h2>
+
+  <!-- FAQ SECTION -->
+  <div class="faq-section">
+    <h3>Frequently Asked Questions</h3>
+
+    <div *ngFor="let faq of faqs" class="faq-item">
+      <h4>{{ faq.question }}</h4>
+      <p>{{ faq.answer }}</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- HELP FORM -->
+  <div class="help-form">
+    <h3>Submit a Help Request</h3>
+
+    <input
+      type="text"
+      placeholder="Subject"
+      [(ngModel)]="subject"
+    />
+
+    <textarea
+      placeholder="Describe your issue..."
+      [(ngModel)]="message"
+    ></textarea>
+
+    <button (click)="submitHelp()">Send</button>
+  </div>
+
+  <hr />
+
+  <!-- USER TICKETS -->
+  <div class="ticket-section">
+    <h3>Your Requests</h3>
+
+    <div *ngFor="let t of tickets" class="ticket-card">
+      <p><strong>{{ t.subject }}</strong></p>
+      <p>{{ t.message }}</p>
+      <small>Status: {{ t.status }}</small>
+    </div>
+
+  </div>
+
+</div>

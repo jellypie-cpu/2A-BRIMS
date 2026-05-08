@@ -75,4 +75,13 @@ export class ResidentService {
 
     return deleteDoc(ref);
   }
+  async archive(id: string) {
+  const ref = doc(this.firestore, `residents/${id}`);
+  return updateDoc(ref, { isArchived: true });
+}
+
+async restore(id: string) {
+  const ref = doc(this.firestore, `residents/${id}`);
+  return updateDoc(ref, { isArchived: false });
+}
 }

@@ -1,22 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-
+import { BaranggayClearanceForm } from './baranggay-clearance-form/baranggay-clearance-form';
 import { ResidentService } from '../../../../core/services/resident';
 import { CertificateService } from '../../../../core/services/certificate';
-import { BaranggayClearanceForm } from './baranggay-clearance-form/baranggay-clearance-form';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-baranggay-clearance',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, BaranggayClearanceForm],
+  imports: [CommonModule, FormsModule, BaranggayClearanceForm],
   templateUrl: './baranggay-clearance.html',
   styleUrls: ['./baranggay-clearance.scss']
 })
 export class BaranggayClearance implements OnInit {
 
-  //datas for residents list and filtering
   residents: any[] = [];
   filteredResidents: any[] = [];
 
@@ -24,82 +22,76 @@ export class BaranggayClearance implements OnInit {
   selectedZone: string = '';
   searchText: string = '';
 
-  //for the clearance form modal
   selectedResident: any = null;
   showModal: boolean = false;
 
   constructor(
     private residentService: ResidentService,
-    private certificateService: CertificateService
+    private certificateService: CertificateService,
+    private authService: AuthService
   ) {}
 
-  //init method to load residents and setup zones
   ngOnInit() {
-    this.residentService.getAll().subscribe((residents: any[]) => {
+    this.residentService.getAll().subscribe(residents => {
 
       const safe = residents || [];
 
+      // only active residents (not archived)
       this.residents = safe.filter(r => !r.isArchived);
+
       this.filteredResidents = [...this.residents];
 
       this.zones = [...new Set(
-        this.residents
-          .map(r => r.address?.zone)
-          .filter(Boolean)
-          .map(z => 'Zone ' + z)
-      )];
+        this.residents.map(r => r.address?.zone).filter(Boolean)
+      )].map(z => 'Zone ' + z);
     });
   }
 
-  //filter residents based on zone and search text
   filterResidents() {
 
-    const zone = this.selectedZone;
+    this.filteredResidents = this.residents.filter(r => {
 
-    this.filteredResidents = this.residents.filter(resident => {
-
-      const zoneText = 'Zone ' + resident.address?.zone;
-
-      const matchesZone = zone
-        ? zoneText === zone
+      const zoneMatch = this.selectedZone
+        ? ('Zone ' + r.address?.zone) === this.selectedZone
         : true;
 
-      const matchesName = this.searchText
-        ? (resident.fullname || '')
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase())
+      const searchMatch = this.searchText
+        ? r.fullname?.toLowerCase().includes(this.searchText.toLowerCase())
         : true;
 
-      return matchesZone && matchesName;
+      return zoneMatch && searchMatch;
     });
   }
 
-  // open clearance form
   openClearance(resident: any) {
     this.selectedResident = resident;
     this.showModal = true;
   }
 
-  //close form
   closePrint() {
     this.selectedResident = null;
     this.showModal = false;
   }
-//generate clearance
+
+  // 🔥 MAIN FIREBASE SAVE LOGIC
   async generateClearance(resident: any) {
+
+    const currentUser = this.authService.getCurrentUser();
 
     const certificate = {
       residentId: resident.id,
       residentName: resident.fullname,
       type: 'Barangay Clearance',
       status: 'Pending',
-      date: new Date().toISOString()
+      zone: resident.address?.zone,
+      issuedBy: currentUser?.id || null,
+      createdAt: new Date()
     };
 
     await this.certificateService.add(certificate);
 
     this.openClearance(resident);
 
-    alert(`Clearance generated for ${resident.fullname}`);
+    alert(`Barangay Clearance created for ${resident.fullname}`);
   }
 }

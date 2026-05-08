@@ -1,24 +1,23 @@
 <div class="profile-overview">
 
-  <!-- Profile Picture + Upload -->
-  <div class="profile-header">
-    <div class="profile-pic-container">
-      <img [src]="profileImage || 'assets/default-avatar.png'" alt="Profile Picture" class="profile-pic" />
-      <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-    </div>
-    <h2 class="profile-name">{{ adminName }}</h2>
+  <!-- PROFILE -->
+  <div class="header">
+
+    <img [src]="profileImage || 'assets/default-avatar.png'" />
+
+    <h2>{{ user?.username }}</h2>
+    <p>{{ user?.email }}</p>
+
   </div>
 
   <hr />
 
-  <!-- Activity Log -->
-  <div class="activity-log">
-    <h3>Activity Log</h3>
-    <ul>
-      <li *ngFor="let log of activityLogs">
-        <span class="log-time">{{ log.time | date:'short' }}</span> - 
-        <span class="log-action">{{ log.action }}</span>
-      </li>
-    </ul>
+  <!-- ACTIVITY LOGS -->
+  <h3>Activity Logs</h3>
+
+  <div *ngFor="let log of logs">
+    <p>{{ log.action }}</p>
+    <small>{{ log.createdAt?.toDate() | date:'short' }}</small>
   </div>
+
 </div>

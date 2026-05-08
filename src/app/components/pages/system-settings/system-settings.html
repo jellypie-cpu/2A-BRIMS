@@ -2,16 +2,55 @@
 
 <div class="settings-layout">
 
-  <!-- LEFT SIDEBAR -->
+  <!-- LEFT MENU -->
   <div class="settings-menu">
+
     <a routerLink="archive" routerLinkActive="active">
       Archive
     </a>
+
+    <a routerLink="general" routerLinkActive="active">
+      General Settings
+    </a>
+
   </div>
 
   <!-- RIGHT CONTENT -->
   <div class="settings-content">
-    <router-outlet></router-outlet>
+
+    <div *ngIf="settings">
+
+      <h3>General Configuration</h3>
+
+      <label>Barangay Name</label>
+      <input [(ngModel)]="settings.barangayName" />
+
+      <label>Municipality</label>
+      <input [(ngModel)]="settings.municipality" />
+
+      <label>Province</label>
+      <input [(ngModel)]="settings.province" />
+
+      <hr />
+
+      <label>
+        <input type="checkbox" [(ngModel)]="settings.allowRegistration" />
+        Allow Registration
+      </label>
+
+      <label>
+        <input type="checkbox" [(ngModel)]="settings.maintenanceMode" />
+        Maintenance Mode
+      </label>
+
+      <br /><br />
+
+      <button (click)="saveSettings()">
+        Save Settings
+      </button>
+
+    </div>
+
   </div>
 
 </div>

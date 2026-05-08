@@ -5,9 +5,9 @@ import {
   collectionData,
   addDoc,
   doc,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +17,15 @@ export class CertificateService {
   private firestore = inject(Firestore);
   private certRef = collection(this.firestore, 'certificates');
 
-  getAll(): Observable<any[]> {
-    return collectionData(this.certRef, { idField: 'id' }) as Observable<any[]>;
+  getAll() {
+    return collectionData(this.certRef, { idField: 'id' });
   }
 
   async add(cert: any) {
     return await addDoc(this.certRef, {
       ...cert,
-      createdAt: new Date()
+      createdAt: serverTimestamp(),
+      status: cert.status || 'issued'
     });
   }
 

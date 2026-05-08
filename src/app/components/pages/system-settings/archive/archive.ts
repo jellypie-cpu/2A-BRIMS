@@ -20,20 +20,16 @@ export class Archive implements OnInit {
   }
 
   loadArchived() {
-    const all = this.residentService.getAll();
-    this.archivedResidents = all.filter(r => r.isArchived);
+    this.residentService.getAll().subscribe(residents => {
+      this.archivedResidents = (residents || []).filter(r => r.isArchived === true);
+    });
   }
 
-  restore(resident: any) {
-    const all = this.residentService.getAll();
+  async restore(resident: any) {
+    await this.residentService.update(resident.id, {
+      isArchived: false
+    });
 
-    const index = all.findIndex(r => r.id === resident.id);
-
-    if (index !== -1) {
-      all[index].isArchived = false;
-    }
-
-    this.residentService.saveAll(all);
     this.loadArchived();
   }
 }

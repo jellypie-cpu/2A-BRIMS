@@ -1,1 +1,19 @@
-<p>account-settings works!</p>
+<div class="settings-container">
+
+  <h2>Account Settings</h2>
+
+  <div *ngIf="!loading">
+
+    <label>Username</label>
+    <input [(ngModel)]="username" type="text" />
+
+    <label>Email</label>
+    <input [(ngModel)]="email" type="email" />
+
+    <button (click)="saveSettings()">
+      Save Changes
+    </button>
+
+  </div>
+
+</div>

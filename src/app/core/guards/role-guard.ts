@@ -13,7 +13,7 @@ export class RoleGuard implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const userRole = this.authService.getUserRole();
+    const userRole = this.authService.getUserRole() || 'resident';
     const allowedRoles = route.data['roles'];
 
     if (allowedRoles.includes(userRole)) {

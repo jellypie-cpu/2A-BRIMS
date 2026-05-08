@@ -6,9 +6,11 @@ export interface ActivityLog {
 }
 
 export interface AppUser {
+
   id?: string;
 
   username: string;
+
   email: string;
 
   role: UserRole;
@@ -20,5 +22,6 @@ export interface AppUser {
   activityLogs?: ActivityLog[];
 
   createdAt?: any;
+
   updatedAt?: any;
 }
