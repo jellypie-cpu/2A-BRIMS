@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+
 import {
   Firestore,
   collection,
@@ -11,6 +12,13 @@ import {
   serverTimestamp
 } from '@angular/fire/firestore';
 
+import {
+  Storage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from '@angular/fire/storage';
+
 import { Observable } from 'rxjs';
 import { AppUser } from '../models/user.model';
 
@@ -20,23 +28,30 @@ import { AppUser } from '../models/user.model';
 export class UserService {
 
   private firestore = inject(Firestore);
+  private storage = inject(Storage);
+
   private usersCollection = collection(this.firestore, 'users');
 
-  // GET ALL USERS
+  ///get all users
   getUsers(): Observable<AppUser[]> {
     return collectionData(this.usersCollection, {
       idField: 'id'
     }) as Observable<AppUser[]>;
   }
 
-  // GET SINGLE USER
+  ///get user by id
   getUserById(id: string): Observable<AppUser> {
+
     const userDoc = doc(this.firestore, `users/${id}`);
-    return docData(userDoc, { idField: 'id' }) as Observable<AppUser>;
+
+    return docData(userDoc, {
+      idField: 'id'
+    }) as Observable<AppUser>;
   }
 
-  // ADD USER (must use UID from Firebase Auth)
+  ///add user
   async addUser(user: AppUser) {
+
     const userDoc = doc(this.firestore, `users/${user.id}`);
 
     await setDoc(userDoc, {
@@ -44,14 +59,25 @@ export class UserService {
       email: user.email,
       role: user.role,
       residentId: user.residentId || null,
+
+      profileImage: '',
+
+      activityLogs: [
+        {
+          action: 'Account created',
+          time: new Date()
+        }
+      ],
+
       createdAt: serverTimestamp()
     });
 
     return user.id;
   }
 
-  // UPDATE USER
+  ///update user
   async updateUser(id: string, data: Partial<AppUser>) {
+
     const userDoc = doc(this.firestore, `users/${id}`);
 
     return updateDoc(userDoc, {
@@ -60,9 +86,55 @@ export class UserService {
     });
   }
 
-  // DELETE USER
+  ///delete user
   async deleteUser(id: string) {
+
     const userDoc = doc(this.firestore, `users/${id}`);
+
     return deleteDoc(userDoc);
+  }
+
+  /// upload profile image
+  async uploadProfileImage(userId: string, file: File) {
+
+    const path = `profile-images/${userId}`;
+
+    const storageRef = ref(this.storage, path);
+
+    await uploadBytes(storageRef, file);
+
+    const downloadURL = await getDownloadURL(storageRef);
+
+    await this.updateUser(userId, {
+      profileImage: downloadURL
+    });
+
+    return downloadURL;
+  }
+
+  /// add activity log
+  async addActivityLog(userId: string, action: string) {
+
+    const userDoc = doc(this.firestore, `users/${userId}`);
+
+    const currentUser = await new Promise<AppUser>((resolve) => {
+
+      this.getUserById(userId).subscribe(user => {
+        resolve(user);
+      });
+
+    });
+
+    const logs = currentUser.activityLogs || [];
+
+    logs.unshift({
+      action,
+      time: new Date()
+    });
+
+    await updateDoc(userDoc, {
+      activityLogs: logs,
+      updatedAt: serverTimestamp()
+    });
   }
 }

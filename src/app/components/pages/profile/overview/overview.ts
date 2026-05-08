@@ -1,32 +1,95 @@
-import { Component } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common'; // <-- add DatePipe
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { AuthService } from '../../../../core/services/auth';
+import { UserService } from '../../../../core/services/user';
+
+import { AppUser } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-overview',
-  standalone: true, // make sure it's standalone
-  imports: [CommonModule, DatePipe], // <-- add DatePipe here
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './overview.html',
   styleUrls: ['./overview.scss']
 })
-export class ProfileOverview {
-  adminName: string = 'Admin';
-  profileImage: string | ArrayBuffer | null = null;
+export class ProfileOverview implements OnInit {
 
-  activityLogs = [
-    { time: new Date(), action: 'Logged in' },
-    { time: new Date(Date.now() - 1000 * 60 * 5), action: 'Updated Profile Info' },
-    { time: new Date(Date.now() - 1000 * 60 * 30), action: 'Logged out' }
-  ];
+  currentUser: AppUser | null = null;
 
-  onFileSelected(event: Event) {
+  adminName = '';
+  profileImage = '';
+
+  activityLogs: any[] = [];
+
+  loading = true;
+
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
+
+  ngOnInit() {
+
+    const user = this.authService.getCurrentUser();
+
+    if (!user?.id) {
+      this.loading = false;
+      return;
+    }
+
+    this.userService.getUserById(user.id)
+      .subscribe((data) => {
+
+        this.currentUser = data;
+
+        this.adminName = data.username;
+        this.profileImage = data.profileImage || '';
+
+        this.activityLogs = data.activityLogs || [];
+
+        this.loading = false;
+      });
+  }
+
+  // =========================
+  // UPLOAD PROFILE IMAGE
+  // =========================
+  async onFileSelected(event: Event) {
+
     const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
+
+    if (!input.files?.length || !this.currentUser?.id) {
+      return;
+    }
 
     const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.profileImage = reader.result;
-    };
-    reader.readAsDataURL(file);
+
+    try {
+
+      this.loading = true;
+
+      const imageUrl = await this.userService.uploadProfileImage(
+        this.currentUser.id,
+        file
+      );
+
+      this.profileImage = imageUrl;
+
+      await this.userService.addActivityLog(
+        this.currentUser.id,
+        'Updated profile picture'
+      );
+
+      alert('Profile picture updated successfully.');
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert('Failed to upload image.');
+    }
+
+    this.loading = false;
   }
 }

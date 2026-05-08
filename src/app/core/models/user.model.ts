@@ -1,5 +1,10 @@
 export type UserRole = 'admin' | 'staff' | 'resident';
 
+export interface ActivityLog {
+  action: string;
+  time: any;
+}
+
 export interface AppUser {
   id?: string;
 
@@ -8,7 +13,12 @@ export interface AppUser {
 
   role: UserRole;
 
-  createdAt?: any;
-
   residentId?: string;
+
+  profileImage?: string;
+
+  activityLogs?: ActivityLog[];
+
+  createdAt?: any;
+  updatedAt?: any;
 }

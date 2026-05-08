@@ -1,1 +1,55 @@
-<p>my-information works!</p>
+<div class="profile-info-container">
+
+  <!-- LOADING -->
+  <div *ngIf="loading">
+    Loading profile...
+  </div>
+
+  <!-- NO PROFILE -->
+  <div *ngIf="!loading && !resident">
+    <h3>No resident information linked.</h3>
+  </div>
+
+  <!-- PROFILE -->
+  <div *ngIf="resident" class="profile-card">
+
+    <h2>{{ resident.fullname }}</h2>
+
+    <div class="info-grid">
+
+      <div class="info-item">
+        <label>Birthdate</label>
+        <p>{{ resident.birthdate }}</p>
+      </div>
+
+      <div class="info-item">
+        <label>Gender</label>
+        <p>{{ resident.gender }}</p>
+      </div>
+
+      <div class="info-item">
+        <label>Civil Status</label>
+        <p>{{ resident.civilStatus }}</p>
+      </div>
+
+      <div class="info-item">
+        <label>Voter Status</label>
+        <p>
+          {{ resident.isVoter ? 'Registered Voter' : 'Not Registered' }}
+        </p>
+      </div>
+
+      <div class="info-item">
+        <label>Address</label>
+        <p>
+          Zone {{ resident.address?.zone }},
+          {{ resident.address?.street }},
+          {{ resident.address?.barangay }}
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
