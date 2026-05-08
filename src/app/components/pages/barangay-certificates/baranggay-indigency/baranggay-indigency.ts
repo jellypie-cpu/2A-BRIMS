@@ -5,6 +5,7 @@ import { BaranggayIndigencyForm } from './baranggay-indigency-form/baranggay-ind
 import { ResidentService } from '../../../../core/services/resident';
 import { CertificateService } from '../../../../core/services/certificate';
 import { AuthService } from '../../../../core/services/auth';
+import { serverTimestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-baranggay-indigency',
@@ -82,7 +83,7 @@ export class BaranggayIndigency implements OnInit {
       status: 'Issued',
       zone: resident.address?.zone,
       issuedBy: user?.id || null,
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     };
 
     await this.certificateService.add(certificate);

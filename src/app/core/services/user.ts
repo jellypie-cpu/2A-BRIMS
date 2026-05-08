@@ -9,7 +9,8 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
-  serverTimestamp
+  serverTimestamp,
+  getDoc
 } from '@angular/fire/firestore';
 
 import {
@@ -117,13 +118,9 @@ export class UserService {
 
     const userDoc = doc(this.firestore, `users/${userId}`);
 
-    const currentUser = await new Promise<AppUser>((resolve) => {
+    const snapshot = await getDoc(userDoc);
 
-      this.getUserById(userId).subscribe(user => {
-        resolve(user);
-      });
-
-    });
+const currentUser = snapshot.data() as AppUser;
 
     const logs = currentUser.activityLogs || [];
 

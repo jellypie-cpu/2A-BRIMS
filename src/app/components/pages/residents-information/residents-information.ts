@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResidentForm } from './residents-form/residents-form';
 import { ResidentService } from '../../../core/services/resident';
+import { FirebaseStorageService } from '../../../core/services/firebase-storage';
 
 @Component({
   selector: 'app-residents-information',
@@ -12,6 +13,11 @@ import { ResidentService } from '../../../core/services/resident';
   styleUrls: ['./residents-information.scss'],
 })
 export class ResidentsInformation implements OnInit {
+
+  constructor(
+  private residentService: ResidentService,
+  private storageService: FirebaseStorageService
+) {}
 
   //data for the residents list
 
@@ -27,8 +33,6 @@ export class ResidentsInformation implements OnInit {
   showForm = false;
   selectedResident: any = null;
   isEditMode: boolean = false;
-
-  constructor(private residentService: ResidentService) {}
   
 
   ngOnInit() {
@@ -49,7 +53,7 @@ filterResidents() {
 
   if (this.selectedZone !== null) {
     filtered = filtered.filter((r: any) =>
-      Number(r.address?.zone) === this.selectedZone
+      r.address?.zone === this.selectedZone
     );
   }
 
@@ -79,18 +83,37 @@ onSearchChange() {
  //add resident
 
   addResident() {
+
+  this.showForm = false;
+
+  setTimeout(() => {
+
     this.selectedResident = null;
-    this.isEditMode = true; // ADD MODE
+    this.isEditMode = true;
+
     this.showForm = true;
-  }
+
+  });
+}
 
  //view resident
 
   openResident(resident: any) {
-    this.selectedResident = structuredClone(resident);
-    this.isEditMode = false; // VIEW MODE FIRST
+
+  this.showForm = false;
+
+  setTimeout(() => {
+
+    this.selectedResident = {
+      ...resident
+    };
+
+    this.isEditMode = false;
+
     this.showForm = true;
-  }
+
+  });
+}
 
   //close form
 
@@ -113,10 +136,32 @@ onSearchChange() {
     return;
   }
 
-  if (resident.id) {
-    await this.residentService.update(resident.id, resident);
+  let docRef: any;
+
+  // ADD
+  if (!resident.id) {
+
+    docRef = await this.residentService.add(resident);
+
+    resident.id = docRef.id;
+
   } else {
-    await this.residentService.add(resident);
+
+    await this.residentService.update(resident.id, resident);
+  }
+
+  // PHOTO UPLOAD
+  if (resident.selectedFile) {
+
+    const photoURL =
+      await this.storageService.uploadResidentPhoto(
+        resident.selectedFile,
+        resident.id
+      );
+
+    await this.residentService.update(resident.id, {
+      photo: photoURL
+    });
   }
 
   this.closeForm();

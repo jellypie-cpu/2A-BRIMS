@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ActivityLogService } from './activity-log';
+import { FirebaseStorage } from './firebase-storage';
 
-describe('ActivityLogService', () => {
-  let service: ActivityLogService;
+describe('FirebaseStorage', () => {
+  let service: FirebaseStorage;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ActivityLogService);
+    service = TestBed.inject(FirebaseStorage);
   });
 
   it('should be created', () => {

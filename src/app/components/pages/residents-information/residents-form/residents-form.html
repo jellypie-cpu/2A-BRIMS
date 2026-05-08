@@ -81,7 +81,7 @@
         [disabled]="!isEditMode"
       >
         <option value="">Select Zone</option>
-        <option *ngFor="let z of zones" [value]="z">
+        <option *ngFor="let z of zones" [ngValue]="z">
           Zone {{ z }}
         </option>
       </select>
@@ -119,9 +119,14 @@
       </button>
 
       <!-- PREVIEW -->
-      <div *ngIf="resident.photo">
-        <img [src]="resident.photo" width="120" />
-      </div>
+      <div *ngIf="resident.photoPreview || resident.photo">
+
+  <img
+    [src]="resident.photoPreview || resident.photo"
+    width="120"
+  />
+
+</div>
 
       <!-- BUTTONS -->
       <div class="form-buttons">

@@ -5,6 +5,7 @@ import { BaranggayClearanceForm } from './baranggay-clearance-form/baranggay-cle
 import { ResidentService } from '../../../../core/services/resident';
 import { CertificateService } from '../../../../core/services/certificate';
 import { AuthService } from '../../../../core/services/auth';
+import { serverTimestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-baranggay-clearance',
@@ -85,7 +86,7 @@ export class BaranggayClearance implements OnInit {
       status: 'Pending',
       zone: resident.address?.zone,
       issuedBy: currentUser?.id || null,
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     };
 
     await this.certificateService.add(certificate);

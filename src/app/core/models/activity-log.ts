@@ -1,9 +1,7 @@
 export interface ActivityLog {
   id?: string;
-
-  userId: string;
-
+  userId?: string;
   action: string;
-
-  createdAt: any;
+  time?: any;
+  createdAt?: any;
 }

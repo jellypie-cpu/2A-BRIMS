@@ -1,42 +1,65 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+  doc,
+  updateDoc,
+  query,
+  where,
+  serverTimestamp
+} from '@angular/fire/firestore';
 
-@Injectable({ providedIn: 'root' })
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
 export class RequestService {
-  private key = 'requests';
 
-  getAll() {
-    return JSON.parse(localStorage.getItem(this.key) || '[]');
+  private firestore = inject(Firestore);
+
+  private requestRef = collection(this.firestore, 'requests');
+
+  // GET ALL
+  getAll(): Observable<any[]> {
+    return collectionData(this.requestRef, {
+      idField: 'id'
+    }) as Observable<any[]>;
   }
 
-  saveAll(data: any[]) {
-    localStorage.setItem(this.key, JSON.stringify(data));
-  }
+  // CREATE REQUEST
+  async create(residentId: string, type: string) {
 
-  create(residentId: string, type: string) {
-    const data = this.getAll();
-
-    data.push({
-      id: 'REQ-' + Date.now(),
+    return await addDoc(this.requestRef, {
       residentId,
       type,
       status: 'pending',
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     });
-
-    this.saveAll(data);
   }
 
-  getPending() {
-    return this.getAll().filter((r: any) => r.status === 'pending');
+  // GET PENDING
+  getPending(): Observable<any[]> {
+
+    const q = query(
+      this.requestRef,
+      where('status', '==', 'pending')
+    );
+
+    return collectionData(q, {
+      idField: 'id'
+    }) as Observable<any[]>;
   }
 
-  updateStatus(id: string, status: string) {
-    const data = this.getAll();
+  // UPDATE STATUS
+  async updateStatus(id: string, status: string) {
 
-    const index = data.findIndex((r: any) => r.id === id);
-    if (index !== -1) {
-      data[index].status = status;
-      this.saveAll(data);
-    }
+    const requestDoc = doc(this.firestore, `requests/${id}`);
+
+    return await updateDoc(requestDoc, {
+      status
+    });
   }
 }

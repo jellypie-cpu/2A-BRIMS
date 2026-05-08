@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { HelpService } from '../../../../core/services/help';
+import { serverTimestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-help',
@@ -54,7 +54,7 @@ export class ProfileHelp implements OnInit {
       subject: this.subject,
       message: this.message,
       status: 'Pending',
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     };
 
     this.helpService.createTicket(ticket);

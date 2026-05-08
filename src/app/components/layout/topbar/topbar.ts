@@ -55,21 +55,36 @@ export class TopbarComponent implements OnDestroy {
     cancelButtonText: 'Cancel'
   }).then((result) => {
     if (result.isConfirmed) {
-      this.authService.logout();
-      this.router.navigate(['/login']);
+      async logout() {
 
-      // Optional: small success message
-      Swal.fire({
-        icon: 'success',
-        title: 'Logged out',
-        showConfirmButton: false,
-        timer: 1500
-      });
-    }
+  this.showDropdown = false;
+
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will be logged out!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, logout!',
+    cancelButtonText: 'Cancel'
   });
+
+  if (result.isConfirmed) {
+
+    await this.authService.logout();
+
+    await this.router.navigate(['/login']);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Logged out',
+      timer: 1500,
+      showConfirmButton: false
+    });
+  }
 }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 }
+  }

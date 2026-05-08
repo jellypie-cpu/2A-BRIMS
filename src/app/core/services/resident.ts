@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-
+import { serverTimestamp } from 'firebase/firestore';
 import {
   Firestore,
   collection,
@@ -56,7 +56,7 @@ export class ResidentService {
   async add(resident: any) {
     return await addDoc(this.residentsRef, {
       ...resident,
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     });
   }
 

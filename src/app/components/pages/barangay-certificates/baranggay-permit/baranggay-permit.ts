@@ -6,6 +6,7 @@ import { ResidentService } from '../../../../core/services/resident';
 import { CertificateService } from '../../../../core/services/certificate';
 import { BaranggayPermitForm } from './baranggay-permit-form/baranggay-permit-form';
 import { AuthService } from '../../../../core/services/auth';
+import { serverTimestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-baranggay-permit',
@@ -93,7 +94,7 @@ export class BaranggayPermit implements OnInit {
 
     issuedBy: currentUser?.id || null,
 
-    createdAt: new Date() // OK here; service converts to serverTimestamp anyway
+   createdAt: serverTimestamp()
   };
 
   await this.certificateService.add(permit);
