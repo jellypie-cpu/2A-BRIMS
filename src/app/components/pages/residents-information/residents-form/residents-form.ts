@@ -114,37 +114,35 @@ export class ResidentForm implements OnChanges {
 
  //file selection handler
 
+// CHANGE: Storage removed → convert image to base64 instead
+
 onFileSelected(event: any) {
 
   const file = event.target.files[0];
-
   if (!file) return;
-
-  this.selectedFile = file;
-
-  this.resident.selectedFile = file;
 
   const reader = new FileReader();
 
   reader.onload = () => {
-   this.resident.photoPreview = reader.result;
+
+    // CHANGE: direct Firestore-compatible image storage
+    this.resident.photo = reader.result as string;
+
+    // CHANGE: removed selectedFile usage
+    this.selectedFile = null;
   };
 
   reader.readAsDataURL(file);
 }
 
-  // =========================
-  // CAMERA
-  // =========================
-  openCamera() {
+//camera capture handler
+openCamera() {
 
   navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
 
       const video = document.createElement('video');
-
       video.srcObject = stream;
-
       video.play();
 
       const canvas = document.createElement('canvas');
@@ -155,34 +153,14 @@ onFileSelected(event: any) {
         canvas.height = video.videoHeight;
 
         const ctx = canvas.getContext('2d');
-
         ctx?.drawImage(video, 0, 0);
 
-        canvas.toBlob((blob) => {
+        // CHANGE: convert to base64 instead of file upload
+        this.resident.photo = canvas.toDataURL('image/png');
 
-          if (!blob) return;
+        stream.getTracks().forEach(t => t.stop());
 
-          const file = new File(
-            [blob],
-            `resident-${Date.now()}.png`,
-            { type: 'image/png' }
-          );
-
-          this.selectedFile = file;
-
-          this.resident.selectedFile = file;
-
-          this.resident.photo = URL.createObjectURL(file);
-
-        }, 'image/png');
-
-        stream.getTracks().forEach(track => track.stop());
-
-      }, 2000);
-
-    })
-    .catch(() => {
-      alert('Camera permission denied');
+      }, 1000);
     });
 }
 }

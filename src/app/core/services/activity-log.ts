@@ -10,7 +10,6 @@ import {
   orderBy,
   serverTimestamp
 } from '@angular/fire/firestore';
-
 import { Observable } from 'rxjs';
 
 @Injectable({

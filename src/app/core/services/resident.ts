@@ -15,73 +15,45 @@ import {
 
 import { Observable } from 'rxjs';
 
+// CHANGE: Removed Firebase Storage dependency completely
+
 @Injectable({
   providedIn: 'root'
 })
 export class ResidentService {
 
   private firestore = inject(Firestore);
-  private residentsRef = collection(this.firestore, 'residents');
+  private ref = collection(this.firestore, 'residents');
 
-  // GET ALL
-  getAll(): Observable<any[]> {
-    return collectionData(this.residentsRef, {
-      idField: 'id'
-    }) as Observable<any[]>;
+  getAll() {
+    return collectionData(this.ref, { idField: 'id' });
   }
 
-  // GET BY ID
-  getById(id: string): Observable<any> {
-    const residentDoc = doc(this.firestore, `residents/${id}`);
+  add(data: Resident) {
 
-    return docData(residentDoc, {
-      idField: 'id'
-    }) as Observable<any>;
-  }
+    // CHANGE: remove any file/temp fields before saving
+    delete (data as any).selectedFile;
+    delete (data as any).photoPreview;
 
-  // GET BY USER ID
-  getByUserId(userId: string): Observable<any[]> {
-
-    const q = query(
-      this.residentsRef,
-      where('userId', '==', userId)
-    );
-
-    return collectionData(q, {
-      idField: 'id'
-    }) as Observable<any[]>;
-  }
-
-  // ADD
-  async add(resident: any) {
-    return await addDoc(this.residentsRef, {
-      ...resident,
+    return addDoc(this.ref, {
+      ...data,
+      isArchived: false,
       createdAt: serverTimestamp()
     });
   }
 
-  // UPDATE
-  async update(id: string, data: any) {
+  update(id: string, data: Partial<Resident>) {
 
-    const ref = doc(this.firestore, `residents/${id}`);
+    // CHANGE: cleanup before update
+    delete (data as any).selectedFile;
+    delete (data as any).photoPreview;
 
-    return updateDoc(ref, data);
+    const docRef = doc(this.firestore, 'residents', id);
+    return updateDoc(docRef, data);
   }
 
-  // DELETE
-  async delete(id: string) {
-
-    const ref = doc(this.firestore, `residents/${id}`);
-
-    return deleteDoc(ref);
+  getById(id: string) {
+    const docRef = doc(this.firestore, `residents/${id}`);
+    return docData(docRef, { idField: 'id' });
   }
-  async archive(id: string) {
-  const ref = doc(this.firestore, `residents/${id}`);
-  return updateDoc(ref, { isArchived: true });
-}
-
-async restore(id: string) {
-  const ref = doc(this.firestore, `residents/${id}`);
-  return updateDoc(ref, { isArchived: false });
-}
 }

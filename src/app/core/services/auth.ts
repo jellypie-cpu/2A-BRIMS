@@ -31,33 +31,37 @@ export class AuthService {
   }
 
   // LOGIN
-  async login(email: string, password: string) {
+  // CHANGE: prevent crash if Firestore user doc missing
 
-    const credential = await signInWithEmailAndPassword(
-      this.auth,
-      email,
-      password
-    );
+async login(email: string, password: string) {
 
-    const uid = credential.user.uid;
+  const credential = await signInWithEmailAndPassword(
+    this.auth,
+    email,
+    password
+  );
 
-    // GET USER DATA FROM FIRESTORE
-    const userRef = doc(this.firestore, `users/${uid}`);
-    const snapshot = await getDoc(userRef);
+  const uid = credential.user.uid;
 
-    if (snapshot.exists()) {
-      const userData = snapshot.data() as AppUser;
+  const userRef = doc(this.firestore, `users/${uid}`);
+  const snapshot = await getDoc(userRef);
 
-      this.currentUserSubject.next({
-        id: uid,
-        ...userData
-      });
+  if (!snapshot.exists()) {
 
-      return userData;
-    }
+    await signOut(this.auth);
 
-    throw new Error('User data not found');
+    throw new Error('User profile missing in Firestore');
   }
+
+  const userData = snapshot.data() as AppUser;
+
+  this.currentUserSubject.next({
+    id: uid,
+    ...userData
+  });
+
+  return userData;
+}
 
   // LOGOUT
   async logout() {
