@@ -53,11 +53,6 @@ export class ResidentService {
     return docData(docRef, { idField: 'id' }) as Observable<Resident>;
   }
 
-  getByUserId(userId: string): Observable<Resident[]> {
-    const q = query(this.residentsRef, where('userId', '==', userId));
-    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
-  }
-
   add(data: Resident) {
     const cleanData = this.cleanResidentData(data);
 

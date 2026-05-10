@@ -38,11 +38,8 @@ export class ProfileMyInformation implements OnInit {
           this.loading = false;
         });
     } else {
-      this.residentService.getByUserId(userId)
-        .subscribe((res: any[]) => {
-          this.resident = res?.[0] || null;
-          this.loading = false;
-        });
+      this.resident = null;
+      this.loading = false;
     }
   }
 }

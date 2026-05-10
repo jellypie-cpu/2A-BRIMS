@@ -1,93 +1,160 @@
 .modal {
-  position: fixed; 
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  background: rgba(0, 0, 0, 0.6);
-
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 1000;
-
-  /* ✅ allow scroll if content is tall */
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
 }
 
 .modal-content {
-  background: #fff;
-  width: 500px;
-  max-height: 90vh; 
-  border-radius: 12px;
-
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-
-  display: flex;
-  flex-direction: column;
-
+  background: #ffffff;
+  width: min(850px, 100%);
+  max-height: 92vh;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   overflow: hidden;
 }
 
-.modal-content form {
-  overflow-y: auto;
-  padding: 20px;
-}
-
-/* INPUTS */
-.modal-content input,
-.modal-content select {
-  margin-bottom: 12px;
-  padding: 10px;
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-/* TITLE */
-.modal-content h2 {
-  padding: 15px 20px;
-  margin: 0;
-  border-bottom: 1px solid #eee;
-}
-
-/* BUTTON AREA FIXED AT BOTTOM */
-.form-buttons {
+.modal-header {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-
-  padding: 15px 20px;
-  border-top: 1px solid #eee;
-  background: #fafafa;
-
-  position: sticky;
-  bottom: 0;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 24px;
+  background: #0f172a;
+  color: white;
 }
 
-/* BUTTON STYLE */
-button {
-  padding: 10px 14px;
+.modal-header h2 {
+  margin: 0;
+}
+
+.modal-header p {
+  margin: 6px 0 0;
+  color: #cbd5e1;
+}
+
+.x-btn {
+  background: transparent;
+  color: white;
+  font-size: 28px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
 }
 
-/* COLORS */
-button[type="submit"] {
-  background: #2e7d32;
+form {
+  padding: 22px;
+  overflow-y: auto;
+  max-height: 74vh;
+}
+
+.warning {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f59e0b;
+  font-weight: 700;
+}
+
+.photo-section {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: #f8fafc;
+  border: 1px dashed #94a3b8;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.photo-section img,
+.photo-placeholder {
+  width: 140px;
+  height: 140px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #e2e8f0;
+  display: grid;
+  place-items: center;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.field label {
+  display: block;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+}
+
+.field input:disabled,
+.field select:disabled {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+button {
+  border: none;
+  padding: 11px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.save-btn {
+  background: #16a34a;
   color: white;
 }
 
-button[type="button"] {
-  background: #757575;
+.edit-btn {
+  background: #2563eb;
   color: white;
 }
 
-button:hover {
-  opacity: 0.9;
+.close-btn {
+  background: #64748b;
+  color: white;
+}
+
+.photo-actions button {
+  background: #0f766e;
+  color: white;
+}
+
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 }

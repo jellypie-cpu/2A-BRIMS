@@ -20,7 +20,7 @@ export class BaranggayPermit implements OnInit {
   residents: any[] = [];
   filteredResidents: any[] = [];
 
-  selectedZone: string = '';
+ selectedZone: string | null = null;
   searchText: string = '';
 
   selectedResident: any = null;

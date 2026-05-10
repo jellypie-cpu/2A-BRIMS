@@ -1,16 +1,13 @@
 export interface Resident {
   id?: string;
-  userId?: string | null;
 
   fullname: string;
   birthdate: string;
   civilStatus: string;
   gender: string;
   isVoter: boolean;
-  isArchived?: boolean;
+  isArchived: boolean;
 
-  // Firestore-only photo storage.
-  // No Firebase Storage bucket is used.
   photo?: string | null;
 
   address: {
@@ -18,6 +15,10 @@ export interface Resident {
     street: string;
     barangay: string;
   };
+
+  createdBy?: string | null;
+  createdByName?: string | null;
+  updatedBy?: string | null;
 
   createdAt?: any;
   updatedAt?: any;

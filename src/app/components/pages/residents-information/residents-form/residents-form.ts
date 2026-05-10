@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
+import { Resident } from '../../../../core/models/resident.model';
 
 @Component({
   selector: 'app-resident-form',
@@ -17,150 +18,132 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./residents-form.scss'],
 })
 export class ResidentForm implements OnChanges {
-
-  @Input() residentData: any = null;
-  @Input() isEditMode: boolean = false;
-  @Input() allResidents: any[] = [];
+  @Input() residentData: Resident | null = null;
+  @Input() isEditMode = false;
+  @Input() allResidents: Resident[] = [];
 
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<any>();
+  @Output() save = new EventEmitter<Resident>();
 
-  zones = [1,2,3,4,5,6,7,8,9,10,11,12];
+  zones = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
-  resident: any = this.getEmptyResident();
+  resident: Resident = this.getEmptyResident();
+  submitted = false;
 
-  // ✅ FILE HOLDER
-  selectedFile: File | null = null;
-
-  // =========================
-  // LOAD DATA
-  // =========================
   ngOnChanges() {
+    this.submitted = false;
 
     if (this.residentData) {
-
       this.resident = structuredClone(this.residentData);
-
     } else {
-
       this.resident = this.getEmptyResident();
     }
   }
 
-  // =========================
-  // EMPTY TEMPLATE
-  // =========================
-  getEmptyResident() {
-
+  getEmptyResident(): Resident {
     return {
       fullname: '',
       birthdate: '',
       civilStatus: '',
       gender: '',
       isVoter: false,
-
-      address: {
-        zone: 0,
-        street: '',
-        barangay: ''
-      },
-
+      isArchived: false,
       photo: null,
-      photoPreview: null
+      address: {
+        zone: '',
+        street: '',
+        barangay: 'Barangay Name'
+      }
     };
   }
 
-  // =========================
-  // ENABLE EDIT
-  // =========================
   enableEdit() {
     this.isEditMode = true;
   }
 
-  // =========================
-  // DUPLICATE CHECK
-  // =========================
+  get missingFields(): string[] {
+    const missing: string[] = [];
+
+    if (!this.resident.fullname?.trim()) missing.push('Full Name');
+    if (!this.resident.birthdate) missing.push('Birthdate');
+    if (!this.resident.civilStatus) missing.push('Civil Status');
+    if (!this.resident.gender) missing.push('Gender');
+    if (!this.resident.address.zone) missing.push('Zone');
+    if (!this.resident.address.street?.trim()) missing.push('Street');
+    if (!this.resident.address.barangay?.trim()) missing.push('Barangay');
+
+    return missing;
+  }
+
   checkDuplicateLive(): boolean {
+    if (!this.resident.fullname || !this.resident.birthdate) return false;
 
     return this.allResidents.some(r =>
-
       r.id !== this.resident.id &&
-
-      r.fullname?.trim().toLowerCase() ===
-      this.resident.fullname?.trim().toLowerCase()
-
-      &&
-
+      r.fullname?.trim().toLowerCase() === this.resident.fullname.trim().toLowerCase() &&
       r.birthdate === this.resident.birthdate
     );
   }
 
-  // =========================
-  // SAVE
-  // =========================
   onSubmit() {
+    this.submitted = true;
 
-    this.resident.selectedFile = this.selectedFile;
+    if (this.missingFields.length > 0) return;
+    if (this.checkDuplicateLive()) return;
 
     this.save.emit(this.resident);
   }
 
-  // =========================
-  // CLOSE
-  // =========================
   onClose() {
     this.close.emit();
   }
 
- //file selection handler
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-// CHANGE: Storage removed → convert image to base64 instead
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      return;
+    }
 
-onFileSelected(event: any) {
+    if (file.size > 500 * 1024) {
+      alert('Image is too large. Please use an image below 500KB because this system stores photos in Firestore only.');
+      return;
+    }
 
-  const file = event.target.files[0];
-  if (!file) return;
+    const reader = new FileReader();
 
-  const reader = new FileReader();
+    reader.onload = () => {
+      this.resident.photo = reader.result as string;
+    };
 
-  reader.onload = () => {
+    reader.readAsDataURL(file);
+  }
 
-    // CHANGE: direct Firestore-compatible image storage
-    this.resident.photo = reader.result as string;
+  openCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
 
-    // CHANGE: removed selectedFile usage
-    this.selectedFile = null;
-  };
+        const canvas = document.createElement('canvas');
 
-  reader.readAsDataURL(file);
-}
+        setTimeout(() => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
 
-//camera capture handler
-openCamera() {
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(video, 0, 0);
 
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
+          this.resident.photo = canvas.toDataURL('image/jpeg', 0.6);
 
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.play();
-
-      const canvas = document.createElement('canvas');
-
-      setTimeout(() => {
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(video, 0, 0);
-
-        // CHANGE: convert to base64 instead of file upload
-        this.resident.photo = canvas.toDataURL('image/png');
-
-        stream.getTracks().forEach(t => t.stop());
-
-      }, 1000);
-    });
-}
+          stream.getTracks().forEach(t => t.stop());
+        }, 1000);
+      })
+      .catch(() => {
+        alert('Camera access denied or unavailable.');
+      });
+  }
 }

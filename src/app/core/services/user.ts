@@ -13,13 +13,6 @@ import {
   getDoc
 } from '@angular/fire/firestore';
 
-import {
-  Storage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from '@angular/fire/storage';
-
 import { Observable } from 'rxjs';
 import { AppUser } from '../models/user.model';
 
@@ -27,22 +20,16 @@ import { AppUser } from '../models/user.model';
   providedIn: 'root'
 })
 export class UserService {
-
   private firestore = inject(Firestore);
-  private storage = inject(Storage);
-
   private usersCollection = collection(this.firestore, 'users');
 
-  ///get all users
   getUsers(): Observable<AppUser[]> {
     return collectionData(this.usersCollection, {
       idField: 'id'
     }) as Observable<AppUser[]>;
   }
 
-  ///get user by id
   getUserById(id: string): Observable<AppUser> {
-
     const userDoc = doc(this.firestore, `users/${id}`);
 
     return docData(userDoc, {
@@ -50,8 +37,10 @@ export class UserService {
     }) as Observable<AppUser>;
   }
 
-  ///add user
   async addUser(user: AppUser) {
+    if (!user.id || !user.username || !user.email || !user.role) {
+      throw new Error('Complete user credentials are required before saving.');
+    }
 
     const userDoc = doc(this.firestore, `users/${user.id}`);
 
@@ -60,25 +49,21 @@ export class UserService {
       email: user.email,
       role: user.role,
       residentId: user.residentId || null,
-
-      profileImage: '',
-
+      profileImage: user.profileImage || '',
       activityLogs: [
         {
           action: 'Account created',
           time: new Date()
         }
       ],
-
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
 
     return user.id;
   }
 
-  ///update user
   async updateUser(id: string, data: Partial<AppUser>) {
-
     const userDoc = doc(this.firestore, `users/${id}`);
 
     return updateDoc(userDoc, {
@@ -87,41 +72,24 @@ export class UserService {
     });
   }
 
-  ///delete user
   async deleteUser(id: string) {
-
     const userDoc = doc(this.firestore, `users/${id}`);
-
     return deleteDoc(userDoc);
   }
 
-  /// upload profile image
-  async uploadProfileImage(userId: string, file: File) {
-
-    const path = `profile-images/${userId}`;
-
-    const storageRef = ref(this.storage, path);
-
-    await uploadBytes(storageRef, file);
-
-    const downloadURL = await getDownloadURL(storageRef);
-
+  async saveProfileImageAsBase64(userId: string, base64Image: string) {
     await this.updateUser(userId, {
-      profileImage: downloadURL
+      profileImage: base64Image
     });
 
-    return downloadURL;
+    return base64Image;
   }
 
-  /// add activity log
   async addActivityLog(userId: string, action: string) {
-
     const userDoc = doc(this.firestore, `users/${userId}`);
-
     const snapshot = await getDoc(userDoc);
 
-const currentUser = snapshot.data() as AppUser;
-
+    const currentUser = snapshot.data() as AppUser;
     const logs = currentUser.activityLogs || [];
 
     logs.unshift({

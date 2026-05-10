@@ -20,7 +20,7 @@ export class BaranggayClearance implements OnInit {
   filteredResidents: any[] = [];
 
   zones: string[] = [];
-  selectedZone: string = '';
+ selectedZone: string | null = null;
   searchText: string = '';
 
   selectedResident: any = null;

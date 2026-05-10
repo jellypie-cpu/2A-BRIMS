@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+
 import { ResidentForm } from './residents-form/residents-form';
 import { ResidentService } from '../../../core/services/resident';
+import { AuthService } from '../../../core/services/auth';
+import { Resident } from '../../../core/models/resident.model';
 
 @Component({
   selector: 'app-residents-information',
@@ -12,34 +16,42 @@ import { ResidentService } from '../../../core/services/resident';
   styleUrls: ['./residents-information.scss'],
 })
 export class ResidentsInformation implements OnInit {
-
-  constructor(
-    private residentService: ResidentService
-  ) {}
-
-  // CHANGED: zone should be string because Firebase stores strings
   zones = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
-  // CHANGED
-   selectedZone: string = '';
+  selectedZone: string | null = null;
 
-  allResidents: any[] = [];
-  residents: any[] = [];
+  allResidents: Resident[] = [];
+  residents: Resident[] = [];
+
   searchText = '';
+  loading = true;
 
   showForm = false;
-  selectedResident: any = null;
+  selectedResident: Resident | null = null;
   isEditMode = false;
 
+  constructor(
+    private residentService: ResidentService,
+    private authService: AuthService
+  ) {}
+
   ngOnInit() {
-    this.residentService.getAll().subscribe((residents: any[]) => {
-      const safeResidents = residents || [];
+    this.loadResidents();
+  }
 
-      this.allResidents = safeResidents.filter(
-        (r: any) => !r['isArchived']
-      );
+  loadResidents() {
+    this.loading = true;
 
-      this.filterResidents();
+    this.residentService.getAll().subscribe({
+      next: (residents: Resident[]) => {
+        this.allResidents = (residents || []).filter(r => r.isArchived !== true);
+        this.filterResidents();
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        Swal.fire('Error', 'Unable to load residents from Firestore.', 'error');
+      }
     });
   }
 
@@ -47,24 +59,20 @@ export class ResidentsInformation implements OnInit {
     let filtered = [...this.allResidents];
 
     if (this.selectedZone !== null) {
-      filtered = filtered.filter(
-        r => r.address?.zone === this.selectedZone
-      );
+      filtered = filtered.filter(r => r.address?.zone === this.selectedZone);
     }
 
     if (this.searchText.trim()) {
       const lower = this.searchText.toLowerCase();
 
-      filtered = filtered.filter(
-        r => r.fullname?.toLowerCase().includes(lower)
+      filtered = filtered.filter(r =>
+        r.fullname?.toLowerCase().includes(lower) ||
+        r.address?.street?.toLowerCase().includes(lower) ||
+        r.address?.barangay?.toLowerCase().includes(lower)
       );
     }
 
     this.residents = filtered;
-  }
-
-  onSearchChange() {
-    this.filterResidents();
   }
 
   addResident() {
@@ -73,46 +81,85 @@ export class ResidentsInformation implements OnInit {
     this.showForm = true;
   }
 
-  openResident(resident: any) {
-    this.selectedResident = { ...resident };
+  openResident(resident: Resident) {
+    this.selectedResident = structuredClone(resident);
     this.isEditMode = false;
     this.showForm = true;
   }
 
   closeForm() {
     this.showForm = false;
+    this.selectedResident = null;
   }
 
-  async saveResident(resident: any) {
+  async saveResident(resident: Resident) {
+    const currentUser = this.authService.getCurrentUser();
 
-  // CHANGE: prevent duplicates properly
-  const isDuplicate = this.allResidents.some(r =>
-    r.id !== resident.id &&
-    r.fullname?.toLowerCase() === resident.fullname?.toLowerCase() &&
-    r.birthdate === resident.birthdate
-  );
+    if (!currentUser?.id || !currentUser?.username || !currentUser?.email || !currentUser?.role) {
+      Swal.fire(
+        'Incomplete User Credentials',
+        'Your account credentials are incomplete. Please complete your username, email, and role before saving residents.',
+        'warning'
+      );
+      return;
+    }
 
-  if (isDuplicate) {
-    alert('Duplicate resident detected');
-    return;
+    const isDuplicate = this.allResidents.some(r =>
+      r.id !== resident.id &&
+      r.fullname?.trim().toLowerCase() === resident.fullname?.trim().toLowerCase() &&
+      r.birthdate === resident.birthdate
+    );
+
+    if (isDuplicate) {
+      Swal.fire(
+        'Duplicate Resident',
+        'A resident with the same full name and birthdate already exists.',
+        'warning'
+      );
+      return;
+    }
+
+    const payload: Resident = {
+      ...resident,
+      createdBy: resident.createdBy || currentUser.id,
+      createdByName: resident.createdByName || currentUser.username,
+      updatedBy: currentUser.id,
+      isArchived: resident.isArchived ?? false,
+      address: {
+        zone: String(resident.address.zone),
+        street: resident.address.street,
+        barangay: resident.address.barangay
+      }
+    };
+
+    try {
+      if (!payload.id) {
+        await this.residentService.add(payload);
+        Swal.fire('Saved', 'Resident added successfully.', 'success');
+      } else {
+        await this.residentService.update(payload.id, payload);
+        Swal.fire('Updated', 'Resident updated successfully.', 'success');
+      }
+
+      this.closeForm();
+    } catch {
+      Swal.fire('Error', 'Failed to save resident.', 'error');
+    }
   }
 
-  // CHANGE: clean temp fields before Firestore save
-  delete resident.selectedFile;
-  delete resident.photoPreview;
-
-  if (!resident.id) {
-    await this.residentService.add(resident);
-  } else {
-    await this.residentService.update(resident.id, resident);
-  }
-
-  this.closeForm();
-}
-
-  async archiveResident(resident: any) {
-    await this.residentService.update(resident.id, {
-      isArchived: true
+  async archiveResident(resident: Resident) {
+    const confirm = await Swal.fire({
+      title: 'Archive Resident?',
+      text: `Move ${resident.fullname} to archive?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, archive',
+      cancelButtonText: 'Cancel'
     });
+
+    if (!confirm.isConfirmed || !resident.id) return;
+
+    await this.residentService.archive(resident.id);
+    Swal.fire('Archived', 'Resident moved to archive.', 'success');
   }
 }

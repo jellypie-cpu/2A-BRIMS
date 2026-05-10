@@ -1,156 +1,179 @@
 <div class="modal" (click)="onClose()">
   <div class="modal-content" (click)="$event.stopPropagation()">
 
-    <h2>
-      {{ isEditMode ? (residentData ? 'Edit Resident' : 'Add Resident') : 'Resident Details' }}
-    </h2>
+    <div class="modal-header">
+      <div>
+        <h2>{{ isEditMode ? (residentData ? 'Edit Resident' : 'Add Resident') : 'Resident Details' }}</h2>
+        <p>All required credentials must be completed before saving.</p>
+      </div>
 
-<!-- DUPLICATE WARNING -->
-<div *ngIf="checkDuplicateLive()" class="warning">
-  ⚠ This resident already exists in the system
-</div>
+      <button type="button" class="x-btn" (click)="onClose()">×</button>
+    </div>
+
+    <div *ngIf="checkDuplicateLive()" class="warning">
+      ⚠ This resident already exists in the system.
+    </div>
+
+    <div *ngIf="submitted && missingFields.length > 0" class="warning">
+      ⚠ Please complete: {{ missingFields.join(', ') }}
+    </div>
 
     <form (ngSubmit)="onSubmit()" #residentForm="ngForm">
 
-      <!-- FULL NAME -->
-      <label>Full Name</label>
-      <input
-        type="text"
-        [(ngModel)]="resident.fullname"
-        name="fullname"
-        [disabled]="!isEditMode"
-        required
-      />
+      <div class="photo-section">
+        <img
+          *ngIf="resident.photo"
+          [src]="resident.photo"
+          alt="Resident Photo"
+        />
 
-      <!-- BIRTHDATE -->
-      <label>Birthdate</label>
-      <input
-        type="date"
-        [(ngModel)]="resident.birthdate"
-        name="birthdate"
-        [disabled]="!isEditMode"
-        required
-      />
+        <div *ngIf="!resident.photo" class="photo-placeholder">
+          No Photo
+        </div>
 
-      <!-- CIVIL STATUS -->
-      <label>Civil Status</label>
-      <select
-        [(ngModel)]="resident.civilStatus"
-        name="civilStatus"
-        [disabled]="!isEditMode"
-        required
-      >
-        <option value="">Select status</option>
-        <option value="Single">Single</option>
-        <option value="Married">Married</option>
-        <option value="Widowed">Widowed</option>
-      </select>
+        <div class="photo-actions" *ngIf="isEditMode">
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          />
 
-      <!-- GENDER -->
-<label>Gender</label>
-<select
-  [(ngModel)]="resident.gender"
-  name="gender"
-  [disabled]="!isEditMode"
-  required
->
-  <option value="">Select Gender</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-</select>
+          <button type="button" (click)="openCamera()">
+            📸 Take Photo
+          </button>
+        </div>
 
-<!-- VOTER STATUS -->
-<label>Voter Status</label>
-<select
-  [(ngModel)]="resident.isVoter"
-  name="isVoter"
-  [disabled]="!isEditMode"
-  required
->
-  <option [ngValue]="true">Registered Voter</option>
-  <option [ngValue]="false">Not a Voter</option>
-</select>
+        <small>
+          Firestore-only photo. Use image below 500KB.
+        </small>
+      </div>
 
-      <h3>Address</h3>
+      <div class="form-grid">
 
-      <!-- ZONE -->
-      <label>Zone</label>
-      <select
-        [(ngModel)]="resident.address.zone"
-        name="zone"
-        [disabled]="!isEditMode"
-      >
-        <option value="">Select Zone</option>
-        <option *ngFor="let z of zones" [ngValue]="z">
-          Zone {{ z }}
-        </option>
-      </select>
+        <div class="field">
+          <label>Full Name *</label>
+          <input
+            type="text"
+            [(ngModel)]="resident.fullname"
+            name="fullname"
+            [disabled]="!isEditMode"
+            required
+          />
+        </div>
 
-      <!-- STREET -->
-      <label>Street</label>
-      <input
-        type="text"
-        [(ngModel)]="resident.address.street"
-        name="street"
-        [disabled]="!isEditMode"
-      />
+        <div class="field">
+          <label>Birthdate *</label>
+          <input
+            type="date"
+            [(ngModel)]="resident.birthdate"
+            name="birthdate"
+            [disabled]="!isEditMode"
+            required
+          />
+        </div>
 
-      <!-- BARANGAY -->
-      <label>Barangay</label>
-      <input
-        type="text"
-        [(ngModel)]="resident.address.barangay"
-        name="barangay"
-        [disabled]="!isEditMode"
-      />
+        <div class="field">
+          <label>Civil Status *</label>
+          <select
+            [(ngModel)]="resident.civilStatus"
+            name="civilStatus"
+            [disabled]="!isEditMode"
+            required
+          >
+            <option value="">Select status</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Widowed">Widowed</option>
+            <option value="Separated">Separated</option>
+          </select>
+        </div>
 
-      <!-- PHOTO -->
-      <label>Resident Photo</label>
+        <div class="field">
+          <label>Gender *</label>
+          <select
+            [(ngModel)]="resident.gender"
+            name="gender"
+            [disabled]="!isEditMode"
+            required
+          >
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
 
-      <input
-        type="file"
-        accept="image/*"
-        (change)="onFileSelected($event)"
-        [disabled]="!isEditMode"
-      />
+        <div class="field">
+          <label>Voter Status *</label>
+          <select
+            [(ngModel)]="resident.isVoter"
+            name="isVoter"
+            [disabled]="!isEditMode"
+            required
+          >
+            <option [ngValue]="true">Registered Voter</option>
+            <option [ngValue]="false">Not a Voter</option>
+          </select>
+        </div>
 
-      <button type="button" (click)="openCamera()" [disabled]="!isEditMode">
-        📸 Take Photo
-      </button>
+        <div class="field">
+          <label>Zone *</label>
+          <select
+            [(ngModel)]="resident.address.zone"
+            name="zone"
+            [disabled]="!isEditMode"
+            required
+          >
+            <option value="">Select zone</option>
+            <option *ngFor="let z of zones" [ngValue]="z">
+              Zone {{ z }}
+            </option>
+          </select>
+        </div>
 
-      <!-- PREVIEW -->
-      <div *ngIf="resident.photoPreview || resident.photo">
+        <div class="field">
+          <label>Street *</label>
+          <input
+            type="text"
+            [(ngModel)]="resident.address.street"
+            name="street"
+            [disabled]="!isEditMode"
+            required
+          />
+        </div>
 
-  <img
-    [src]="resident.photoPreview || resident.photo"
-    width="120"
-  />
+        <div class="field">
+          <label>Barangay *</label>
+          <input
+            type="text"
+            [(ngModel)]="resident.address.barangay"
+            name="barangay"
+            [disabled]="!isEditMode"
+            required
+          />
+        </div>
 
-</div>
+      </div>
 
-      <!-- BUTTONS -->
       <div class="form-buttons">
 
-        <!-- VIEW MODE BUTTON -->
         <button
           type="button"
           *ngIf="!isEditMode"
+          class="edit-btn"
           (click)="enableEdit()"
         >
           Edit
         </button>
 
-        <!-- SAVE BUTTON -->
         <button
           type="submit"
           *ngIf="isEditMode"
-          [disabled]="residentForm.invalid"
+          class="save-btn"
         >
-          Save
+          Save Resident
         </button>
 
-        <!-- CLOSE -->
-        <button type="button" (click)="onClose()">
+        <button type="button" class="close-btn" (click)="onClose()">
           Close
         </button>
 
