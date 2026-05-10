@@ -1,5 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-
+import {
+  query,
+  where
+} from '@angular/fire/firestore';
 import {
   Firestore,
   collection,
@@ -102,4 +105,14 @@ export class UserService {
       updatedAt: serverTimestamp()
     });
   }
+  getResidentUsers(): Observable<AppUser[]> {
+  const q = query(
+    this.usersCollection,
+    where('role', '==', 'resident')
+  );
+
+  return collectionData(q, {
+    idField: 'id'
+  }) as Observable<AppUser[]>;
+}
 }

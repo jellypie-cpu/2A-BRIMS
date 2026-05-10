@@ -6,7 +6,9 @@ import Swal from 'sweetalert2';
 import { ResidentForm } from './residents-form/residents-form';
 import { ResidentService } from '../../../core/services/resident';
 import { AuthService } from '../../../core/services/auth';
+import { UserService } from '../../../core/services/user';
 import { Resident } from '../../../core/models/resident.model';
+import { AppUser } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-residents-information',
@@ -19,11 +21,12 @@ export class ResidentsInformation implements OnInit {
   zones = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
   selectedZone: string | null = null;
+  searchText = '';
 
   allResidents: Resident[] = [];
   residents: Resident[] = [];
+  residentUsers: AppUser[] = [];
 
-  searchText = '';
   loading = true;
 
   showForm = false;
@@ -32,30 +35,38 @@ export class ResidentsInformation implements OnInit {
 
   constructor(
     private residentService: ResidentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadResidentUsers();
     this.loadResidents();
   }
 
-  loadResidents() {
+  loadResidentUsers(): void {
+    this.userService.getResidentUsers().subscribe(users => {
+      this.residentUsers = users || [];
+    });
+  }
+
+  loadResidents(): void {
     this.loading = true;
 
-    this.residentService.getAll().subscribe({
-      next: (residents: Resident[]) => {
-        this.allResidents = (residents || []).filter(r => r.isArchived !== true);
+    this.residentService.getActive().subscribe({
+      next: residents => {
+        this.allResidents = residents || [];
         this.filterResidents();
         this.loading = false;
       },
       error: () => {
         this.loading = false;
-        Swal.fire('Error', 'Unable to load residents from Firestore.', 'error');
+        Swal.fire('Error', 'Unable to load residents.', 'error');
       }
     });
   }
 
-  filterResidents() {
+  filterResidents(): void {
     let filtered = [...this.allResidents];
 
     if (this.selectedZone !== null) {
@@ -63,57 +74,67 @@ export class ResidentsInformation implements OnInit {
     }
 
     if (this.searchText.trim()) {
-      const lower = this.searchText.toLowerCase();
+      const search = this.searchText.toLowerCase();
 
       filtered = filtered.filter(r =>
-        r.fullname?.toLowerCase().includes(lower) ||
-        r.address?.street?.toLowerCase().includes(lower) ||
-        r.address?.barangay?.toLowerCase().includes(lower)
+        r.fullname?.toLowerCase().includes(search) ||
+        r.userEmail?.toLowerCase().includes(search) ||
+        r.address?.street?.toLowerCase().includes(search) ||
+        r.address?.barangay?.toLowerCase().includes(search)
       );
     }
 
     this.residents = filtered;
   }
 
-  addResident() {
+  addResident(): void {
     this.selectedResident = null;
     this.isEditMode = true;
     this.showForm = true;
   }
 
-  openResident(resident: Resident) {
+  openResident(resident: Resident): void {
     this.selectedResident = structuredClone(resident);
     this.isEditMode = false;
     this.showForm = true;
   }
 
-  closeForm() {
+  closeForm(): void {
     this.showForm = false;
     this.selectedResident = null;
   }
 
-  async saveResident(resident: Resident) {
+  async saveResident(resident: Resident): Promise<void> {
     const currentUser = this.authService.getCurrentUser();
 
     if (!currentUser?.id || !currentUser?.username || !currentUser?.email || !currentUser?.role) {
       Swal.fire(
-        'Incomplete User Credentials',
-        'Your account credentials are incomplete. Please complete your username, email, and role before saving residents.',
+        'Incomplete Staff/User Credentials',
+        'Your account must have username, email, and role before saving resident records.',
         'warning'
       );
       return;
     }
 
-    const isDuplicate = this.allResidents.some(r =>
-      r.id !== resident.id &&
-      r.fullname?.trim().toLowerCase() === resident.fullname?.trim().toLowerCase() &&
+    if (!resident.userId || !resident.userEmail) {
+      Swal.fire(
+        'Resident User Required',
+        'Please choose the resident user account first. The resident document ID must match the user document ID.',
+        'warning'
+      );
+      return;
+    }
+
+    const duplicate = this.allResidents.some(r =>
+      r.userId !== resident.userId &&
+      r.fullname.trim().toLowerCase() === resident.fullname.trim().toLowerCase() &&
       r.birthdate === resident.birthdate
     );
 
-    if (isDuplicate) {
+    if (duplicate) {
       Swal.fire(
         'Duplicate Resident',
-        'A resident with the same full name and birthdate already exists.',
+        'A resident with the same name and birthdate already exists.',
         'warning'
       );
       return;
@@ -121,10 +142,11 @@ export class ResidentsInformation implements OnInit {
 
     const payload: Resident = {
       ...resident,
+      id: resident.userId,
+      isArchived: false,
       createdBy: resident.createdBy || currentUser.id,
       createdByName: resident.createdByName || currentUser.username,
       updatedBy: currentUser.id,
-      isArchived: resident.isArchived ?? false,
       address: {
         zone: String(resident.address.zone),
         street: resident.address.street,
@@ -132,34 +154,31 @@ export class ResidentsInformation implements OnInit {
       }
     };
 
-    try {
-      if (!payload.id) {
-        await this.residentService.add(payload);
-        Swal.fire('Saved', 'Resident added successfully.', 'success');
-      } else {
-        await this.residentService.update(payload.id, payload);
-        Swal.fire('Updated', 'Resident updated successfully.', 'success');
-      }
+    await this.residentService.saveResident(payload);
 
-      this.closeForm();
-    } catch {
-      Swal.fire('Error', 'Failed to save resident.', 'error');
-    }
+    Swal.fire('Saved', 'Resident information saved successfully.', 'success');
+    this.closeForm();
   }
 
-  async archiveResident(resident: Resident) {
-    const confirm = await Swal.fire({
+  async archiveResident(resident: Resident): Promise<void> {
+    if (!resident.id) return;
+
+    const result = await Swal.fire({
       title: 'Archive Resident?',
       text: `Move ${resident.fullname} to archive?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, archive',
+      confirmButtonText: 'Archive',
       cancelButtonText: 'Cancel'
     });
 
-    if (!confirm.isConfirmed || !resident.id) return;
+    if (!result.isConfirmed) return;
 
     await this.residentService.archive(resident.id);
+
+    this.allResidents = this.allResidents.filter(r => r.id !== resident.id);
+    this.filterResidents();
+
     Swal.fire('Archived', 'Resident moved to archive.', 'success');
   }
 }

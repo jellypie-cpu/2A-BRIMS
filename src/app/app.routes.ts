@@ -40,11 +40,21 @@ export const routes: Routes = [
       { path: 'users', component: Users },
 
 
-      { path: 'system-settings', component: SystemSettings ,
-      children: [
-        { path: 'archive', component: Archive }
-      ]
-      },
+      {
+  path: 'system-settings',
+  component: SystemSettings,
+  children: [
+    {
+      path: '',
+      redirectTo: 'archive',
+      pathMatch: 'full'
+    },
+    {
+      path: 'archive',
+      component: Archive
+    }
+  ]
+},
 
       { path: 'barangay-certificates', component: BarangayCertificates,
         children: [

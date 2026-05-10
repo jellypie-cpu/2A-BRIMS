@@ -9,6 +9,7 @@ import {
 
 import { FormsModule } from '@angular/forms';
 import { Resident } from '../../../../core/models/resident.model';
+import { AppUser } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-resident-form',
@@ -21,7 +22,7 @@ export class ResidentForm implements OnChanges {
   @Input() residentData: Resident | null = null;
   @Input() isEditMode = false;
   @Input() allResidents: Resident[] = [];
-
+  @Input() residentUsers: AppUser[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Resident>();
 
@@ -41,39 +42,45 @@ export class ResidentForm implements OnChanges {
   }
 
   getEmptyResident(): Resident {
-    return {
-      fullname: '',
-      birthdate: '',
-      civilStatus: '',
-      gender: '',
-      isVoter: false,
-      isArchived: false,
-      photo: null,
-      address: {
-        zone: '',
-        street: '',
-        barangay: 'Barangay Name'
-      }
-    };
-  }
+  return {
+    userId: '',
+    userEmail: '',
+    fullname: '',
+    birthdate: '',
+    civilStatus: '',
+    gender: '',
+    contactNumber: '',
+    isVoter: false,
+    isArchived: false,
+    photo: null,
+    address: {
+      zone: '',
+      street: '',
+      barangay: ''
+    }
+  };
+}
 
   enableEdit() {
     this.isEditMode = true;
   }
 
   get missingFields(): string[] {
-    const missing: string[] = [];
+  const missing: string[] = [];
 
-    if (!this.resident.fullname?.trim()) missing.push('Full Name');
-    if (!this.resident.birthdate) missing.push('Birthdate');
-    if (!this.resident.civilStatus) missing.push('Civil Status');
-    if (!this.resident.gender) missing.push('Gender');
-    if (!this.resident.address.zone) missing.push('Zone');
-    if (!this.resident.address.street?.trim()) missing.push('Street');
-    if (!this.resident.address.barangay?.trim()) missing.push('Barangay');
+  if (!this.resident.userId) missing.push('Resident User Account');
+  if (!this.resident.userEmail) missing.push('User Email');
+  if (!this.resident.fullname?.trim()) missing.push('Full Name');
+  if (!this.resident.birthdate) missing.push('Birthdate');
+  if (!this.resident.civilStatus) missing.push('Civil Status');
+  if (!this.resident.gender) missing.push('Gender');
+  if (!this.resident.contactNumber?.trim()) missing.push('Contact Number');
+  if (!this.resident.address.zone) missing.push('Zone');
+  if (!this.resident.address.street?.trim()) missing.push('Street');
+  if (!this.resident.address.barangay?.trim()) missing.push('Barangay');
 
-    return missing;
-  }
+  return missing;
+}
 
   checkDuplicateLive(): boolean {
     if (!this.resident.fullname || !this.resident.birthdate) return false;
@@ -146,4 +153,13 @@ export class ResidentForm implements OnChanges {
         alert('Camera access denied or unavailable.');
       });
   }
+  onUserSelected(): void {
+  const selectedUser = this.residentUsers.find(
+    user => user.id === this.resident.userId
+  );
+
+  if (!selectedUser) return;
+
+  this.resident.userEmail = selectedUser.email;
+}
 }

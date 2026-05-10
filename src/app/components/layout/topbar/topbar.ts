@@ -6,6 +6,10 @@ import Swal from 'sweetalert2';
 
 import { AuthService } from '../../../core/services/auth';
 import { AppUser } from '../../../core/models/user.model';
+import {
+  NotificationService,
+  AppNotification
+} from '../../../core/services/notifications';
 
 @Component({
   selector: 'app-topbar',
@@ -19,18 +23,48 @@ export class TopbarComponent implements OnDestroy {
   showDropdown = false;
   userRole: string | null = null;
 
-  private subscription: Subscription;
+  notifications: AppNotification[] = [];
+  notificationCount = 0;
+  showNotifications = false;
 
-  constructor(private authService: AuthService, private router: Router) {
-    this.subscription = this.authService.currentUser$.subscribe((user: AppUser | null) => {
-      if (user) {
-        this.username = user.username;
-        this.userRole = user.role;
-        return;
-      }
+  private subscription = new Subscription();
 
-      this.router.navigate(['/login']);
-    });
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {
+    this.subscription.add(
+      this.authService.currentUser$.subscribe((user: AppUser | null) => {
+        if (user) {
+          this.username = user.username;
+          this.userRole = user.role;
+          this.loadNotifications(user.role);
+          return;
+        }
+
+        this.router.navigate(['/login']);
+      })
+    );
+  }
+
+  loadNotifications(role: string): void {
+    this.subscription.add(
+      this.notificationService.getForRole(role).subscribe((notifications) => {
+        this.notifications = notifications || [];
+        this.notificationCount = this.notifications.length;
+      })
+    );
+  }
+
+  toggleNotifications(): void {
+    this.showNotifications = !this.showNotifications;
+  }
+
+  async markNotificationRead(notification: AppNotification): Promise<void> {
+    if (!notification.id) return;
+
+    await this.notificationService.markAsRead(notification.id);
   }
 
   toggleDropdown(): void {
@@ -58,13 +92,6 @@ export class TopbarComponent implements OnDestroy {
 
     await this.authService.logout();
     await this.router.navigate(['/login']);
-
-    await Swal.fire({
-      icon: 'success',
-      title: 'Logged out',
-      timer: 1500,
-      showConfirmButton: false
-    });
   }
 
   ngOnDestroy(): void {

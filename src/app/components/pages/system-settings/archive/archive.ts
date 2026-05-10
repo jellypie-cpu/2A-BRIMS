@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
+
 import { ResidentService } from '../../../../core/services/resident';
+import { Resident } from '../../../../core/models/resident.model';
 
 @Component({
   selector: 'app-archive',
@@ -10,22 +13,46 @@ import { ResidentService } from '../../../../core/services/resident';
   styleUrls: ['./archive.scss']
 })
 export class Archive implements OnInit {
-  archivedResidents: any[] = [];
+  archivedResidents: Resident[] = [];
+  loading = true;
 
   constructor(private residentService: ResidentService) {}
 
-  ngOnInit() {
-    this.loadArchived();
+  ngOnInit(): void {
+    this.loadArchivedResidents();
   }
 
-  loadArchived() {
-    this.residentService.getAll().subscribe(residents => {
-      this.archivedResidents = (residents || []).filter((r: any) => r['isArchived'] === true);
+  loadArchivedResidents(): void {
+    this.loading = true;
+
+    this.residentService.getArchived().subscribe({
+      next: residents => {
+        this.archivedResidents = residents || [];
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        Swal.fire('Error', 'Unable to load archived residents.', 'error');
+      }
     });
   }
 
-  async restore(resident: any) {
+  async restoreResident(resident: Resident): Promise<void> {
+    if (!resident.id) return;
+
+    const result = await Swal.fire({
+      title: 'Restore Resident?',
+      text: `Restore ${resident.fullname}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Restore',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (!result.isConfirmed) return;
+
     await this.residentService.restore(resident.id);
-    this.loadArchived();
+
+    Swal.fire('Restored', 'Resident restored successfully.', 'success');
   }
 }

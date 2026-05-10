@@ -48,6 +48,51 @@
         </small>
       </div>
 
+      <div class="field">
+  <label>Resident User Account *</label>
+
+  <select
+    [(ngModel)]="resident.userId"
+    name="userId"
+    [disabled]="!isEditMode || !!residentData"
+    (change)="onUserSelected()"
+    required
+  >
+    <option value="">Select resident user account</option>
+
+    <option *ngFor="let user of residentUsers" [value]="user.id">
+      {{ user.username }} - {{ user.email }}
+    </option>
+  </select>
+
+  <small>
+    This will become the Firestore document ID of the resident.
+  </small>
+</div>
+
+<div class="field">
+  <label>User Email *</label>
+
+  <input
+    type="email"
+    [(ngModel)]="resident.userEmail"
+    name="userEmail"
+    disabled
+    required
+  />
+</div>
+
+<div class="field">
+  <label>Contact Number *</label>
+
+  <input
+    type="text"
+    [(ngModel)]="resident.contactNumber"
+    name="contactNumber"
+    [disabled]="!isEditMode"
+    required
+  />
+</div>
       <div class="form-grid">
 
         <div class="field">

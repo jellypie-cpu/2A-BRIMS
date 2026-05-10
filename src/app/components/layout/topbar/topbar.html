@@ -11,6 +11,30 @@
     </span>
   </div>
 
+  <div class="notification-box">
+  <button type="button" (click)="toggleNotifications()">
+    🔔
+    <span *ngIf="notificationCount > 0">
+      {{ notificationCount }}
+    </span>
+  </button>
+
+  <div class="notification-dropdown" *ngIf="showNotifications">
+    <div *ngIf="notifications.length === 0">
+      No new notifications.
+    </div>
+
+    <div
+      class="notification-item"
+      *ngFor="let notification of notifications"
+      (click)="markNotificationRead(notification)"
+    >
+      <strong>{{ notification.title }}</strong>
+      <p>{{ notification.message }}</p>
+    </div>
+  </div>
+</div>
+
   <div class="right">
     <div class="user-menu" (click)="toggleDropdown()">
 
