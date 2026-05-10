@@ -13,7 +13,6 @@ import {
   providedIn: 'root'
 })
 export class CertificateService {
-
   private firestore = inject(Firestore);
   private ref = collection(this.firestore, 'certificates');
 
@@ -22,8 +21,6 @@ export class CertificateService {
   }
 
   add(cert: any) {
-
-    // CHANGE: remove duplicate createdAt overwrite bug
     return addDoc(this.ref, {
       ...cert,
       status: cert.status ?? 'pending',

@@ -1,23 +1,24 @@
 export interface Resident {
-
   id?: string;
+  userId?: string | null;
 
   fullname: string;
   birthdate: string;
   civilStatus: string;
   gender: string;
   isVoter: boolean;
-
   isArchived?: boolean;
 
-  // CHANGE: Storage removed → base64 stored in Firestore
+  // Firestore-only photo storage.
+  // No Firebase Storage bucket is used.
   photo?: string | null;
 
-  createdAt?: any;
-
   address: {
-    zone: string; // CHANGE: forced string consistency
+    zone: string;
     street: string;
     barangay: string;
   };
+
+  createdAt?: any;
+  updatedAt?: any;
 }

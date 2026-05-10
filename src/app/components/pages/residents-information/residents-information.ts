@@ -36,7 +36,7 @@ export class ResidentsInformation implements OnInit {
       const safeResidents = residents || [];
 
       this.allResidents = safeResidents.filter(
-        (r: any) => !r.isArchived
+        (r: any) => !r['isArchived']
       );
 
       this.filterResidents();

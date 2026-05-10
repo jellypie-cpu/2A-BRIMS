@@ -12,7 +12,6 @@ import { ResidentService } from '../../../../core/services/resident';
   styleUrls: ['./my-information.scss'],
 })
 export class ProfileMyInformation implements OnInit {
-
   user: any;
   resident: any;
   loading = true;
@@ -23,7 +22,6 @@ export class ProfileMyInformation implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.user = this.authService.getCurrentUser();
 
     if (!this.user) {
@@ -34,21 +32,17 @@ export class ProfileMyInformation implements OnInit {
     const userId = this.user.id;
 
     if (this.user.residentId) {
-
       this.residentService.getById(this.user.residentId)
         .subscribe(data => {
           this.resident = data;
           this.loading = false;
         });
-
     } else {
-
       this.residentService.getByUserId(userId)
-        .subscribe(res => {
+        .subscribe((res: any[]) => {
           this.resident = res?.[0] || null;
           this.loading = false;
         });
-
     }
   }
 }

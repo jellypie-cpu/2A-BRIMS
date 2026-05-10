@@ -10,7 +10,6 @@ import { ResidentService } from '../../../../core/services/resident';
   styleUrls: ['./archive.scss']
 })
 export class Archive implements OnInit {
-
   archivedResidents: any[] = [];
 
   constructor(private residentService: ResidentService) {}
@@ -21,15 +20,12 @@ export class Archive implements OnInit {
 
   loadArchived() {
     this.residentService.getAll().subscribe(residents => {
-      this.archivedResidents = (residents || []).filter(r => r.isArchived === true);
+      this.archivedResidents = (residents || []).filter((r: any) => r['isArchived'] === true);
     });
   }
 
   async restore(resident: any) {
-    await this.residentService.update(resident.id, {
-      isArchived: false
-    });
-
+    await this.residentService.restore(resident.id);
     this.loadArchived();
   }
 }

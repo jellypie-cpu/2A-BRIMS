@@ -38,7 +38,7 @@ export class BaranggayClearance implements OnInit {
       const safe = residents || [];
 
       // only active residents (not archived)
-      this.residents = safe.filter(r => !r.isArchived);
+      this.residents = safe.filter(r => !r['isArchived']);
 
       this.filteredResidents = [...this.residents];
 

@@ -37,7 +37,7 @@ export class BaranggayPermit implements OnInit {
 
       const safe = residents || [];
 
-      this.residents = safe.filter(r => !r.isArchived);
+      this.residents = safe.filter(r => !r['isArchived']);
       this.filteredResidents = [...this.residents];
     });
   }

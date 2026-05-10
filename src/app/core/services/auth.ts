@@ -19,7 +19,6 @@ import { AppUser, UserRole } from '../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-
   private auth = inject(Auth);
   private firestore = inject(Firestore);
 
@@ -30,49 +29,40 @@ export class AuthService {
     this.restoreUser();
   }
 
-  // LOGIN
-  // CHANGE: prevent crash if Firestore user doc missing
+  async login(email: string, password: string) {
+    const credential = await signInWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
 
-async login(email: string, password: string) {
+    const uid = credential.user.uid;
 
-  const credential = await signInWithEmailAndPassword(
-    this.auth,
-    email,
-    password
-  );
+    const userRef = doc(this.firestore, `users/${uid}`);
+    const snapshot = await getDoc(userRef);
 
-  const uid = credential.user.uid;
+    if (!snapshot.exists()) {
+      await signOut(this.auth);
+      throw new Error('User profile missing in Firestore');
+    }
 
-  const userRef = doc(this.firestore, `users/${uid}`);
-  const snapshot = await getDoc(userRef);
+    const userData = snapshot.data() as AppUser;
 
-  if (!snapshot.exists()) {
+    this.currentUserSubject.next({
+      id: uid,
+      ...userData
+    });
 
-    await signOut(this.auth);
-
-    throw new Error('User profile missing in Firestore');
+    return userData;
   }
 
-  const userData = snapshot.data() as AppUser;
-
-  this.currentUserSubject.next({
-    id: uid,
-    ...userData
-  });
-
-  return userData;
-}
-
-  // LOGOUT
   async logout() {
     await signOut(this.auth);
     this.currentUserSubject.next(null);
   }
 
-  // RESTORE SESSION
   private restoreUser() {
     onAuthStateChanged(this.auth, async (firebaseUser) => {
-
       if (!firebaseUser) {
         this.currentUserSubject.next(null);
         return;

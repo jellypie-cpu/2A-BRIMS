@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { serverTimestamp } from 'firebase/firestore';
 import {
   Firestore,
   collection,
@@ -7,53 +6,101 @@ import {
   addDoc,
   doc,
   docData,
-  deleteDoc,
   updateDoc,
   query,
-  where
+  where,
+  orderBy,
+  serverTimestamp
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
-
-// CHANGE: Removed Firebase Storage dependency completely
+import { Resident } from '../models/resident.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResidentService {
-
   private firestore = inject(Firestore);
-  private ref = collection(this.firestore, 'residents');
+  private residentsRef = collection(this.firestore, 'residents');
 
-  getAll() {
-    return collectionData(this.ref, { idField: 'id' });
+  getAll(): Observable<Resident[]> {
+    const q = query(this.residentsRef, orderBy('createdAt', 'desc'));
+    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
+  }
+
+  getActive(): Observable<Resident[]> {
+    const q = query(
+      this.residentsRef,
+      where('isArchived', '==', false),
+      orderBy('createdAt', 'desc')
+    );
+
+    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
+  }
+
+  getArchived(): Observable<Resident[]> {
+    const q = query(
+      this.residentsRef,
+      where('isArchived', '==', true),
+      orderBy('createdAt', 'desc')
+    );
+
+    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
+  }
+
+  getById(id: string): Observable<Resident> {
+    const docRef = doc(this.firestore, `residents/${id}`);
+    return docData(docRef, { idField: 'id' }) as Observable<Resident>;
+  }
+
+  getByUserId(userId: string): Observable<Resident[]> {
+    const q = query(this.residentsRef, where('userId', '==', userId));
+    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
   }
 
   add(data: Resident) {
+    const cleanData = this.cleanResidentData(data);
 
-    // CHANGE: remove any file/temp fields before saving
-    delete (data as any).selectedFile;
-    delete (data as any).photoPreview;
-
-    return addDoc(this.ref, {
-      ...data,
+    return addDoc(this.residentsRef, {
+      ...cleanData,
       isArchived: false,
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
   }
 
   update(id: string, data: Partial<Resident>) {
-
-    // CHANGE: cleanup before update
-    delete (data as any).selectedFile;
-    delete (data as any).photoPreview;
-
+    const cleanData = this.cleanResidentData(data);
     const docRef = doc(this.firestore, 'residents', id);
-    return updateDoc(docRef, data);
+
+    return updateDoc(docRef, {
+      ...cleanData,
+      updatedAt: serverTimestamp()
+    });
   }
 
-  getById(id: string) {
-    const docRef = doc(this.firestore, `residents/${id}`);
-    return docData(docRef, { idField: 'id' });
+  archive(id: string) {
+    return this.update(id, { isArchived: true });
+  }
+
+  restore(id: string) {
+    return this.update(id, { isArchived: false });
+  }
+
+  private cleanResidentData<T extends Partial<Resident>>(data: T): T {
+    const cleanData: any = { ...data };
+
+    delete cleanData.id;
+    delete cleanData.selectedFile;
+    delete cleanData.photoPreview;
+
+    if (cleanData.address?.zone !== undefined) {
+      cleanData.address = {
+        ...cleanData.address,
+        zone: String(cleanData.address.zone)
+      };
+    }
+
+    return cleanData;
   }
 }

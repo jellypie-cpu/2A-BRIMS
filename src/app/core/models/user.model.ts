@@ -6,22 +6,13 @@ export interface ActivityLog {
 }
 
 export interface AppUser {
-
   id?: string;
-
   username: string;
-
   email: string;
-
   role: UserRole;
-
   residentId?: string;
-
   profileImage?: string;
-
   activityLogs?: ActivityLog[];
-
   createdAt?: any;
-
   updatedAt?: any;
 }

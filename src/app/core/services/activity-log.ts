@@ -10,20 +10,17 @@ import {
   orderBy,
   serverTimestamp
 } from '@angular/fire/firestore';
+
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityLogService {
-
   private firestore = inject(Firestore);
-
   private logsRef = collection(this.firestore, 'activity_logs');
 
-  // ADD LOG
   async addLog(userId: string, action: string) {
-
     return await addDoc(this.logsRef, {
       userId,
       action,
@@ -31,9 +28,7 @@ export class ActivityLogService {
     });
   }
 
-  // GET USER LOGS
   getLogs(userId: string): Observable<any[]> {
-
     const q = query(
       this.logsRef,
       where('userId', '==', userId),
