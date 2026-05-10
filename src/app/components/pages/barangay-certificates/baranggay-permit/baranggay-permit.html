@@ -1,31 +1,64 @@
 <div class="permit-container">
 
-  <!-- HEADER -->
-  <div class="header-section">
+  <!-- OFFICIAL HEADER -->
+  <div class="gov-header">
+    <div>
+      <h1>Barangay Permit</h1>
+      <p>Official Resident Permit Processing Portal</p>
+    </div>
+  </div>
 
-    <input 
+  <!-- FILTER BAR (SAME STYLE AS CLEARANCE/INDIGENCY) -->
+  <div class="filter-bar">
+
+    <input
       type="text"
-      placeholder="Search resident..."
+      placeholder="Search resident name..."
       [(ngModel)]="searchText"
       (input)="filterResidents()"
     />
 
   </div>
 
-  <!-- LIST -->
-  <div class="resident-list">
+  <!-- RESIDENT GRID (SAME CARD SYSTEM) -->
+  <div class="resident-grid">
 
     <div class="resident-card" *ngFor="let resident of filteredResidents">
 
-      <h3>{{ resident.fullname }}</h3>
-      <p>Zone {{ resident.address?.zone }}</p>
+      <!-- PHOTO (same system style) -->
+      <div class="photo">
+        <img
+          *ngIf="resident.photo"
+          [src]="resident.photo"
+        />
+        <div *ngIf="!resident.photo" class="placeholder">
+          {{ resident.fullname?.charAt(0) }}
+        </div>
+      </div>
 
-      <button 
-        pButton
-        label="Create Permit"
-        class="p-button-warning"
-        (click)="openPermit(resident)">
-      </button>
+      <!-- DETAILS -->
+      <div class="details">
+
+        <h2>{{ resident.fullname }}</h2>
+
+        <p class="meta">
+          Zone:
+          <span class="badge">Zone {{ resident.address?.zone }}</span>
+        </p>
+
+        <p class="meta">
+          Address:
+          {{ resident.address?.street }}, {{ resident.address?.barangay }}
+        </p>
+
+      </div>
+
+      <!-- ACTION BUTTON -->
+      <div class="actions">
+        <button class="btn-generate" (click)="openPermit(resident)">
+          Generate Permit
+        </button>
+      </div>
 
     </div>
 

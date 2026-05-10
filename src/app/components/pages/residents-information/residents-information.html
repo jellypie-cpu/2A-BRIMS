@@ -1,49 +1,68 @@
-<div class="residents-container">
+<div class="residents-page">
 
-  <!-- HEADER -->
-  <div class="header-section">
+  <!-- ===== HEADER CONTROLS ===== -->
+  <div class="page-header">
 
-    <!-- ZONE SELECT -->
-    <div class="zone-select">
-      <label>Select Zone:</label>
-      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
-         <option [ngValue]="null">All Zones</option>
-  <option *ngFor="let zone of zones" [ngValue]="zone">
-   Zone {{ zone }}
-</option>
-</select>
+    <div class="left-controls">
+
+      <div class="title-box">
+        <h2>Residents Information</h2>
+        <p>Manage all barangay resident records</p>
+      </div>
+
     </div>
 
-    <!-- SEARCH -->
-    <div class="search-resident">
-      <input
-        type="text"
-        placeholder="Search resident by name..."
-        [(ngModel)]="searchText"
-        (input)="onSearchChange()"
-      />
+    <div class="right-controls">
+
+      <!-- ZONE FILTER -->
+      <div class="filter-box">
+        <label>Zone</label>
+        <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+          <option [ngValue]="null">All Zones</option>
+          <option *ngFor="let zone of zones" [ngValue]="zone">
+            Zone  {{ zone }}
+          </option>
+        </select>
+      </div>
+
+      <!-- SEARCH -->
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search resident..."
+          [(ngModel)]="searchText"
+          (input)="onSearchChange()"
+        />
+      </div>
+
+      <!-- ADD BUTTON -->
+      <button class="add-btn" (click)="addResident()">
+        + Add Resident
+      </button>
+
     </div>
-
-    <!-- ADD BUTTON -->
-    <button class="add-btn" (click)="addResident()">
-      + New Resident
-    </button>
-
   </div>
 
-  <h2>
-  {{ selectedZone === null
-      ? 'All Zone Records'
-      : 'Zone ' + selectedZone + ' Records' }}
-</h2>
+  <!-- ===== TITLE ===== -->
+<div class="section-title">
+  <div class="zone-record-title">
+    {{
+      selectedZone === null
+        ? 'All Zone Records'
+        : 'Zone ' + selectedZone + ' Records'
+    }}
+  </div>
+</div>
 
-  <!-- TABLE -->
-  <div class="table-container">
-    <table>
+  <!-- ===== TABLE ===== -->
+  <div class="table-wrapper">
+
+    <table class="residents-table">
+
       <thead>
         <tr>
-          <th>Resident ID</th>
-          <th>Full Name</th>
+          <th>ID</th>
+          <th>Name</th>
           <th>Birthdate</th>
           <th>Civil Status</th>
           <th>Gender</th>
@@ -57,35 +76,39 @@
 
       <tbody>
         <tr *ngFor="let resident of residents">
+
           <td>{{ resident.id }}</td>
-          <td>{{ resident.fullname }}</td>
+          <td class="name">{{ resident.fullname }}</td>
           <td>{{ resident.birthdate }}</td>
           <td>{{ resident.civilStatus }}</td>
-
           <td>{{ resident.gender }}</td>
 
-    <td>
-      <span [class.voter]="resident.isVoter" [class.non-voter]="!resident.isVoter">
-        {{ resident.isVoter ? 'Registered' : 'Not Registered' }}
-      </span>
-    </td>
+          <td>
+            <span [class.voter]="resident.isVoter"
+                  [class.non-voter]="!resident.isVoter">
+              {{ resident.isVoter ? 'Yes' : 'No' }}
+            </span>
+          </td>
 
           <td>{{ resident.address?.zone }}</td>
           <td>{{ resident.address?.street }}</td>
           <td>{{ resident.address?.barangay }}</td>
 
           <td class="actions">
-            <button (click)="openResident(resident)">
-              View / Update
+            <button class="view-btn" (click)="openResident(resident)">
+              View
             </button>
 
-            <button (click)="deleteResident(resident)">
+            <button class="delete-btn" (click)="deleteResident(resident)">
               Delete
             </button>
           </td>
+
         </tr>
       </tbody>
+
     </table>
+
   </div>
 
 </div>

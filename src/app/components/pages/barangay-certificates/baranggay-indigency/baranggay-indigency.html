@@ -1,54 +1,74 @@
 <div class="indigency-container">
 
-  <!-- HEADER -->
-  <div class="header-section">
-
-    <!-- ZONE FILTER -->
-    <div class="zone-select">
-      <label>Select Zone:</label>
-      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
-        <option value="">All Zones</option>
-        <option *ngFor="let zone of zones" [value]="zone">
-          {{ zone }}
-        </option>
-      </select>
+  <!-- OFFICIAL HEADER -->
+  <div class="gov-header">
+    <div>
+      <h1>Barangay Indigency</h1>
+      <p>Official Resident Assistance Certification Portal</p>
     </div>
+  </div>
 
-    <!-- SEARCH -->
-    <div class="search-resident">
-      <input 
-        type="text" 
-        placeholder="Search resident by name..." 
-        [(ngModel)]="searchText" 
-        (input)="filterResidents()"
-      />
-    </div>
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+
+    <!-- Zone Filter -->
+    <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+      <option value="">All Zones</option>
+      <option *ngFor="let zone of zones" [value]="zone">
+        {{ zone }}
+      </option>
+    </select>
+
+    <!-- Search -->
+    <input
+      type="text"
+      placeholder="Search resident name..."
+      [(ngModel)]="searchText"
+      (input)="filterResidents()"
+    />
 
   </div>
 
-  <!-- RESIDENT LIST -->
-  <div class="resident-list">
+  <!-- RESIDENT CARDS -->
+  <div class="resident-grid">
 
-    <div class="resident-row" *ngFor="let resident of filteredResidents">
+    <div class="resident-card" *ngFor="let resident of filteredResidents">
 
-      <!-- NAME -->
-      <span class="resident-name">
-        {{ resident.fullname }}
-      </span>
+      <!-- PHOTO -->
+      <div class="photo">
+        <img
+          *ngIf="resident.photo"
+          [src]="resident.photo"
+          alt="resident photo"
+        />
+        <div *ngIf="!resident.photo" class="placeholder">
+          {{ resident.fullname?.charAt(0) }}
+        </div>
+      </div>
 
-      <!-- ADDRESS -->
-      <span class="resident-zone">
-        Zone {{ resident.address?.zone }}
-      </span>
+      <!-- DETAILS -->
+      <div class="details">
 
-      <!-- BUTTON -->
-      <button 
-        pButton 
-        type="button" 
-        label="Generate Indigency"
-        class="p-button-success"
-        (click)="openIndigency(resident)">
-      </button>
+        <h2>{{ resident.fullname }}</h2>
+
+        <p class="meta">
+          Zone:
+          <span class="badge">Zone {{ resident.address?.zone }}</span>
+        </p>
+
+        <p class="meta">
+          Address:
+          {{ resident.address?.street }}, {{ resident.address?.barangay }}
+        </p>
+
+      </div>
+
+      <!-- ACTION BUTTON -->
+      <div class="actions">
+        <button class="btn-generate" (click)="openIndigency(resident)">
+          Generate Indigency
+        </button>
+      </div>
 
     </div>
 
@@ -56,7 +76,7 @@
 
 </div>
 
-<!-- ✅ MODAL CONNECTION -->
+<!-- MODAL -->
 <app-barangay-indigency-form
   *ngIf="showModal"
   [selectedResident]="selectedResident"

@@ -1,76 +1,184 @@
+/* =======================
+   MAIN CONTAINER
+======================= */
 .indigency-container {
   padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 80vh;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #f4f6fb;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
-.header-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 20px;
-  align-items: center;
-  justify-content: space-between;
-}
+/* =======================
+   HEADER (GOV STYLE)
+======================= */
+.gov-header {
+  background: linear-gradient(135deg, #1e8a6f, #25ebc0);
+  color: white;
+  padding: 20px;
+  border-radius: 14px;
 
-.zone-select label {
-  font-weight: 600;
-  margin-right: 8px;
-}
-
-.zone-select select,
-.search-resident input {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.search-resident input {
-  width: 220px;
-}
-
-.resident-list {
-  margin-top: 10px;
-}
-
-.resident-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
-  margin-bottom: 8px;
-  background-color: #ffffff;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: background-color 0.2s, transform 0.1s;
 
-  &:hover {
-    background-color: #e9f5ff;
-    transform: translateY(-1px);
-  }
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  margin-bottom: 15px;
 }
 
-.resident-name {
-  font-size: 15px;
-  font-weight: 500;
-  color: #333;
+.gov-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
 }
 
-.p-button {
+.gov-header p {
+  margin: 4px 0 0;
   font-size: 13px;
-  font-weight: 600;
-  padding: 0.3rem 0.8rem;
-  border-radius: 4px;
+  opacity: 0.9;
 }
 
-.p-button-success {
-  background-color: #28a745;
-  border-color: #28a745;
+/* =======================
+   FILTER BAR
+======================= */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  background: rgb(202, 215, 240);
+  padding: 15px;
+  border-radius: 14px;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  margin-bottom: 18px;
 }
-.p-button-success:hover {
-  background-color: #1e7e34;
-  border-color: #1e7e34;
+
+.filter-bar select,
+.filter-bar input {
+  height: 40px;
+  padding: 0 12px;
+
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+
+  background: rgb(247, 247, 247);
+  font-size: 14px;
+  outline: none;
+
+  flex: 1;
+  transition: 0.2s ease;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+  border-color: #25eba9;
+  background: rgb(182, 207, 255);
+}
+
+/* =======================
+   GRID LAYOUT
+======================= */
+.resident-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+/* =======================
+   CARD DESIGN
+======================= */
+.resident-card {
+  background: rgb(211, 223, 245);
+  border-radius: 16px;
+  padding: 15px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resident-card:hover {
+  transform: translateY(-4px);
+}
+
+/* PHOTO */
+.photo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #25ebb0;
+}
+
+.placeholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e2e8f0;
+  font-size: 22px;
+  font-weight: bold;
+  color: #1e8a6f;
+}
+
+/* DETAILS */
+.details h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #1e3b2f;
+}
+
+.meta {
+  font-size: 13px;
+  color: #64748b;
+  margin: 3px 0;
+}
+
+/* BADGE */
+.badge {
+  background: #e0f2fe;
+  color: #03a16c;
+
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* BUTTON */
+.actions {
+  margin-top: auto;
+}
+
+.btn-generate {
+  width: 100%;
+  padding: 10px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #1fcfcf;
+  color: white;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-generate:hover {
+  background: #42d1be;
 }

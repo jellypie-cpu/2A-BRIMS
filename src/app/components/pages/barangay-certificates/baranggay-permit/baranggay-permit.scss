@@ -1,23 +1,184 @@
+/* =======================
+   MAIN CONTAINER
+======================= */
 .permit-container {
   padding: 20px;
+  background: #f7f7f8;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
-.header-section {
+/* =======================
+   HEADER (SAME AS SYSTEM)
+======================= */
+.gov-header {
+  background: linear-gradient(135deg, #8a711e, #eb9525);
+  color: white;
+
+  padding: 20px;
+  border-radius: 14px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   margin-bottom: 15px;
 }
 
-.resident-list {
+.gov-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.gov-header p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* =======================
+   FILTER BAR (SYSTEM STYLE)
+======================= */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  background: rgb(250, 250, 250);
+  padding: 15px;
+  border-radius: 14px;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  margin-bottom: 18px;
+}
+
+.filter-bar input {
+  height: 40px;
+  padding: 0 12px;
+
+  border-radius: 10px;
+  border: 1px solid #becfe0;
+
+  background: #f6f7f8;
+  font-size: 14px;
+
+  flex: 1;
+  outline: none;
+}
+
+.filter-bar input:focus {
+  border-color: #eba625;
+  background: #f3f2f2;
+}
+
+/* =======================
+   GRID (SAME SYSTEM)
+======================= */
+.resident-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+/* =======================
+   CARD DESIGN (REAL SYSTEM)
+======================= */
+.resident-card {
+  background: rgb(203, 210, 230);
+  border-radius: 16px;
+  padding: 15px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-.resident-card {
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background: #fff;
+.resident-card:hover {
+  transform: translateY(-4px);
 }
 
-button {
-  margin-top: 10px;
+/* TEXT */
+.resident-card h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.meta {
+  font-size: 13px;
+  color: #64748b;
+  margin: 3px 0;
+}
+
+/* BADGE */
+.badge {
+  background: #e0f2fe;
+  color: #a17703;
+
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* PHOTO */
+.photo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ebb625;
+}
+
+.placeholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f1f2f3;
+  font-size: 22px;
+  font-weight: bold;
+  color: #8a6d1e;
+}
+
+/* =======================
+   BUTTON (SYSTEM STYLE)
+======================= */
+.actions {
+  margin-top: auto;
+}
+
+.btn-generate {
+  width: 100%;
+  padding: 10px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #f59e0b;
+  color: white;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-generate:hover {
+  background: #d97706;
 }

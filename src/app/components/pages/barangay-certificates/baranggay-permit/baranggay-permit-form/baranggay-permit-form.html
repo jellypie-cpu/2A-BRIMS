@@ -2,54 +2,69 @@
 
   <div class="modal-content">
 
-    <!-- FORM -->
-    <div *ngIf="!selectedResident?.printMode">
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h2>Barangay Business Permit</h2>
+      <p>Official Business Registration & Approval System</p>
+    </div>
 
-      <h2>Business Permit Request</h2>
+    <!-- FORM SECTION -->
+    <div class="form-section" *ngIf="!selectedResident?.printMode">
 
-      <p><strong>Resident:</strong> {{ selectedResident?.fullname }}</p>
+      <p class="resident-info">
+        <strong>Resident:</strong> {{ selectedResident?.fullname }}
+      </p>
 
       <input placeholder="Business Name" [(ngModel)]="businessName" />
       <input placeholder="Business Type" [(ngModel)]="businessType" />
       <input placeholder="Business Address" [(ngModel)]="address" />
 
-      <button (click)="submitPermit()">Submit</button>
-      <button (click)="closeModal()">Cancel</button>
+      <div class="form-actions">
+        <button class="btn-primary" (click)="submitPermit()">Submit</button>
+        <button class="btn-secondary" (click)="closeModal()">Cancel</button>
+      </div>
 
     </div>
 
     <!-- PRINT AREA -->
-    <div id="printArea" *ngIf="selectedResident">
+    <div id="printArea" class="print-area" *ngIf="selectedResident">
 
-      <h2>BARANGAY BUSINESS PERMIT</h2>
+      <div class="print-header">
+        <h2>BARANGAY BUSINESS PERMIT</h2>
+        <p>Official Government Document</p>
+      </div>
 
-      <p>
-        This certifies that
-        <strong>{{ selectedResident?.fullname }}</strong>
-        is granted permission to operate:
+      <div class="print-body">
 
-        <br><br>
+        <p>
+          This certifies that
+          <strong>{{ selectedResident?.fullname }}</strong>
+          is hereby granted permission to operate the following business:
+        </p>
 
-        Business Name: <strong>{{ businessName }}</strong><br>
-        Business Type: <strong>{{ businessType }}</strong><br>
-        Location: <strong>{{ address }}</strong><br>
+        <div class="print-details">
+          <p><span>Business Name:</span> {{ businessName }}</p>
+          <p><span>Business Type:</span> {{ businessType }}</p>
+          <p><span>Location:</span> {{ address }}</p>
+        </div>
 
-        <br>
+        <p class="date">
+          Approved this {{ today | date:'longDate' }}
+        </p>
 
-        Approved this {{ today | date:'longDate' }}
-      </p>
+      </div>
 
-      <br><br>
-
-      <p>________________________</p>
-      <p>Barangay Captain</p>
+      <div class="signature">
+        <p>________________________</p>
+        <p>Barangay Captain</p>
+      </div>
 
     </div>
 
-    <!-- ACTION -->
-    <div class="buttons">
-      <button (click)="printPermit()">Print</button>
-      <button (click)="closeModal()">Close</button>
+    <!-- FOOTER ACTIONS -->
+    <div class="modal-actions">
+      <button class="btn-print" (click)="printPermit()">Print</button>
+      <button class="btn-close" (click)="closeModal()">Close</button>
     </div>
 
   </div>
