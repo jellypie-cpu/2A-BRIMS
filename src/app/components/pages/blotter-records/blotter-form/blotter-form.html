@@ -1,62 +1,77 @@
-<div class="modal" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+<div class="blotter-modal" (click)="onClose()">
+  <div class="blotter-modal-content" (click)="$event.stopPropagation()">
 
-    <h2>Blotter Request</h2>
+    <div class="modal-header">
+      <h2>Blotter Request</h2>
+      <p>Encode official barangay complaint and incident details.</p>
+    </div>
 
     <form (ngSubmit)="onSubmit()" #blotterForm="ngForm">
 
-      <!-- COMPLAINT -->
-      <label>Complaint</label>
-      <input type="text" [(ngModel)]="blotter.complaint" name="complaint" required />
+      <div class="form-grid">
 
-      <!-- VICTIM -->
-      <label>Victim(s)</label>
-      <input type="text" [(ngModel)]="blotter.victims" name="victims" required />
+        <div class="form-group">
+          <label>Complaint</label>
+          <input type="text" [(ngModel)]="blotter.complaint" name="complaint" required />
+        </div>
 
-      <!-- RESPONDENT -->
-      <label>Respondent</label>
-      <input type="text" [(ngModel)]="blotter.respondent" name="respondent" required />
+        <div class="form-group">
+          <label>Victim(s)</label>
+          <input type="text" [(ngModel)]="blotter.victims" name="victims" required />
+        </div>
 
-      <!-- TYPE -->
-      <label>Type</label>
-      <select [(ngModel)]="blotter.type" name="type" required>
-        <option value="">Select Type</option>
-        <option value="Civil">Civil</option>
-        <option value="Criminal">Criminal</option>
-      </select>
+        <div class="form-group">
+          <label>Respondent</label>
+          <input type="text" [(ngModel)]="blotter.respondent" name="respondent" required />
+        </div>
 
-      <!-- LOCATION -->
-      <label>Location</label>
-      <input type="text" [(ngModel)]="blotter.location" name="location" required />
+        <div class="form-group">
+          <label>Type</label>
+          <select [(ngModel)]="blotter.type" name="type" required>
+            <option value="">Select Type</option>
+            <option value="Civil">Civil</option>
+            <option value="Criminal">Criminal</option>
+          </select>
+        </div>
 
-      <!-- DATE -->
-      <label>Date</label>
-      <input type="date" [(ngModel)]="blotter.date" name="date" required />
+        <div class="form-group full-width">
+          <label>Location</label>
+          <input type="text" [(ngModel)]="blotter.location" name="location" required />
+        </div>
 
-      <!-- TIME -->
-      <label>Time</label>
-      <input type="time" [(ngModel)]="blotter.time" name="time" required />
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="blotter.date" name="date" required />
+        </div>
 
-      <!-- STATUS -->
-      <label>Status</label>
-      <select [(ngModel)]="blotter.status" name="status" required>
-        <option value="">Select Status</option>
-        <option value="Active">Active</option>
-        <option value="Settled">Settled</option>
-        <option value="Scheduled">Scheduled</option>
-      </select>
+        <div class="form-group">
+          <label>Time</label>
+          <input type="time" [(ngModel)]="blotter.time" name="time" required />
+        </div>
 
-      <!-- DESCRIPTION -->
-      <label>Description</label>
-      <textarea [(ngModel)]="blotter.description" name="description"></textarea>
+        <div class="form-group full-width">
+          <label>Status</label>
+          <select [(ngModel)]="blotter.status" name="status" required>
+            <option value="">Select Status</option>
+            <option value="Active">Active</option>
+            <option value="Settled">Settled</option>
+            <option value="Scheduled">Scheduled</option>
+          </select>
+        </div>
 
-      <!-- BUTTONS -->
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea [(ngModel)]="blotter.description" name="description"></textarea>
+        </div>
+
+      </div>
+
       <div class="form-buttons">
-        <button type="submit" [disabled]="blotterForm.invalid">
+        <button class="save-btn" type="submit" [disabled]="blotterForm.invalid">
           Save Blotter
         </button>
 
-        <button type="button" (click)="onClose()">
+        <button class="cancel-btn" type="button" (click)="onClose()">
           Cancel
         </button>
       </div>
@@ -65,4 +80,3 @@
 
   </div>
 </div>
-

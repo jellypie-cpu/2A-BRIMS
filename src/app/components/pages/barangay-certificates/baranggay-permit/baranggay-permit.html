@@ -1,39 +1,38 @@
 <div class="permit-container">
+  <div class="permit-page-header">
+    <div>
+      <h1>Barangay Business Permit</h1>
+      <p>Create and print official barangay business permits.</p>
+    </div>
+  </div>
 
-  <!-- HEADER -->
-  <div class="header-section">
-
-    <input 
+  <div class="permit-toolbar">
+    <input
       type="text"
       placeholder="Search resident..."
       [(ngModel)]="searchText"
       (input)="filterResidents()"
     />
-
   </div>
 
-  <!-- LIST -->
   <div class="resident-list">
-
     <div class="resident-card" *ngFor="let resident of filteredResidents">
+      <div class="resident-avatar">
+        {{ resident.fullname?.charAt(0) }}
+      </div>
 
-      <h3>{{ resident.fullname }}</h3>
-      <p>Zone {{ resident.address?.zone }}</p>
+      <div class="resident-info">
+        <h3>{{ resident.fullname }}</h3>
+        <p>Zone {{ resident.address?.zone }}</p>
+      </div>
 
-      <button 
-        pButton
-        label="Create Permit"
-        class="p-button-warning"
-        (click)="openPermit(resident)">
+      <button class="create-btn" (click)="openPermit(resident)">
+        Create Permit
       </button>
-
     </div>
-
   </div>
-
 </div>
 
-<!-- MODAL -->
 <app-barangay-permit-form
   *ngIf="showModal"
   [selectedResident]="selectedResident"

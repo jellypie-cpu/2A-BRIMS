@@ -1,23 +1,114 @@
 .permit-container {
-  padding: 20px;
+  padding: 24px;
 }
 
-.header-section {
-  margin-bottom: 15px;
+.permit-page-header {
+  background: linear-gradient(135deg, #06204a, #0b3d91);
+  color: #fff;
+  padding: 24px 28px;
+  border-radius: 20px;
+  border-left: 8px solid #d4a017;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, .14);
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 6px 0 0;
+    opacity: .88;
+  }
+}
+
+.permit-toolbar {
+  background: #fff;
+  border: 1px solid #d7e0ec;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
+
+  input {
+    max-width: 380px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    outline: none;
+
+    &:focus {
+      border-color: #0b3d91;
+      box-shadow: 0 0 0 4px rgba(11, 61, 145, .12);
+    }
+  }
 }
 
 .resident-list {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 16px;
 }
 
 .resident-card {
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
   background: #fff;
+  border: 1px solid #d7e0ec;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-left: 6px solid #0b3d91;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, .08);
 }
 
-button {
-  margin-top: 10px;
+.resident-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0b3d91, #06204a);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.resident-info {
+  flex: 1;
+
+  h3 {
+    margin: 0;
+    color: #06204a;
+    font-size: 17px;
+    font-weight: 900;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+}
+
+.create-btn,
+.primary-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 15px;
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: white;
+  font-weight: 900;
+}
+
+.secondary-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 15px;
+  background: #64748b;
+  color: white;
+  font-weight: 900;
 }

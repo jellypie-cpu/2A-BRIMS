@@ -1,71 +1,74 @@
-<div class="modal" (click)="closePrint()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+<div class="indigency-modal" (click)="closePrint()">
+  <div class="indigency-modal-content" (click)="$event.stopPropagation()">
 
-    <!-- PRINT AREA -->
-    <div id="printArea" class="print-container">
+    <div id="printArea" class="official-document">
 
-      <!-- HEADER -->
-      <div class="header">
-        <h2>Republic of the Philippines</h2>
-        <h3>Province of Misamis Oriental</h3>
-        <h3>Municipality of Villanueva</h3>
-        <h2 class="barangay-name">BARANGAY SAN MARTIN</h2>
+      <div class="doc-header">
+        <div class="seal-left">BARANGAY<br />SEAL</div>
+        <div class="seal-right">OFFICIAL<br />SEAL</div>
 
-        <h1 class="title">BARANGAY INDIGENCY</h1>
+        <p>Republic of the Philippines</p>
+        <p>Province of Misamis Oriental</p>
+        <p>Municipality of Villanueva</p>
+        <h2>BARANGAY VILLANUEV</h2>
+        <h3>OFFICE OF THE PUNONG BARANGAY</h3>
       </div>
 
-      <hr>
+      <div class="doc-title">Certificate of Indigency</div>
 
-      <!-- BODY -->
-      <div class="body">
+      <div class="doc-body">
 
-        <p class="cert-no">
-          <strong>Certificate No:</strong> {{ certificateNo }}
-        </p>
+        <div class="certificate-meta">
+          <p><strong>Certificate No:</strong> {{ certificateNo }}</p>
+          <p><strong>Date Issued:</strong> {{ today | date:'longDate' }}</p>
+        </div>
 
-        <p>TO WHOM IT MAY CONCERN:</p>
+        <p><strong>TO WHOM IT MAY CONCERN:</strong></p>
 
-        <p>
-          This is to certify that <strong>{{ selectedResident?.fullname }}</strong>,
-          of legal age, Filipino, and a bonafide resident of
-          Zone {{ selectedResident?.address?.zone }},
-          {{ selectedResident?.address?.street }},
-          {{ selectedResident?.address?.barangay }},
+        <p class="indent">
+          This is to certify that
+          <span class="underline">{{ selectedResident?.fullname }}</span>,
+          Filipino, of legal age, and a bonafide resident of
+          <span class="underline">
+            Zone {{ selectedResident?.address?.zone }},
+            {{ selectedResident?.address?.street }},
+            {{ selectedResident?.address?.barangay }}
+          </span>,
           is known to be an indigent resident of this barangay.
         </p>
 
-        <p>
-          This certification is issued upon request for whatever legal purpose it may serve.
+        <p class="indent">
+          This certification is issued upon the request of the above-named person
+          for scholarship, medical assistance, financial assistance, employment,
+          or whatever legal purpose it may serve.
         </p>
 
         <p>
-          Issued this <strong>{{ today | date:'longDate' }}</strong>.
+          Issued this <strong>{{ today | date:'d' }}</strong> day of
+          <strong>{{ today | date:'MMMM, y' }}</strong> at Barangay San Martin,
+          Municipality of Villanueva, Province of Misamis Oriental.
         </p>
 
       </div>
 
-      <!-- FOOTER -->
-      <div class="footer">
+      <div class="doc-signature">
+        <strong>HON. BARANGAY CAPTAIN NAME</strong>
+        Punong Barangay
+      </div>
 
-        <div class="signature">
-          <p>__________________________</p>
-          <p><strong>Barangay Captain</strong></p>
+      <div class="doc-footer">
+        <div>
+          <strong>Verification Code:</strong>
+          <span>{{ certificateNo }}</span>
         </div>
-
-        <!-- QR / CODE -->
-        <div class="qr">
-          <p>Verify Code:</p>
-          <strong>{{ certificateNo }}</strong>
-        </div>
-
+        <p>*This certificate is not valid without official seal and signature.*</p>
       </div>
 
     </div>
 
-    <!-- BUTTONS -->
-    <div class="buttons">
-      <button (click)="printIndigency()">🖨 Print</button>
-      <button (click)="closePrint()">Close</button>
+    <div class="indigency-actions">
+      <button class="print-btn" (click)="printIndigency()">Print Indigency</button>
+      <button class="close-btn" (click)="closePrint()">Close</button>
     </div>
 
   </div>

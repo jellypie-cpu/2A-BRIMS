@@ -1,57 +1,80 @@
-<div class="modal">
+<div class="permit-modal">
+  <div class="permit-modal-content">
 
-  <div class="modal-content">
+    <div class="permit-form-card" *ngIf="!selectedResident?.printMode">
+      <div class="form-header">
+        <h2>Business Permit Request</h2>
+        <p>Fill out the business details before printing the official permit.</p>
+      </div>
 
-    <!-- FORM -->
-    <div *ngIf="!selectedResident?.printMode">
-
-      <h2>Business Permit Request</h2>
-
-      <p><strong>Resident:</strong> {{ selectedResident?.fullname }}</p>
-
-      <input placeholder="Business Name" [(ngModel)]="businessName" />
-      <input placeholder="Business Type" [(ngModel)]="businessType" />
-      <input placeholder="Business Address" [(ngModel)]="address" />
-
-      <button (click)="submitPermit()">Submit</button>
-      <button (click)="closeModal()">Cancel</button>
-
-    </div>
-
-    <!-- PRINT AREA -->
-    <div id="printArea" *ngIf="selectedResident">
-
-      <h2>BARANGAY BUSINESS PERMIT</h2>
-
-      <p>
-        This certifies that
+      <div class="resident-summary">
+        <span>Resident</span>
         <strong>{{ selectedResident?.fullname }}</strong>
-        is granted permission to operate:
+      </div>
 
-        <br><br>
+      <div class="form-grid">
+        <input placeholder="Business Name" [(ngModel)]="businessName" />
+        <input placeholder="Business Type" [(ngModel)]="businessType" />
+        <input placeholder="Business Address" [(ngModel)]="address" />
+      </div>
 
-        Business Name: <strong>{{ businessName }}</strong><br>
-        Business Type: <strong>{{ businessType }}</strong><br>
-        Location: <strong>{{ address }}</strong><br>
-
-        <br>
-
-        Approved this {{ today | date:'longDate' }}
-      </p>
-
-      <br><br>
-
-      <p>________________________</p>
-      <p>Barangay Captain</p>
-
+      <div class="form-actions">
+        <button class="primary-btn" (click)="submitPermit()">Submit</button>
+        <button class="secondary-btn" (click)="closeModal()">Cancel</button>
+      </div>
     </div>
 
-    <!-- ACTION -->
-    <div class="buttons">
-      <button (click)="printPermit()">Print</button>
-      <button (click)="closeModal()">Close</button>
+    <div id="printArea" class="official-document permit-document" *ngIf="selectedResident">
+      <div class="doc-header">
+        <div class="seal-left">BARANGAY<br />SEAL</div>
+        <div class="seal-right">OFFICIAL<br />SEAL</div>
+
+        <p>Republic of the Philippines</p>
+        <p>Province of Misamis Oriental</p>
+        <p>Municipality / City</p>
+        <h2>BARANGAY NAME</h2>
+        <h3>OFFICE OF THE PUNONG BARANGAY</h3>
+      </div>
+
+      <div class="doc-title">Barangay Business Permit</div>
+
+      <div class="doc-body">
+        <p class="indent">
+          This Barangay, through the undersigned, interposes no objection to the
+          request of <span class="underline">{{ selectedResident?.fullname }}</span>
+          for the issuance of a Barangay Business Permit.
+        </p>
+
+        <div class="permit-details">
+          <p><span>Business Name:</span> <strong>{{ businessName }}</strong></p>
+          <p><span>Business Type:</span> <strong>{{ businessType }}</strong></p>
+          <p><span>Location:</span> <strong>{{ address }}</strong></p>
+        </div>
+
+        <p class="indent">
+          Provided further, that the said business or activity shall comply with
+          all existing laws, barangay ordinances, public safety regulations, and
+          shall not be used for any unlawful purpose.
+        </p>
+
+        <p>
+          Issued this <strong>{{ today | date:'d' }}</strong> day of
+          <strong>{{ today | date:'MMMM, y' }}</strong> at the Barangay Hall.
+        </p>
+      </div>
+
+      <div class="doc-signature">
+        <strong>HON. BARANGAY CAPTAIN NAME</strong>
+        Punong Barangay
+      </div>
+
+      <div class="doc-footer-note">*Not valid without official seal*</div>
+    </div>
+
+    <div class="permit-actions">
+      <button class="primary-btn" (click)="printPermit()">Print Permit</button>
+      <button class="secondary-btn" (click)="closeModal()">Close</button>
     </div>
 
   </div>
-
 </div>
