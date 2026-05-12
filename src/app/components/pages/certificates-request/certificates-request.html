@@ -1,1 +1,84 @@
-<p>certificates-request works!</p>
+<div class="requests-page">
+  <div class="page-header">
+    <div>
+      <h1>Certificate Requests</h1>
+      <p>Realtime document requests submitted by resident users.</p>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card pending">
+      <span>Pending</span>
+      <strong>{{ countByStatus('pending') }}</strong>
+    </div>
+    <div class="summary-card approved">
+      <span>Approved</span>
+      <strong>{{ countByStatus('approved') }}</strong>
+    </div>
+    <div class="summary-card released">
+      <span>Released</span>
+      <strong>{{ countByStatus('released') }}</strong>
+    </div>
+    <div class="summary-card rejected">
+      <span>Rejected</span>
+      <strong>{{ countByStatus('rejected') }}</strong>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input
+      type="text"
+      placeholder="Search resident, email, or document type..."
+      [(ngModel)]="searchText"
+      (input)="applyFilters()"
+    />
+
+    <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+      <option value="all">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="released">Released</option>
+      <option value="rejected">Rejected</option>
+    </select>
+  </div>
+
+  <div *ngIf="loading" class="empty-state">Loading requests...</div>
+  <div *ngIf="!loading && filteredRequests.length === 0" class="empty-state">
+    No certificate requests found.
+  </div>
+
+  <div class="table-card" *ngIf="!loading && filteredRequests.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Resident</th>
+          <th>Document Type</th>
+          <th>Status</th>
+          <th>Date Requested</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let request of filteredRequests">
+          <td>
+            <strong>{{ request.residentName || 'Resident' }}</strong>
+            <small>{{ request.residentEmail || 'No email' }}</small>
+          </td>
+          <td>{{ request.type }}</td>
+          <td>
+            <span class="status" [class]="request.status">{{ request.status }}</span>
+          </td>
+          <td>{{ formatDate(request.createdAt) }}</td>
+          <td>
+            <div class="actions">
+              <button type="button" (click)="updateStatus(request, 'approved')">Approve</button>
+              <button type="button" (click)="updateStatus(request, 'released')">Release</button>
+              <button type="button" class="danger" (click)="updateStatus(request, 'rejected')">Reject</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

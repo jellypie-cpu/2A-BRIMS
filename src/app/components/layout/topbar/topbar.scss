@@ -1,94 +1,197 @@
 .topbar {
-  height: 60px;
-  background-color: #001a33;
-  color: white;
+  height: 64px;
+  background: linear-gradient(135deg, #061a35, #0f3768);
+  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo {
-  height: 40px;
-  width: 40px;
-  object-fit: contain;
-}
-
-.title {
-  font-weight: bold;
-  font-size: 14px;
-  font-family: Ranade, 'sans-serif';
-  line-height: 1.2;
-}
-
-.title .big {
-  font-size: 20px;  
-  color: white;    
-  margin-right: 1px;
-}
-
+.left,
 .right {
   display: flex;
   align-items: center;
 }
 
+.left {
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+
+  span {
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+  }
+
+  small {
+    font-size: 11px;
+    color: #cbd5e1;
+  }
+}
+
+.right {
+  gap: 14px;
+}
+
+.notification-button {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+
+  i {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+  }
+
+  &.has-notifications {
+    animation: bellPulse 1.6s ease-in-out infinite;
+  }
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ef4444;
+  color: #fff;
+  border: 2px solid #0f3768;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .user-menu {
   position: relative;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 4px;
-  background: white;
-  color: #1976d2;
+  min-height: 44px;
+  padding: 6px 10px 6px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
   font-weight: 600;
   user-select: none;
-
-  display: flex;          
-  align-items: center;    
-  gap: 8px;               
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.18s ease, transform 0.18s ease;
 
   &:hover {
-    background: #e3f2fd;
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
   }
 }
+
 .profile-img {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.username {
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown-icon {
+  font-size: 0.8rem;
+  color: #dbeafe;
 }
 
 .dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 10px);
   right: 0;
-  background: white;
-  color: #1976d2;
-  border: 1px solid #cfd8dc;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  background: #fff;
+  color: #0f3768;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.2);
   display: flex;
   flex-direction: column;
-  min-width: 120px;
-  margin-top: 4px;
+  min-width: 170px;
+  overflow: hidden;
   z-index: 100;
 
   button {
-    background: none;
+    background: transparent;
     border: none;
     text-align: left;
-    padding: 8px 12px;
+    padding: 12px 14px;
     cursor: pointer;
-    font-weight: 500;
-    color: #1976d2;
+    font-weight: 600;
+    color: #0f3768;
+    display: flex;
+    align-items: center;
+    gap: 9px;
 
     &:hover {
-      background: #e3f2fd;
+      background: #eff6ff;
     }
+  }
+}
+
+@keyframes bellPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.42);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    padding: 0 12px;
+  }
+
+  .brand-text small,
+  .username {
+    display: none;
   }
 }

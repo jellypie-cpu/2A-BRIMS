@@ -1,31 +1,38 @@
 <header class="topbar">
   <div class="left">
-    <h2>BRIMS</h2>
-  </div>
-
-  <div class="notification-box">
-    <button
-      type="button"
-      class="notification-button"
-      (click)="goToNotifications()"
-      title="Open notifications"
-    >
-      🔔
-      <span *ngIf="notificationCount > 0">{{ notificationCount }}</span>
-    </button>
+    <div class="brand-mark">G6</div>
+    <div class="brand-text">
+      <span>BRIMS</span>
+      <small>Barangay Resident's Information Management System</small>
+    </div>
   </div>
 
   <div class="right">
+    <button
+      type="button"
+      class="notification-button"
+      [class.has-notifications]="notificationCount > 0"
+      (click)="goToNotifications()"
+      title="Open notifications"
+      aria-label="Open notifications"
+    >
+      <i class="pi pi-bell"></i>
+      <span class="notification-badge" *ngIf="notificationCount > 0">
+        {{ notificationCount > 99 ? '99+' : notificationCount }}
+      </span>
+    </button>
+
     <div class="user-menu" (click)="toggleDropdown()">
       <img src="bg.png" alt="Profile" class="profile-img" />
-      <span class="username">{{ username }} ▼</span>
+      <span class="username">{{ username }}</span>
+      <i class="pi pi-chevron-down dropdown-icon"></i>
 
-      <div class="dropdown" *ngIf="showDropdown">
-        <button (click)="goToProfile()">
+      <div class="dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+        <button type="button" (click)="goToProfile()">
           <i class="pi pi-user"></i> Profile
         </button>
 
-        <button (click)="logout()">
+        <button type="button" (click)="logout()">
           <i class="pi pi-sign-out"></i> Logout
         </button>
       </div>

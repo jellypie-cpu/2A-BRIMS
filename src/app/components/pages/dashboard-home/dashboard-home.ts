@@ -32,19 +32,23 @@ export class DashboardHome implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const user: AppUser | null = this.auth.getCurrentUser();
+    this.subscription.add(
+      this.auth.currentUser$.subscribe((user: AppUser | null) => {
+        this.role = user?.role || '';
 
-    if (user) {
-      this.role = user.role;
-    }
-
-    if (this.role === 'admin' || this.role === 'staff') {
-      this.loadResidents();
-      this.loadNotifications();
-    }
+        if (this.role === 'admin' || this.role === 'staff') {
+          this.loadResidents();
+          this.loadNotifications();
+        }
+      })
+    );
   }
 
   loadResidents() {
+    if (this.allResidents.length > 0) {
+      return;
+    }
+
     this.subscription.add(
       this.residentService.getActive().subscribe(residents => {
         this.allResidents = residents || [];
