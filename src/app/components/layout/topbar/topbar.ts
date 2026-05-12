@@ -19,6 +19,7 @@ export class TopbarComponent implements OnDestroy {
   userRole = '';
   showDropdown = false;
 
+  showNotificationDialog = false;
   notifications: AppNotification[] = [];
   notificationCount = 0;
 
@@ -49,31 +50,46 @@ export class TopbarComponent implements OnDestroy {
   }
 
   loadNotifications(role: string): void {
-    this.notificationSubscription = this.notificationService.getForRole(role).subscribe(notifications => {
-      this.notifications = notifications || [];
-      this.notificationCount = this.notifications.length;
-    });
+    this.notificationSubscription = this.notificationService
+      .getForRole(role, false)
+      .subscribe(notifications => {
+        this.notifications = notifications || [];
+        this.notificationCount = this.notifications.filter(n => !n.isRead).length;
+      });
   }
 
-  goToNotifications(): void {
-    if (this.userRole === 'admin' || this.userRole === 'staff') {
-      this.router.navigate(['/dashboard/notifications']);
-      return;
-    }
+  toggleNotificationDialog(): void {
+    this.showNotificationDialog = !this.showNotificationDialog;
+    this.showDropdown = false;
+  }
 
-    this.router.navigate(['/dashboard']);
+  closeNotificationDialog(): void {
+    this.showNotificationDialog = false;
   }
 
   async openNotification(notification: AppNotification): Promise<void> {
-    if (notification.id) {
+    if (notification.id && !notification.isRead) {
       await this.notificationService.markAsRead(notification.id);
     }
 
-    await this.router.navigate([notification.route || '/dashboard/notifications']);
+    this.showNotificationDialog = false;
+
+    if (notification.route) {
+      await this.router.navigate([notification.route]);
+    }
+  }
+
+  async markAsRead(notification: AppNotification, event: Event): Promise<void> {
+    event.stopPropagation();
+
+    if (!notification.id || notification.isRead) return;
+
+    await this.notificationService.markAsRead(notification.id);
   }
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
+    this.showNotificationDialog = false;
   }
 
   goToProfile(): void {

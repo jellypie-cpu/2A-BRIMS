@@ -5,7 +5,6 @@ import { AppUser } from '../../../core/models/user.model';
 import { RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { NotificationService } from '../../../core/services/notifications';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -20,7 +19,6 @@ export class DashboardHome implements OnInit, OnDestroy {
   totalVoters = 0;
   totalMales = 0;
   totalFemales = 0;
-  notificationCount = 0;
 
   allResidents: any[] = [];
   private subscription = new Subscription();
@@ -28,7 +26,6 @@ export class DashboardHome implements OnInit, OnDestroy {
   constructor(
     private residentService: ResidentService,
     private auth: AuthService,
-    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
@@ -38,7 +35,6 @@ export class DashboardHome implements OnInit, OnDestroy {
 
         if (this.role === 'admin' || this.role === 'staff') {
           this.loadResidents();
-          this.loadNotifications();
         }
       })
     );
@@ -53,14 +49,6 @@ export class DashboardHome implements OnInit, OnDestroy {
       this.residentService.getActive().subscribe(residents => {
         this.allResidents = residents || [];
         this.computeStats();
-      })
-    );
-  }
-
-  loadNotifications() {
-    this.subscription.add(
-      this.notificationService.getUnreadCountForRole(this.role).subscribe(count => {
-        this.notificationCount = count;
       })
     );
   }

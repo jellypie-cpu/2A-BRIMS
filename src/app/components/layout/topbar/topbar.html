@@ -8,19 +8,81 @@
   </div>
 
   <div class="right">
-    <button
-      type="button"
-      class="notification-button"
-      [class.has-notifications]="notificationCount > 0"
-      (click)="goToNotifications()"
-      title="Open notifications"
-      aria-label="Open notifications"
-    >
-      <i class="pi pi-bell"></i>
-      <span class="notification-badge" *ngIf="notificationCount > 0">
-        {{ notificationCount > 99 ? '99+' : notificationCount }}
-      </span>
-    </button>
+    <div class="notification-wrapper">
+      <button
+        type="button"
+        class="notification-button"
+        [class.has-notifications]="notificationCount > 0"
+        (click)="toggleNotificationDialog()"
+        title="Open notifications"
+        aria-label="Open notifications"
+      >
+        <i class="pi pi-bell"></i>
+
+        <span class="notification-badge" *ngIf="notificationCount > 0">
+          {{ notificationCount > 99 ? '99+' : notificationCount }}
+        </span>
+      </button>
+
+      <div class="notification-dialog" *ngIf="showNotificationDialog">
+        <div class="notification-dialog-header">
+          <div>
+            <h3>Notifications</h3>
+            <p>{{ notificationCount }} unread update{{ notificationCount === 1 ? '' : 's' }}</p>
+          </div>
+
+          <button type="button" class="close-btn" (click)="closeNotificationDialog()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+
+        <div class="notification-dialog-body" *ngIf="notifications.length > 0">
+          <div
+            class="notification-item"
+            *ngFor="let notification of notifications"
+            [class.read]="notification.isRead"
+            (click)="openNotification(notification)"
+          >
+            <div class="notification-icon">
+              <i
+                class="pi"
+                [ngClass]="{
+                  'pi-file': notification.type === 'document-request',
+                  'pi-comments': notification.type === 'concern',
+                  'pi-user': notification.type === 'resident',
+                  'pi-info-circle': notification.type === 'system'
+                }"
+              ></i>
+            </div>
+
+            <div class="notification-content">
+              <div class="notification-title-row">
+                <h4>{{ notification.title }}</h4>
+                <span class="unread-dot" *ngIf="!notification.isRead"></span>
+              </div>
+
+              <p>{{ notification.message }}</p>
+              <small>{{ notification.type }}</small>
+            </div>
+
+            <button
+              type="button"
+              class="mark-read-btn"
+              *ngIf="!notification.isRead"
+              (click)="markAsRead(notification, $event)"
+            >
+              Read
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-notification" *ngIf="notifications.length === 0">
+          <i class="pi pi-bell-slash"></i>
+          <h4>No notifications</h4>
+          <p>You are all caught up.</p>
+        </div>
+      </div>
+    </div>
 
     <div class="user-menu" (click)="toggleDropdown()">
       <img src="bg.png" alt="Profile" class="profile-img" />
@@ -39,3 +101,9 @@
     </div>
   </div>
 </header>
+
+<div
+  class="notification-backdrop"
+  *ngIf="showNotificationDialog"
+  (click)="closeNotificationDialog()"
+></div>
