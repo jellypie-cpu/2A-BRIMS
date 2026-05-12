@@ -1,10 +1,22 @@
+export type DocumentRequestType =
+  | 'Barangay Clearance'
+  | 'Barangay Indigency'
+  | 'Barangay Permit'
+  | 'Certificate of Residency';
+
+export type DocumentRequestStatus =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'released';
+
 export interface DocumentRequest {
-  id: string;
+  id?: string;
   residentId: string;
-
-  type: 'Barangay Clearance' | 'Certificate of Residency';
-
-  status: 'pending' | 'approved' | 'rejected';
-
-  createdAt: Date;
+  residentName?: string;
+  residentEmail?: string;
+  type: DocumentRequestType;
+  status: DocumentRequestStatus;
+  createdAt?: any;
+  updatedAt?: any;
 }
