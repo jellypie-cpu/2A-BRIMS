@@ -9,10 +9,11 @@ import {
 import {
   Firestore,
   doc,
-  getDoc
+  getDoc,
+  docData
 } from '@angular/fire/firestore';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { AppUser, UserRole } from '../models/user.model';
 
 @Injectable({
@@ -25,17 +26,14 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<AppUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
+  private userDocSubscription?: Subscription;
+
   constructor() {
     this.restoreUser();
   }
 
   async login(email: string, password: string) {
-    const credential = await signInWithEmailAndPassword(
-      this.auth,
-      email,
-      password
-    );
-
+    const credential = await signInWithEmailAndPassword(this.auth, email, password);
     const uid = credential.user.uid;
 
     const userRef = doc(this.firestore, `users/${uid}`);
@@ -46,39 +44,41 @@ export class AuthService {
       throw new Error('User profile missing in Firestore');
     }
 
-    const userData = snapshot.data() as AppUser;
-
-    this.currentUserSubject.next({
-      id: uid,
-      ...userData
-    });
-
-    return userData;
+    this.listenToUserDocument(uid);
+    return snapshot.data() as AppUser;
   }
 
   async logout() {
+    this.userDocSubscription?.unsubscribe();
     await signOut(this.auth);
     this.currentUserSubject.next(null);
   }
 
   private restoreUser() {
-    onAuthStateChanged(this.auth, async (firebaseUser) => {
+    onAuthStateChanged(this.auth, async firebaseUser => {
+      this.userDocSubscription?.unsubscribe();
+
       if (!firebaseUser) {
         this.currentUserSubject.next(null);
         return;
       }
 
-      const userRef = doc(this.firestore, `users/${firebaseUser.uid}`);
-      const snapshot = await getDoc(userRef);
+      this.listenToUserDocument(firebaseUser.uid);
+    });
+  }
 
-      if (snapshot.exists()) {
-        const userData = snapshot.data() as AppUser;
+  private listenToUserDocument(uid: string) {
+    const userRef = doc(this.firestore, `users/${uid}`);
 
-        this.currentUserSubject.next({
-          id: firebaseUser.uid,
-          ...userData
-        });
+    this.userDocSubscription?.unsubscribe();
+
+    this.userDocSubscription = docData(userRef, { idField: 'id' }).subscribe(user => {
+      if (!user) {
+        this.currentUserSubject.next(null);
+        return;
       }
+
+      this.currentUserSubject.next(user as AppUser);
     });
   }
 
