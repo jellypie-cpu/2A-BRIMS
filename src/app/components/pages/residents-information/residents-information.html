@@ -59,6 +59,7 @@
           <th>Zone</th>
           <th>Street</th>
           <th>Barangay</th>
+          <th>App User</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -80,6 +81,21 @@
           <td>Zone {{ resident.address.zone }}</td>
           <td>{{ resident.address.street }}</td>
           <td>{{ resident.address.barangay }}</td>
+
+          <td>
+            <span *ngIf="resident.userId">
+              Linked
+            </span>
+
+            <button
+              *ngIf="!resident.userId"
+              type="button"
+              class="app-user-btn"
+              (click)="createAppUserForResident(resident)"
+            >
+              Create App User
+            </button>
+          </td>
 
           <td class="actions">
             <button class="view-btn" (click)="openResident(resident)">

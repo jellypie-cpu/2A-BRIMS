@@ -3,7 +3,9 @@ import {
   Auth,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  UserCredential
 } from '@angular/fire/auth';
 
 import {
@@ -32,10 +34,14 @@ export class AuthService {
     this.restoreUser();
   }
 
-  async login(email: string, password: string) {
-    const credential = await signInWithEmailAndPassword(this.auth, email, password);
-    const uid = credential.user.uid;
+  async login(email: string, password: string): Promise<AppUser> {
+    const credential = await signInWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
 
+    const uid = credential.user.uid;
     const userRef = doc(this.firestore, `users/${uid}`);
     const snapshot = await getDoc(userRef);
 
@@ -45,17 +51,32 @@ export class AuthService {
     }
 
     this.listenToUserDocument(uid);
-    return snapshot.data() as AppUser;
+
+    return {
+      id: uid,
+      ...snapshot.data()
+    } as AppUser;
   }
 
-  async logout() {
+  async createAuthAccount(
+    email: string,
+    password: string
+  ): Promise<UserCredential> {
+    return createUserWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
+  }
+
+  async logout(): Promise<void> {
     this.userDocSubscription?.unsubscribe();
     await signOut(this.auth);
     this.currentUserSubject.next(null);
   }
 
-  private restoreUser() {
-    onAuthStateChanged(this.auth, async firebaseUser => {
+  private restoreUser(): void {
+    onAuthStateChanged(this.auth, firebaseUser => {
       this.userDocSubscription?.unsubscribe();
 
       if (!firebaseUser) {
@@ -67,12 +88,14 @@ export class AuthService {
     });
   }
 
-  private listenToUserDocument(uid: string) {
+  private listenToUserDocument(uid: string): void {
     const userRef = doc(this.firestore, `users/${uid}`);
 
     this.userDocSubscription?.unsubscribe();
 
-    this.userDocSubscription = docData(userRef, { idField: 'id' }).subscribe(user => {
+    this.userDocSubscription = docData(userRef, {
+      idField: 'id'
+    }).subscribe(user => {
       if (!user) {
         this.currentUserSubject.next(null);
         return;

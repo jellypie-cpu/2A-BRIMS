@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 import { ResidentForm } from './residents-form/residents-form';
-
 import { ResidentService } from '../../../core/services/resident';
 import { AuthService } from '../../../core/services/auth';
 import { UserService } from '../../../core/services/user';
@@ -15,16 +14,11 @@ import { AppUser } from '../../../core/models/user.model';
 @Component({
   selector: 'app-residents-information',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ResidentForm
-  ],
+  imports: [CommonModule, FormsModule, ResidentForm],
   templateUrl: './residents-information.html',
   styleUrls: ['./residents-information.scss'],
 })
 export class ResidentsInformation implements OnInit {
-
   zones = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
   selectedZone: string | null = null;
@@ -32,15 +26,11 @@ export class ResidentsInformation implements OnInit {
 
   allResidents: Resident[] = [];
   residents: Resident[] = [];
-
   residentUsers: AppUser[] = [];
 
   loading = true;
-
   showForm = false;
-
   selectedResident: Resident | null = null;
-
   isEditMode = false;
 
   constructor(
@@ -65,39 +55,25 @@ export class ResidentsInformation implements OnInit {
 
     this.residentService.getActive().subscribe({
       next: residents => {
-
         this.allResidents = residents || [];
-
         this.filterResidents();
-
         this.loading = false;
       },
-
       error: () => {
-
         this.loading = false;
-
-        Swal.fire(
-          'Error',
-          'Unable to load residents.',
-          'error'
-        );
+        Swal.fire('Error', 'Unable to load residents.', 'error');
       }
     });
   }
 
   filterResidents(): void {
-
     let filtered = [...this.allResidents];
 
     if (this.selectedZone !== null) {
-      filtered = filtered.filter(
-        r => r.address?.zone === this.selectedZone
-      );
+      filtered = filtered.filter(r => r.address?.zone === this.selectedZone);
     }
 
     if (this.searchText.trim()) {
-
       const search = this.searchText.toLowerCase();
 
       filtered = filtered.filter(r =>
@@ -129,66 +105,32 @@ export class ResidentsInformation implements OnInit {
   }
 
   async saveResident(resident: Resident): Promise<void> {
-
     const currentUser = this.authService.getCurrentUser();
 
     if (!currentUser?.id) {
-
-      Swal.fire(
-        'Authentication Error',
-        'No logged in user detected.',
-        'error'
-      );
-
-      return;
-    }
-
-    if (!resident.userId) {
-
-      Swal.fire(
-        'Resident User Required',
-        'Please select a resident user account.',
-        'warning'
-      );
-
+      Swal.fire('Authentication Error', 'No logged in user detected.', 'error');
       return;
     }
 
     const duplicate = this.allResidents.some(r =>
-      r.userId !== resident.userId &&
+      r.id !== resident.id &&
       r.fullname.trim().toLowerCase() === resident.fullname.trim().toLowerCase() &&
       r.birthdate === resident.birthdate
     );
 
     if (duplicate) {
-
-      Swal.fire(
-        'Duplicate Resident',
-        'Resident already exists.',
-        'warning'
-      );
-
+      Swal.fire('Duplicate Resident', 'Resident already exists.', 'warning');
       return;
     }
 
     const payload: Resident = {
-
       ...resident,
-
-      // IMPORTANT
-      id: resident.userId,
-      userId: resident.userId,
-
-      isArchived: false,
-
+      userId: resident.userId || '',
+      userEmail: resident.userEmail || '',
+      isArchived: resident.isArchived ?? false,
       createdBy: resident.createdBy || currentUser.id,
-
-      createdByName:
-        resident.createdByName ||
-        currentUser.username,
-
+      createdByName: resident.createdByName || currentUser.username,
       updatedBy: currentUser.id,
-
       address: {
         zone: String(resident.address.zone),
         street: resident.address.street,
@@ -196,33 +138,77 @@ export class ResidentsInformation implements OnInit {
       }
     };
 
-    console.log('FINAL RESIDENT PAYLOAD:', payload);
-
     await this.residentService.saveResident(payload);
 
-    // LINK USER TO RESIDENT
-    await this.userService.updateUser(
-      resident.userId,
-      {
-        residentId: resident.userId,
-        username: resident.fullname,
-        email: resident.userEmail
-      }
-    );
-
-    Swal.fire(
-      'Saved',
-      'Resident information saved successfully.',
-      'success'
-    );
-
+    Swal.fire('Saved', 'Resident information saved successfully.', 'success');
     this.closeForm();
   }
 
-  async archiveResident(
-    resident: Resident
-  ): Promise<void> {
+  async createAppUserForResident(resident: Resident): Promise<void> {
+    if (!resident.id) {
+      Swal.fire('Error', 'Resident ID is missing.', 'error');
+      return;
+    }
 
+    if (resident.userId) {
+      Swal.fire('Already Linked', 'This resident already has an app user account.', 'info');
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Create App User',
+      html: `
+        <input id="app-email" class="swal2-input" placeholder="Email" type="email">
+        <input id="app-password" class="swal2-input" placeholder="Password" type="password">
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Create Account',
+      preConfirm: () => {
+        const email = (document.getElementById('app-email') as HTMLInputElement)?.value.trim();
+        const password = (document.getElementById('app-password') as HTMLInputElement)?.value;
+
+        if (!email || !password) {
+          Swal.showValidationMessage('Email and password are required.');
+          return false;
+        }
+
+        if (password.length < 6) {
+          Swal.showValidationMessage('Password must be at least 6 characters.');
+          return false;
+        }
+
+        return { email, password };
+      }
+    });
+
+    if (!result.isConfirmed || !result.value) return;
+
+    try {
+      const { email, password } = result.value as { email: string; password: string };
+
+      const credential = await this.authService.createAuthAccount(email, password);
+      const authUser = credential.user;
+
+      await this.userService.addUser({
+        id: authUser.uid,
+        username: resident.fullname,
+        email,
+        role: 'resident',
+        residentId: resident.id
+      });
+
+      await this.residentService.update(resident.id, {
+        userId: authUser.uid,
+        userEmail: email
+      });
+
+      Swal.fire('Created', 'Resident can now log in as an app user.', 'success');
+    } catch (error: any) {
+      Swal.fire('Error', error.message || 'Failed to create app user.', 'error');
+    }
+  }
+
+  async archiveResident(resident: Resident): Promise<void> {
     if (!resident.id) return;
 
     const result = await Swal.fire({
@@ -238,16 +224,9 @@ export class ResidentsInformation implements OnInit {
 
     await this.residentService.archive(resident.id);
 
-    this.allResidents = this.allResidents.filter(
-      r => r.id !== resident.id
-    );
-
+    this.allResidents = this.allResidents.filter(r => r.id !== resident.id);
     this.filterResidents();
 
-    Swal.fire(
-      'Archived',
-      'Resident moved to archive.',
-      'success'
-    );
+    Swal.fire('Archived', 'Resident moved to archive.', 'success');
   }
 }

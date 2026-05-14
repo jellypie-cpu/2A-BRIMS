@@ -72,8 +72,6 @@ export class ResidentForm implements OnChanges {
   get missingFields(): string[] {
     const missing: string[] = [];
 
-    if (!this.resident.userId) missing.push('Resident User Account');
-    if (!this.resident.userEmail) missing.push('User Email');
     if (!this.resident.fullname?.trim()) missing.push('Full Name');
     if (!this.resident.birthdate) missing.push('Birthdate');
     if (!this.resident.civilStatus) missing.push('Civil Status');
@@ -99,17 +97,14 @@ export class ResidentForm implements OnChanges {
   }
 
   onSubmit(): void {
-    this.submitted = true;
+  this.submitted = true;
 
-    if (this.missingFields.length > 0) return;
+  if (this.missingFields.length > 0) return;
 
-    if (this.checkDuplicateLive()) return;
+  if (this.checkDuplicateLive()) return;
 
-    // FORCE RESIDENT DOC ID = USER ID
-    this.resident.id = this.resident.userId;
-
-    this.save.emit(this.resident);
-  }
+  this.save.emit(this.resident);
+}
 
   onClose(): void {
     this.close.emit();

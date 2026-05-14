@@ -5,6 +5,7 @@ import {
   collectionData,
   doc,
   docData,
+  addDoc,
   setDoc,
   updateDoc,
   query,
@@ -39,28 +40,31 @@ export class ResidentService {
     }) as Observable<Resident>;
   }
 
-  saveResident(data: Resident) {
-    if (!data.userId) {
-      throw new Error('Resident must be linked to a user account.');
-    }
+  async saveResident(data: Resident) {
+  const cleanData = this.cleanResidentData(data);
 
-    const cleanData = this.cleanResidentData(data);
-    const residentDoc = doc(this.firestore, `residents/${data.userId}`);
+  if (data.id) {
+    const residentDoc = doc(this.firestore, `residents/${data.id}`);
 
     return setDoc(
       residentDoc,
       {
         ...cleanData,
-        id: data.userId,
-        userId: data.userId,
-        residentId: data.userId,
-        isArchived: data.isArchived ?? false,
-        createdAt: data.createdAt ?? serverTimestamp(),
         updatedAt: serverTimestamp()
       },
       { merge: true }
     );
   }
+
+  return addDoc(this.residentsRef, {
+    ...cleanData,
+    userId: data.userId || null,
+    userEmail: data.userEmail || null,
+    isArchived: data.isArchived ?? false,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+}
 
   update(id: string, data: Partial<Resident>) {
     const cleanData = this.cleanResidentData(data);
