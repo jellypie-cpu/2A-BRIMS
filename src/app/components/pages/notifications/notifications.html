@@ -6,17 +6,16 @@
     </div>
   </div>
 
-  <div *ngIf="loading" class="empty-state">Loading notifications...</div>
-  <div *ngIf="!loading && notifications.length === 0" class="empty-state">
-    No notifications yet.
-  </div>
+  <div *ngIf="!loading && filteredNotifications.length === 0" class="empty-state">
+  No notifications found.
+</div>
 
-  <div
-    class="notification-card"
-    *ngFor="let notification of notifications"
-    [class.read]="notification.isRead"
-    (click)="open(notification)"
-  >
+<div
+  class="notification-card"
+  *ngFor="let notification of filteredNotifications"
+  [class.read]="notification.isRead"
+  (click)="open(notification)"
+>
     <div>
       <h3>{{ notification.title }}</h3>
       <p>{{ notification.message }}</p>
