@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Blotter } from '../../../../core/models/blotter';
 
 @Component({
   selector: 'app-blotter-form',
@@ -10,35 +11,13 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./blotter-form.scss']
 })
 export class BlotterForm {
-
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<any>();
+  @Output() save = new EventEmitter<Blotter>();
 
-  blotter: any = {
-    complaint: '',
-    victims: '',
-    respondent: '',
-    type: '',
-    location: '',
-    date: '',
-    time: '',
-    status: '',
-    description: ''
-  };
+  blotter: Blotter = this.getEmptyBlotter();
 
-  onSubmit() {
-    this.blotter.id = 'BLT-' + Date.now();
-    this.save.emit(this.blotter);
-    this.resetForm();
-    this.onClose();
-  }
-
-  onClose() {
-    this.close.emit();
-  }
-
-  resetForm() {
-    this.blotter = {
+  getEmptyBlotter(): Blotter {
+    return {
       complaint: '',
       victims: '',
       respondent: '',
@@ -46,8 +25,24 @@ export class BlotterForm {
       location: '',
       date: '',
       time: '',
-      status: '',
-      description: ''
+      status: 'Active',
+      description: '',
+      isArchived: false
     };
+  }
+
+  onSubmit(): void {
+    this.blotter.status = 'Active';
+    this.save.emit(this.blotter);
+    this.resetForm();
+    this.onClose();
+  }
+
+  onClose(): void {
+    this.close.emit();
+  }
+
+  resetForm(): void {
+    this.blotter = this.getEmptyBlotter();
   }
 }

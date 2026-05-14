@@ -6,42 +6,56 @@ import {
   addDoc,
   doc,
   updateDoc,
-  deleteDoc,
+  query,
+  where,
   serverTimestamp
 } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
+import { Blotter } from '../models/blotter';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlotterService {
-
   private firestore = inject(Firestore);
   private blotterRef = collection(this.firestore, 'blotters');
 
-  // GET ALL
-  getAll(): Observable<any[]> {
-    return collectionData(this.blotterRef, { idField: 'id' }) as Observable<any[]>;
+  getAll(): Observable<Blotter[]> {
+    const q = query(
+      this.blotterRef,
+      where('isArchived', '==', false)
+    );
+
+    return collectionData(q, { idField: 'id' }) as Observable<Blotter[]>;
   }
 
-  // ADD
-  async add(data: any) {
-    return await addDoc(this.blotterRef, {
+  async add(data: Blotter) {
+    return addDoc(this.blotterRef, {
       ...data,
-      createdAt: serverTimestamp()
+      status: 'Active',
+      isArchived: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
   }
 
-  // UPDATE
-  async update(id: string, data: any) {
+  async update(id: string, data: Partial<Blotter>) {
     const ref = doc(this.firestore, `blotters/${id}`);
-    return updateDoc(ref, data);
+
+    return updateDoc(ref, {
+      ...data,
+      updatedAt: serverTimestamp()
+    });
   }
 
-  // DELETE
-  async delete(id: string) {
+  async archive(id: string) {
     const ref = doc(this.firestore, `blotters/${id}`);
-    return deleteDoc(ref);
+
+    return updateDoc(ref, {
+      isArchived: true,
+      archivedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
   }
 }
