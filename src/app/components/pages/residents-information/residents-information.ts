@@ -145,68 +145,79 @@ export class ResidentsInformation implements OnInit {
   }
 
   async createAppUserForResident(resident: Resident): Promise<void> {
-    if (!resident.id) {
-      Swal.fire('Error', 'Resident ID is missing.', 'error');
-      return;
-    }
+  if (!resident.id) {
+    Swal.fire('Error', 'Resident ID is missing.', 'error');
+    return;
+  }
 
-    if (resident.userId) {
-      Swal.fire('Already Linked', 'This resident already has an app user account.', 'info');
-      return;
-    }
+  if (resident.userId) {
+    Swal.fire('Already Linked', 'This resident already has an app user account.', 'info');
+    return;
+  }
 
-    const result = await Swal.fire({
-      title: 'Create App User',
-      html: `
-        <input id="app-email" class="swal2-input" placeholder="Email" type="email">
-        <input id="app-password" class="swal2-input" placeholder="Password" type="password">
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'Create Account',
-      preConfirm: () => {
-        const email = (document.getElementById('app-email') as HTMLInputElement)?.value.trim();
-        const password = (document.getElementById('app-password') as HTMLInputElement)?.value;
+  const result = await Swal.fire({
+    title: 'Create App User',
+    html: `
+      <input id="app-email" class="swal2-input" placeholder="Email" type="email">
+      <input id="app-password" class="swal2-input" placeholder="Password" type="password">
 
-        if (!email || !password) {
-          Swal.showValidationMessage('Email and password are required.');
-          return false;
-        }
+      <select id="app-role" class="swal2-input">
+        <option value="resident">Resident</option>
+        <option value="staff">Staff</option>
+        <option value="admin">Admin</option>
+      </select>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Create Account',
+    preConfirm: () => {
+      const email = (document.getElementById('app-email') as HTMLInputElement).value.trim();
+      const password = (document.getElementById('app-password') as HTMLInputElement).value;
+      const role = (document.getElementById('app-role') as HTMLSelectElement).value as AppUser['role'];
 
-        if (password.length < 6) {
-          Swal.showValidationMessage('Password must be at least 6 characters.');
-          return false;
-        }
-
-        return { email, password };
+      if (!email || !password || !role) {
+        Swal.showValidationMessage('Email, password, and role are required.');
+        return false;
       }
+
+      if (password.length < 6) {
+        Swal.showValidationMessage('Password must be at least 6 characters.');
+        return false;
+      }
+
+      return { email, password, role };
+    }
+  });
+
+  if (!result.isConfirmed || !result.value) return;
+
+  try {
+    const { email, password, role } = result.value as {
+      email: string;
+      password: string;
+      role: AppUser['role'];
+    };
+
+    const credential = await this.authService.createAuthAccount(email, password);
+    const authUser = credential.user;
+
+    await this.userService.addUser({
+      id: authUser.uid,
+      username: resident.fullname,
+      email,
+      role,
+      residentId: resident.id
     });
 
-    if (!result.isConfirmed || !result.value) return;
+    await this.residentService.update(resident.id, {
+      userId: authUser.uid,
+      userEmail: email
+    });
 
-    try {
-      const { email, password } = result.value as { email: string; password: string };
-
-      const credential = await this.authService.createAuthAccount(email, password);
-      const authUser = credential.user;
-
-      await this.userService.addUser({
-        id: authUser.uid,
-        username: resident.fullname,
-        email,
-        role: 'resident',
-        residentId: resident.id
-      });
-
-      await this.residentService.update(resident.id, {
-        userId: authUser.uid,
-        userEmail: email
-      });
-
-      Swal.fire('Created', 'Resident can now log in as an app user.', 'success');
-    } catch (error: any) {
-      Swal.fire('Error', error.message || 'Failed to create app user.', 'error');
-    }
+    Swal.fire('Created', `${role} account created successfully.`, 'success');
+  } catch (error: any) {
+    Swal.fire('Error', error.message || 'Failed to create app user.', 'error');
   }
+}
 
   async archiveResident(resident: Resident): Promise<void> {
     if (!resident.id) return;

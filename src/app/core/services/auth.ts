@@ -18,9 +18,7 @@ import {
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AppUser, UserRole } from '../models/user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private auth = inject(Auth);
   private firestore = inject(Firestore);
@@ -35,13 +33,9 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<AppUser> {
-    const credential = await signInWithEmailAndPassword(
-      this.auth,
-      email,
-      password
-    );
-
+    const credential = await signInWithEmailAndPassword(this.auth, email, password);
     const uid = credential.user.uid;
+
     const userRef = doc(this.firestore, `users/${uid}`);
     const snapshot = await getDoc(userRef);
 
@@ -58,15 +52,8 @@ export class AuthService {
     } as AppUser;
   }
 
-  async createAuthAccount(
-    email: string,
-    password: string
-  ): Promise<UserCredential> {
-    return createUserWithEmailAndPassword(
-      this.auth,
-      email,
-      password
-    );
+  createAuthAccount(email: string, password: string): Promise<UserCredential> {
+    return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
   async logout(): Promise<void> {
@@ -93,15 +80,8 @@ export class AuthService {
 
     this.userDocSubscription?.unsubscribe();
 
-    this.userDocSubscription = docData(userRef, {
-      idField: 'id'
-    }).subscribe(user => {
-      if (!user) {
-        this.currentUserSubject.next(null);
-        return;
-      }
-
-      this.currentUserSubject.next(user as AppUser);
+    this.userDocSubscription = docData(userRef, { idField: 'id' }).subscribe(user => {
+      this.currentUserSubject.next(user ? user as AppUser : null);
     });
   }
 
