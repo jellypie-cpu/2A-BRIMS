@@ -11,49 +11,30 @@ import {
   where,
   serverTimestamp
 } from '@angular/fire/firestore';
-
 import { Observable } from 'rxjs';
 import { Resident } from '../models/resident.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ResidentService {
   private firestore = inject(Firestore);
   private residentsRef = collection(this.firestore, 'residents');
 
   getAll(): Observable<Resident[]> {
-    return collectionData(this.residentsRef, {
-      idField: 'id'
-    }) as Observable<Resident[]>;
+    return collectionData(this.residentsRef, { idField: 'id' }) as Observable<Resident[]>;
   }
 
   getActive(): Observable<Resident[]> {
-    const q = query(
-      this.residentsRef,
-      where('isArchived', '==', false)
-    );
-
-    return collectionData(q, {
-      idField: 'id'
-    }) as Observable<Resident[]>;
+    const q = query(this.residentsRef, where('isArchived', '==', false));
+    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
   }
 
   getArchived(): Observable<Resident[]> {
-    const q = query(
-      this.residentsRef,
-      where('isArchived', '==', true)
-    );
-
-    return collectionData(q, {
-      idField: 'id'
-    }) as Observable<Resident[]>;
+    const q = query(this.residentsRef, where('isArchived', '==', true));
+    return collectionData(q, { idField: 'id' }) as Observable<Resident[]>;
   }
 
   getById(id: string): Observable<Resident> {
-    const residentDoc = doc(this.firestore, `residents/${id}`);
-
-    return docData(residentDoc, {
+    return docData(doc(this.firestore, `residents/${id}`), {
       idField: 'id'
     }) as Observable<Resident>;
   }
@@ -72,9 +53,10 @@ export class ResidentService {
         ...cleanData,
         id: data.userId,
         userId: data.userId,
+        residentId: data.userId,
         isArchived: data.isArchived ?? false,
-        updatedAt: serverTimestamp(),
-        createdAt: data.createdAt ?? serverTimestamp()
+        createdAt: data.createdAt ?? serverTimestamp(),
+        updatedAt: serverTimestamp()
       },
       { merge: true }
     );
@@ -82,18 +64,14 @@ export class ResidentService {
 
   update(id: string, data: Partial<Resident>) {
     const cleanData = this.cleanResidentData(data);
-    const residentDoc = doc(this.firestore, `residents/${id}`);
-
-    return updateDoc(residentDoc, {
+    return updateDoc(doc(this.firestore, `residents/${id}`), {
       ...cleanData,
       updatedAt: serverTimestamp()
     });
   }
 
   archive(id: string) {
-    const residentDoc = doc(this.firestore, `residents/${id}`);
-
-    return updateDoc(residentDoc, {
+    return updateDoc(doc(this.firestore, `residents/${id}`), {
       isArchived: true,
       archivedAt: serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -101,9 +79,7 @@ export class ResidentService {
   }
 
   restore(id: string) {
-    const residentDoc = doc(this.firestore, `residents/${id}`);
-
-    return updateDoc(residentDoc, {
+    return updateDoc(doc(this.firestore, `residents/${id}`), {
       isArchived: false,
       restoredAt: serverTimestamp(),
       updatedAt: serverTimestamp()

@@ -102,6 +102,7 @@
   [residentData]="selectedResident"
   [isEditMode]="isEditMode"
   [allResidents]="allResidents"
-  (close)="closeForm()"
-  (save)="saveResident($event)">
+  [residentUsers]="residentUsers"
+  (save)="saveResident($event)"
+  (close)="closeForm()">
 </app-resident-form>

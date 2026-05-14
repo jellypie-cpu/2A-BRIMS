@@ -106,13 +106,8 @@ export class UserService {
     });
   }
   getResidentUsers(): Observable<AppUser[]> {
-  const q = query(
-    this.usersCollection,
-    where('role', '==', 'resident')
-  );
+  const usersRef = collection(this.firestore, 'users');
 
-  return collectionData(q, {
-    idField: 'id'
-  }) as Observable<AppUser[]>;
+  return collectionData(usersRef, { idField: 'id' }) as Observable<AppUser[]>;
 }
 }

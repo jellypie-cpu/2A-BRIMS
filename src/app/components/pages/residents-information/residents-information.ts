@@ -4,20 +4,27 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 import { ResidentForm } from './residents-form/residents-form';
+
 import { ResidentService } from '../../../core/services/resident';
 import { AuthService } from '../../../core/services/auth';
 import { UserService } from '../../../core/services/user';
+
 import { Resident } from '../../../core/models/resident.model';
 import { AppUser } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-residents-information',
   standalone: true,
-  imports: [CommonModule, FormsModule, ResidentForm],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ResidentForm
+  ],
   templateUrl: './residents-information.html',
   styleUrls: ['./residents-information.scss'],
 })
 export class ResidentsInformation implements OnInit {
+
   zones = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
   selectedZone: string | null = null;
@@ -25,12 +32,15 @@ export class ResidentsInformation implements OnInit {
 
   allResidents: Resident[] = [];
   residents: Resident[] = [];
+
   residentUsers: AppUser[] = [];
 
   loading = true;
 
   showForm = false;
+
   selectedResident: Resident | null = null;
+
   isEditMode = false;
 
   constructor(
@@ -55,25 +65,39 @@ export class ResidentsInformation implements OnInit {
 
     this.residentService.getActive().subscribe({
       next: residents => {
+
         this.allResidents = residents || [];
+
         this.filterResidents();
+
         this.loading = false;
       },
+
       error: () => {
+
         this.loading = false;
-        Swal.fire('Error', 'Unable to load residents.', 'error');
+
+        Swal.fire(
+          'Error',
+          'Unable to load residents.',
+          'error'
+        );
       }
     });
   }
 
   filterResidents(): void {
+
     let filtered = [...this.allResidents];
 
     if (this.selectedZone !== null) {
-      filtered = filtered.filter(r => r.address?.zone === this.selectedZone);
+      filtered = filtered.filter(
+        r => r.address?.zone === this.selectedZone
+      );
     }
 
     if (this.searchText.trim()) {
+
       const search = this.searchText.toLowerCase();
 
       filtered = filtered.filter(r =>
@@ -105,23 +129,28 @@ export class ResidentsInformation implements OnInit {
   }
 
   async saveResident(resident: Resident): Promise<void> {
+
     const currentUser = this.authService.getCurrentUser();
 
-    if (!currentUser?.id || !currentUser?.username || !currentUser?.email || !currentUser?.role) {
+    if (!currentUser?.id) {
+
       Swal.fire(
-        'Incomplete Staff/User Credentials',
-        'Your account must have username, email, and role before saving resident records.',
-        'warning'
+        'Authentication Error',
+        'No logged in user detected.',
+        'error'
       );
+
       return;
     }
 
-    if (!resident.userId || !resident.userEmail) {
+    if (!resident.userId) {
+
       Swal.fire(
         'Resident User Required',
-        'Please choose the resident user account first. The resident document ID must match the user document ID.',
+        'Please select a resident user account.',
         'warning'
       );
+
       return;
     }
 
@@ -132,21 +161,34 @@ export class ResidentsInformation implements OnInit {
     );
 
     if (duplicate) {
+
       Swal.fire(
         'Duplicate Resident',
-        'A resident with the same name and birthdate already exists.',
+        'Resident already exists.',
         'warning'
       );
+
       return;
     }
 
     const payload: Resident = {
+
       ...resident,
+
+      // IMPORTANT
       id: resident.userId,
+      userId: resident.userId,
+
       isArchived: false,
+
       createdBy: resident.createdBy || currentUser.id,
-      createdByName: resident.createdByName || currentUser.username,
+
+      createdByName:
+        resident.createdByName ||
+        currentUser.username,
+
       updatedBy: currentUser.id,
+
       address: {
         zone: String(resident.address.zone),
         street: resident.address.street,
@@ -154,13 +196,33 @@ export class ResidentsInformation implements OnInit {
       }
     };
 
+    console.log('FINAL RESIDENT PAYLOAD:', payload);
+
     await this.residentService.saveResident(payload);
 
-    Swal.fire('Saved', 'Resident information saved successfully.', 'success');
+    // LINK USER TO RESIDENT
+    await this.userService.updateUser(
+      resident.userId,
+      {
+        residentId: resident.userId,
+        username: resident.fullname,
+        email: resident.userEmail
+      }
+    );
+
+    Swal.fire(
+      'Saved',
+      'Resident information saved successfully.',
+      'success'
+    );
+
     this.closeForm();
   }
 
-  async archiveResident(resident: Resident): Promise<void> {
+  async archiveResident(
+    resident: Resident
+  ): Promise<void> {
+
     if (!resident.id) return;
 
     const result = await Swal.fire({
@@ -176,9 +238,16 @@ export class ResidentsInformation implements OnInit {
 
     await this.residentService.archive(resident.id);
 
-    this.allResidents = this.allResidents.filter(r => r.id !== resident.id);
+    this.allResidents = this.allResidents.filter(
+      r => r.id !== resident.id
+    );
+
     this.filterResidents();
 
-    Swal.fire('Archived', 'Resident moved to archive.', 'success');
+    Swal.fire(
+      'Archived',
+      'Resident moved to archive.',
+      'success'
+    );
   }
 }

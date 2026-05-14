@@ -32,21 +32,17 @@ export class ProfileMyInformation implements OnInit, OnDestroy {
         this.user = user;
         this.residentSubscription?.unsubscribe();
 
-        if (!user) {
+        if (!user?.id) {
           this.resident = null;
           this.loading = false;
           return;
         }
 
-        if (!user.residentId) {
-          this.resident = null;
-          this.loading = false;
-          return;
-        }
+        const residentDocId = user.residentId || user.id;
 
         this.loading = true;
 
-        this.residentSubscription = this.residentService.getById(user.residentId).subscribe({
+        this.residentSubscription = this.residentService.getById(residentDocId).subscribe({
           next: resident => {
             this.resident = resident || null;
             this.loading = false;

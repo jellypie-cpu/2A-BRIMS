@@ -60,14 +60,12 @@
   >
     <option value="">Select resident user account</option>
 
-    <option *ngFor="let user of residentUsers" [value]="user.id">
-      {{ user.username }} - {{ user.email }}
+    <option *ngFor="let user of residentUsers" [ngValue]="user.id || ''">
+      {{ user.username || 'No username' }} - {{ user.email || 'No email' }}
     </option>
   </select>
 
-  <small>
-    This will become the Firestore document ID of the resident.
-  </small>
+  <small>Total users loaded: {{ residentUsers.length }}</small>
 </div>
 
 <div class="field">
