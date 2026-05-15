@@ -1,8 +1,11 @@
 <div class="my-history-page">
 
   <div class="page-header">
-    <h1>My Request History</h1>
-    <p>View all certificates and permits you requested from the barangay.</p>
+    <div>
+      <span class="eyebrow">Barangay Documents</span>
+      <h1>My Request History</h1>
+      <p>Track all certificates and permits you requested from the barangay.</p>
+    </div>
   </div>
 
   <div *ngIf="loading" class="empty-state">
@@ -10,7 +13,8 @@
   </div>
 
   <div *ngIf="!loading && requests.length === 0" class="empty-state">
-    You have not requested any documents yet.
+    <h3>No requests yet</h3>
+    <p>You have not requested any documents yet.</p>
   </div>
 
   <div class="history-list" *ngIf="!loading && requests.length > 0">
@@ -25,20 +29,28 @@
     >
 
       <div class="history-main">
-        <div>
-          <h2>{{ request.type }}</h2>
+        <div class="document-icon">
+          📄
+        </div>
+
+        <div class="history-content">
+          <div class="title-row">
+            <h2>{{ request.type }}</h2>
+
+            <span class="status-badge">
+              {{ getStatusLabel(request.status) }}
+            </span>
+          </div>
+
           <p class="purpose">
             <strong>Purpose:</strong>
             {{ request.purpose || 'No purpose provided' }}
           </p>
+
           <p class="date">
             Requested on {{ formatDate(request.createdAt) }}
           </p>
         </div>
-
-        <span class="status-badge">
-          {{ getStatusLabel(request.status) }}
-        </span>
       </div>
 
       <div class="status-message" *ngIf="request.status === 'pending'">
