@@ -46,7 +46,7 @@
       [paginator]="true"
       [rows]="10"
       [loading]="loading"
-      [globalFilterFields]="['username', 'email', 'role', 'residentId']"
+      [globalFilterFields]="['id', 'username', 'email', 'role', 'residentId']"
       #dt
       responsiveLayout="scroll"
       styleClass="users-table"
@@ -69,7 +69,7 @@
           <th>Username</th>
           <th>Email Address</th>
           <th>Role</th>
-          <th>Resident ID</th>
+          <th>User ID</th>
           <th class="action-col">Action</th>
         </tr>
       </ng-template>
@@ -98,14 +98,10 @@
           </td>
 
           <td>
-            <span *ngIf="user.role === 'resident'; else noResidentId">
-              {{ user.residentId || 'Not linked' }}
-            </span>
-
-            <ng-template #noResidentId>
-              <span class="muted">—</span>
-            </ng-template>
-          </td>
+  <span class="user-id">
+    {{ user.id || 'No ID' }}
+  </span>
+</td>
 
           <td class="action-col">
             <button

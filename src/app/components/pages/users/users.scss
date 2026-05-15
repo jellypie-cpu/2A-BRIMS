@@ -306,4 +306,19 @@
   .page-header {
     padding: 22px;
   }
+  .user-id {
+  display: inline-flex;
+  align-items: center;
+  max-width: 170px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 }
