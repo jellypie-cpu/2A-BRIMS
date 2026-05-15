@@ -1,0 +1,124 @@
+<div class="general-settings">
+  <div class="page-title">
+    <div>
+      <h3>General Settings</h3>
+      <p>Configure the main information and rules used across the barangay system.</p>
+    </div>
+
+    <button class="save-btn">
+      Save Changes
+    </button>
+  </div>
+
+  <div class="settings-grid">
+    <section class="settings-card">
+      <h4>Barangay Information</h4>
+      <p>Basic details shown in certificates, permits, and reports.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Barangay Name</label>
+          <input type="text" placeholder="Enter barangay name" />
+        </div>
+
+        <div class="form-group">
+          <label>Municipality / City</label>
+          <input type="text" placeholder="Enter municipality or city" />
+        </div>
+
+        <div class="form-group">
+          <label>Province</label>
+          <input type="text" placeholder="Enter province" />
+        </div>
+
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" placeholder="Enter contact number" />
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <h4>Office Schedule</h4>
+      <p>Used for request availability and office notices.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Office Days</label>
+          <input type="text" placeholder="Monday - Friday" />
+        </div>
+
+        <div class="form-group">
+          <label>Office Hours</label>
+          <input type="text" placeholder="8:00 AM - 5:00 PM" />
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <h4>Document Request Settings</h4>
+      <p>Control request processing time and document fees.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Processing Days</label>
+          <input type="number" placeholder="3" />
+        </div>
+
+        <div class="form-group">
+          <label>Default Document Fee</label>
+          <input type="number" placeholder="50" />
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <strong>Allow Online Requests</strong>
+          <span>Residents can submit document requests online.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked />
+          <span></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <strong>Require Staff Approval</strong>
+          <span>Requests must be approved before processing.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked />
+          <span></span>
+        </label>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <h4>Notification Settings</h4>
+      <p>Manage system alerts for requests and concerns.</p>
+
+      <div class="toggle-row">
+        <div>
+          <strong>New Request Alerts</strong>
+          <span>Notify staff when residents submit requests.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked />
+          <span></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <strong>Concern Notifications</strong>
+          <span>Show active concern alerts in dashboard and topbar.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked />
+          <span></span>
+        </label>
+      </div>
+    </section>
+  </div>
+</div>

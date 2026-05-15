@@ -1,19 +1,35 @@
-<h2>System Settings</h2>
-
-<div class="settings-layout">
-
-  <div class="settings-menu">
-    <a routerLink="archive" routerLinkActive="active">
-      Archive
-    </a>
-
-    <a routerLink="general" routerLinkActive="active">
-      General Settings
-    </a>
+<div class="settings-page">
+  <div class="settings-header">
+    <div>
+      <span class="eyebrow">Admin Configuration</span>
+      <h2>System Settings</h2>
+      <p>Manage barangay system preferences, archives, and general configurations.</p>
+    </div>
   </div>
 
-  <div class="settings-content">
-    <router-outlet></router-outlet>
-  </div>
+  <div class="settings-layout">
+    <aside class="settings-menu">
+      <div class="menu-title">Settings Menu</div>
 
+      <a routerLink="/dashboard/system-settings/general" routerLinkActive="active">
+        <span class="icon">⚙️</span>
+        <div>
+          <strong>General Settings</strong>
+          <small>Barangay info and rules</small>
+        </div>
+      </a>
+
+      <a routerLink="/dashboard/system-settings/archive" routerLinkActive="active">
+        <span class="icon">🗃️</span>
+        <div>
+          <strong>Archive</strong>
+          <small>Archived records</small>
+        </div>
+      </a>
+    </aside>
+
+    <main class="settings-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

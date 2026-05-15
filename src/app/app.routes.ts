@@ -19,6 +19,7 @@ import { ProfileMyInformation } from './components/pages/profile/my-information/
 import { ProfileHelp } from './components/pages/profile/help/help';
 import { ProfileAccountSettings } from './components/pages/profile/account-settings/account-settings';
 import { Archive } from './components/pages/system-settings/archive/archive';
+import { GeneralSettings } from './components/pages/system-settings/general-settings/general-settings';
 import { Notifications } from './components/pages/notifications/notifications';
 import { ResidentsCertificatesRequest } from './components/pages/certificates-request/residents-certificates-request/residents-certificates-request';
 import { MyRequestHistory } from './components/pages/certificates-request/residents-request-history/residents-request-history';
@@ -58,6 +59,10 @@ export const routes: Routes = [
     {
       path: 'archive',
       component: Archive
+    },
+    {
+      path: 'general',
+      component: GeneralSettings
     }
   ]
 },
