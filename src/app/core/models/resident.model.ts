@@ -1,13 +1,14 @@
 export interface Resident {
   id?: string;
 
+  residentNumber?: string;
+
   userId: string;
   userEmail: string;
 
   firstname: string;
   middlename?: string;
   lastname: string;
-
   fullname: string;
 
   birthdate: string;

@@ -71,27 +71,28 @@ export class ResidentsInformation implements OnInit {
   }
 
   filterResidents(): void {
-    let filtered = [...this.allResidents];
+  let filtered = [...this.allResidents];
 
-    if (this.selectedZone !== null) {
-      filtered = filtered.filter(
-        resident => resident.address?.zone === this.selectedZone
-      );
-    }
-
-    if (this.searchText.trim()) {
-      const search = this.searchText.toLowerCase();
-
-      filtered = filtered.filter(resident =>
-        resident.fullname?.toLowerCase().includes(search) ||
-        resident.userEmail?.toLowerCase().includes(search) ||
-        resident.address?.street?.toLowerCase().includes(search) ||
-        resident.address?.barangay?.toLowerCase().includes(search)
-      );
-    }
-
-    this.residents = filtered;
+  if (this.selectedZone !== null) {
+    filtered = filtered.filter(
+      resident => resident.address?.zone === this.selectedZone
+    );
   }
+
+  if (this.searchText.trim()) {
+    const search = this.searchText.toLowerCase();
+
+    filtered = filtered.filter(resident =>
+      resident.residentNumber?.toLowerCase().includes(search) ||
+      resident.fullname?.toLowerCase().includes(search) ||
+      resident.userEmail?.toLowerCase().includes(search) ||
+      resident.address?.street?.toLowerCase().includes(search) ||
+      resident.address?.barangay?.toLowerCase().includes(search)
+    );
+  }
+
+  this.residents = filtered;
+}
 
   addResident(): void {
     this.selectedResident = null;
@@ -143,7 +144,7 @@ export class ResidentsInformation implements OnInit {
         barangay: 'San Martin'
       }
     };
-
+ 
     await this.residentService.saveResident(payload);
 
     Swal.fire('Saved', 'Resident information saved successfully.', 'success');

@@ -104,6 +104,20 @@ tr:hover {
   background: #f8fafc;
 }
 
+.resident-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
 .voter {
   color: #166534;
   background: #dcfce7;
@@ -120,6 +134,25 @@ tr:hover {
   font-weight: 700;
 }
 
+.linked-badge {
+  color: #166534;
+  background: #dcfce7;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.app-user-btn {
+  border: none;
+  background: #0f766e;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -132,6 +165,7 @@ tr:hover {
   border-radius: 8px;
   cursor: pointer;
   color: white;
+  font-weight: 700;
 }
 
 .view-btn {
@@ -149,4 +183,10 @@ tr:hover {
   border-radius: 14px;
   text-align: center;
   color: #64748b;
+}
+
+@media (max-width: 700px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
 }

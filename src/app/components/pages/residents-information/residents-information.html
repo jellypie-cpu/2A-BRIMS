@@ -14,8 +14,10 @@
   <div class="toolbar">
     <div class="field">
       <label>Zone</label>
+
       <select [(ngModel)]="selectedZone" (change)="filterResidents()">
         <option [ngValue]="null">All Residents</option>
+
         <option *ngFor="let zone of zones" [ngValue]="zone">
           Zone {{ zone }}
         </option>
@@ -24,9 +26,10 @@
 
     <div class="field search">
       <label>Search</label>
+
       <input
         type="text"
-        placeholder="Search by name, street, or barangay..."
+        placeholder="Search by name, ID, street, or barangay..."
         [(ngModel)]="searchText"
         (input)="filterResidents()"
       />
@@ -66,14 +69,22 @@
 
       <tbody>
         <tr *ngFor="let resident of residents">
-          <td>{{ resident.id }}</td>
+          <td>
+            <span class="resident-id">
+              {{ resident.residentNumber || 'No ID Yet' }}
+            </span>
+          </td>
+
           <td>{{ resident.fullname }}</td>
           <td>{{ resident.birthdate }}</td>
           <td>{{ resident.civilStatus }}</td>
           <td>{{ resident.gender }}</td>
 
           <td>
-            <span [class.voter]="resident.isVoter" [class.non-voter]="!resident.isVoter">
+            <span
+              [class.voter]="resident.isVoter"
+              [class.non-voter]="!resident.isVoter"
+            >
               {{ resident.isVoter ? 'Registered' : 'Not Registered' }}
             </span>
           </td>
@@ -83,7 +94,7 @@
           <td>{{ resident.address.barangay }}</td>
 
           <td>
-            <span *ngIf="resident.userId">
+            <span *ngIf="resident.userId" class="linked-badge">
               Linked
             </span>
 
