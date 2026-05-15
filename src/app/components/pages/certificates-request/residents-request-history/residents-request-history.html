@@ -1,0 +1,64 @@
+<div class="my-history-page">
+
+  <div class="page-header">
+    <h1>My Request History</h1>
+    <p>View all certificates and permits you requested from the barangay.</p>
+  </div>
+
+  <div *ngIf="loading" class="empty-state">
+    Loading your request history...
+  </div>
+
+  <div *ngIf="!loading && requests.length === 0" class="empty-state">
+    You have not requested any documents yet.
+  </div>
+
+  <div class="history-list" *ngIf="!loading && requests.length > 0">
+
+    <div
+      class="history-card"
+      *ngFor="let request of requests"
+      [class.pending]="request.status === 'pending'"
+      [class.approved]="request.status === 'approved'"
+      [class.released]="request.status === 'released'"
+      [class.rejected]="request.status === 'rejected'"
+    >
+
+      <div class="history-main">
+        <div>
+          <h2>{{ request.type }}</h2>
+          <p class="purpose">
+            <strong>Purpose:</strong>
+            {{ request.purpose || 'No purpose provided' }}
+          </p>
+          <p class="date">
+            Requested on {{ formatDate(request.createdAt) }}
+          </p>
+        </div>
+
+        <span class="status-badge">
+          {{ getStatusLabel(request.status) }}
+        </span>
+      </div>
+
+      <div class="status-message" *ngIf="request.status === 'pending'">
+        Your request is waiting for staff review.
+      </div>
+
+      <div class="status-message" *ngIf="request.status === 'approved'">
+        Your request has been approved. Please wait for release.
+      </div>
+
+      <div class="status-message" *ngIf="request.status === 'released'">
+        Your document has been released.
+      </div>
+
+      <div class="status-message rejected-text" *ngIf="request.status === 'rejected'">
+        Your request was rejected. Please contact the barangay office.
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

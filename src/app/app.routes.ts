@@ -20,6 +20,7 @@ import { ProfileHelp } from './components/pages/profile/help/help';
 import { ProfileAccountSettings } from './components/pages/profile/account-settings/account-settings';
 import { Archive } from './components/pages/system-settings/archive/archive';
 import { Notifications } from './components/pages/notifications/notifications';
+import { MyRequestHistory } from './components/pages/certificates-request/residents-request-history/residents-request-history';
 
 
 export const routes: Routes = [
@@ -37,6 +38,7 @@ export const routes: Routes = [
       { path: '', component: DashboardHome },
       { path: 'residents-information', component: ResidentsInformation },
       {path: 'certificates-request', component: CertificatesRequest },
+      { path: 'my-request-history', component: MyRequestHistory },
       { path: 'blotter-records', component: BlotterRecords },
       { path: 'users', component: Users },
       { path: 'notifications', component: Notifications },
