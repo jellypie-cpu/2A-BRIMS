@@ -4,16 +4,14 @@
     <div>
       <span class="eyebrow">My Account</span>
       <h2>Account Settings</h2>
-      <p>Manage your profile, account preferences, and security information.</p>
+      <p>Manage your profile, access, notifications, and account security.</p>
     </div>
 
     <div class="profile-pill">
-      <div class="avatar">
-        {{ username.charAt(0) || 'U' }}
-      </div>
+      <div class="avatar">{{ username.charAt(0) || 'U' }}</div>
       <div>
         <strong>{{ username || 'User' }}</strong>
-        <span>{{ user?.role || 'Account User' }}</span>
+        <span>{{ user?.role || user?.userType || 'Account User' }}</span>
       </div>
     </div>
   </div>
@@ -24,81 +22,54 @@
 
   <div *ngIf="!loading" class="settings-layout">
 
-    <!-- ACCOUNT OVERVIEW -->
-    <section class="settings-card overview-card">
-      <div class="overview-avatar">
-        {{ username.charAt(0) || 'U' }}
-      </div>
-
-      <div>
-        <h3>{{ username }}</h3>
-        <p>{{ email }}</p>
-        <span class="status-badge">Active Account</span>
-      </div>
-    </section>
-
-    <!-- PROFILE SETTINGS -->
     <section class="settings-card">
       <div class="section-title">
         <div>
           <h3>Profile Information</h3>
-          <p>Update your visible account details.</p>
+          <p>Update your basic account details.</p>
         </div>
       </div>
 
       <div class="form-grid">
         <div class="form-group">
           <label>Username</label>
-          <input
-            [(ngModel)]="username"
-            type="text"
-            placeholder="Enter username"
-          />
+          <input [(ngModel)]="username" type="text" placeholder="Enter username" />
         </div>
 
         <div class="form-group">
           <label>Email Address</label>
-          <input
-            [(ngModel)]="email"
-            type="email"
-            placeholder="Enter email address"
-          />
+          <input [(ngModel)]="email" type="email" placeholder="Enter email address" />
         </div>
       </div>
 
-      <button class="save-btn" (click)="saveSettings()">
+      <button class="save-btn" type="button" (click)="saveSettings()">
         Save Changes
       </button>
     </section>
 
-    <!-- SECURITY -->
     <section class="settings-card">
       <div class="section-title">
         <div>
-          <h3>Security</h3>
-          <p>Review your account protection settings.</p>
+          <h3>Security & Access</h3>
+          <p>Manage password rules and account verification.</p>
         </div>
       </div>
 
       <div class="info-list">
-
         <div class="info-item">
           <div class="icon-box lock">🔒</div>
+
           <div>
-            <h4>Password</h4>
+            <h4>Password Management</h4>
             <p *ngIf="isResident">
-              Residents are not allowed to change their password. Please contact the barangay staff for assistance.
+              Residents cannot change passwords directly. Please contact barangay staff for assistance.
             </p>
             <p *ngIf="!isResident">
-              Keep your account secure by updating your password regularly.
+              Staff accounts can update passwords to maintain account security.
             </p>
           </div>
 
-          <button
-            *ngIf="!isResident"
-            class="outline-btn"
-            type="button"
-          >
+          <button *ngIf="!isResident" class="outline-btn" type="button">
             Change Password
           </button>
 
@@ -109,33 +80,45 @@
 
         <div class="info-item">
           <div class="icon-box shield">✓</div>
+
           <div>
-            <h4>Account Status</h4>
-            <p>Your account is currently active and verified in the system.</p>
+            <h4>Verification Status</h4>
+            <p>Your account is active and verified in the barangay system.</p>
           </div>
 
-          <span class="status-badge">Active</span>
+          <span class="status-badge">Verified</span>
         </div>
 
+        <div class="info-item">
+          <div class="icon-box access">🛡️</div>
+
+          <div>
+            <h4>Account Access Level</h4>
+            <p>Your available features depend on your assigned account role.</p>
+          </div>
+
+          <span class="role-badge">
+            {{ user?.role || user?.userType || 'User' }}
+          </span>
+        </div>
       </div>
     </section>
 
-    <!-- PREFERENCES -->
     <section class="settings-card">
       <div class="section-title">
         <div>
-          <h3>Preferences</h3>
-          <p>Control how you receive account updates.</p>
+          <h3>Notification Preferences</h3>
+          <p>Choose which account updates you want to receive.</p>
         </div>
       </div>
 
       <div class="info-list">
-
         <div class="info-item">
           <div class="icon-box bell">🔔</div>
+
           <div>
-            <h4>Email Notifications</h4>
-            <p>Receive updates about requests, announcements, and account activity.</p>
+            <h4>Account Notifications</h4>
+            <p>Receive updates about announcements, requests, and account activity.</p>
           </div>
 
           <label class="switch">
@@ -146,6 +129,7 @@
 
         <div class="info-item">
           <div class="icon-box doc">📄</div>
+
           <div>
             <h4>Document Request Updates</h4>
             <p>Get notified when your certificate or permit request status changes.</p>
@@ -156,7 +140,18 @@
             <span class="slider"></span>
           </label>
         </div>
+      </div>
+    </section>
 
+    <section class="settings-card notice-card">
+      <div class="icon-box help">?</div>
+
+      <div>
+        <h3>Need account assistance?</h3>
+        <p>
+          For incorrect profile details, password concerns, or restricted access,
+          please contact the barangay administrator.
+        </p>
       </div>
     </section>
 
