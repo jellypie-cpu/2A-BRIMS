@@ -1,28 +1,37 @@
 <div class="certificate-page">
 
   <div class="page-header">
-    <h1>Request Documents</h1>
-    <p>Select the certificate or permit you want to request.</p>
+    <div>
+      <span class="eyebrow">Barangay Services</span>
+      <h1>Request Documents</h1>
+      <p>Select the certificate or permit you need. Your request will be sent to the barangay staff.</p>
+    </div>
   </div>
 
   <div class="certificate-grid">
 
     <div class="certificate-card" *ngFor="let cert of certificateTypes">
 
-      <div class="icon">
-        {{ cert.icon }}
+      <div class="card-top">
+        <div class="icon">
+          {{ cert.icon }}
+        </div>
+
+        <span class="status-chip">Available</span>
       </div>
 
-      <h2>{{ cert.type }}</h2>
-
-      <p>{{ cert.description }}</p>
+      <div class="card-content">
+        <h2>{{ cert.type }}</h2>
+        <p>{{ cert.description }}</p>
+      </div>
 
       <button
         type="button"
         (click)="requestCertificate(cert.type)"
         [disabled]="loadingType === cert.type"
       >
-        {{ loadingType === cert.type ? 'Submitting...' : 'Request Certificate' }}
+        <span *ngIf="loadingType !== cert.type">Request Document</span>
+        <span *ngIf="loadingType === cert.type">Submitting...</span>
       </button>
 
     </div>
