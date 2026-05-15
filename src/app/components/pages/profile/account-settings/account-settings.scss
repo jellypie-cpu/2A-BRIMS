@@ -1,0 +1,229 @@
+.settings-container {
+  min-height: 100%;
+  padding: 2rem;
+  background: #f4f7fb;
+  color: #1f2937;
+
+  .settings-header {
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    p {
+      margin-top: 0.4rem;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+  }
+
+  .loading-card {
+    padding: 2rem;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .settings-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .settings-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+  }
+
+  .section-title {
+    margin-bottom: 1.4rem;
+
+    h3 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin-top: 0.3rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 0.45rem;
+      color: #475569;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    input {
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      background: #f8fafc;
+      color: #1e293b;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.25s ease;
+
+      &:focus {
+        border-color: #2563eb;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+    }
+  }
+
+  .save-btn {
+    margin-top: 1.4rem;
+    border: none;
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+
+    &:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+  }
+
+  .security-item,
+  .preference-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    h4 {
+      margin: 0 0 0.3rem;
+      color: #1e293b;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+  }
+
+  .outline-btn {
+    border: 1px solid #2563eb;
+    background: transparent;
+    color: #2563eb;
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+
+    &:hover {
+      background: #2563eb;
+      color: #ffffff;
+    }
+  }
+
+  .status-badge {
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 999px;
+      transition: 0.25s ease;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        left: 3px;
+        top: 3px;
+        background: #ffffff;
+        border-radius: 50%;
+        transition: 0.25s ease;
+      }
+    }
+
+    input:checked + .slider {
+      background: #2563eb;
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 1rem;
+
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .security-item,
+    .preference-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}

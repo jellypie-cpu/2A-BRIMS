@@ -1,18 +1,125 @@
 <div class="settings-container">
 
-  <h2>Account Settings</h2>
+  <div class="settings-header">
+    <div>
+      <h2>Account Settings</h2>
+      <p>Manage your personal account information and security.</p>
+    </div>
+  </div>
 
-  <div *ngIf="!loading">
+  <div *ngIf="loading" class="loading-card">
+    Loading account settings...
+  </div>
 
-    <label>Username</label>
-    <input [(ngModel)]="username" type="text" />
+  <div *ngIf="!loading" class="settings-layout">
 
-    <label>Email</label>
-    <input [(ngModel)]="email" type="email" />
+    <!-- PROFILE SETTINGS -->
+    <section class="settings-card">
 
-    <button (click)="saveSettings()">
-      Save Changes
-    </button>
+      <div class="section-title">
+        <h3>Profile Information</h3>
+        <p>Update your account details and personal information.</p>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Username</label>
+
+          <input
+            [(ngModel)]="username"
+            type="text"
+            placeholder="Enter username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+
+          <input
+            [(ngModel)]="email"
+            type="email"
+            placeholder="Enter email address"
+          />
+        </div>
+
+      </div>
+
+      <button class="save-btn" (click)="saveSettings()">
+        Save Changes
+      </button>
+
+    </section>
+
+    <!-- SECURITY -->
+    <section class="settings-card">
+
+      <div class="section-title">
+        <h3>Security</h3>
+        <p>Protect your account and credentials.</p>
+      </div>
+
+      <div class="security-item">
+        <div>
+          <h4>Password</h4>
+          <p>Change your account password regularly.</p>
+        </div>
+
+        <button class="outline-btn">
+          Change Password
+        </button>
+      </div>
+
+      <div class="security-item">
+        <div>
+          <h4>Account Status</h4>
+          <p>Your account is currently active.</p>
+        </div>
+
+        <span class="status-badge">
+          Active
+        </span>
+      </div>
+
+    </section>
+
+    <!-- PREFERENCES -->
+    <section class="settings-card">
+
+      <div class="section-title">
+        <h3>Preferences</h3>
+        <p>Customize your account experience.</p>
+      </div>
+
+      <div class="preference-item">
+
+        <div>
+          <h4>Email Notifications</h4>
+          <p>Receive updates about requests and announcements.</p>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" checked />
+          <span class="slider"></span>
+        </label>
+
+      </div>
+
+      <div class="preference-item">
+
+        <div>
+          <h4>Dark Mode</h4>
+          <p>Enable dark appearance for the interface.</p>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" />
+          <span class="slider"></span>
+        </label>
+
+      </div>
+
+    </section>
 
   </div>
 

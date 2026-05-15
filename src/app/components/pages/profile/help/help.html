@@ -1,49 +1,85 @@
 <div class="help-container">
 
-  <h2>Help Center</h2>
-
-  <!-- FAQ SECTION -->
-  <div class="faq-section">
-    <h3>Frequently Asked Questions</h3>
-
-    <div *ngFor="let faq of faqs" class="faq-item">
-      <h4>{{ faq.question }}</h4>
-      <p>{{ faq.answer }}</p>
+  <div class="help-header">
+    <div>
+      <h2>Help Center</h2>
+      <p>Find answers, submit concerns, and track your help requests.</p>
     </div>
   </div>
 
-  <hr />
+  <section class="help-grid">
 
-  <!-- HELP FORM -->
-  <div class="help-form">
-    <h3>Submit a Help Request</h3>
+    <div class="help-card faq-section">
+      <div class="section-title">
+        <h3>Frequently Asked Questions</h3>
+        <p>Common questions about barangay services</p>
+      </div>
 
-    <input
-      type="text"
-      placeholder="Subject"
-      [(ngModel)]="subject"
-    />
-
-    <textarea
-      placeholder="Describe your issue..."
-      [(ngModel)]="message"
-    ></textarea>
-
-    <button (click)="submitHelp()">Send</button>
-  </div>
-
-  <hr />
-
-  <!-- USER TICKETS -->
-  <div class="ticket-section">
-    <h3>Your Requests</h3>
-
-    <div *ngFor="let t of tickets" class="ticket-card">
-      <p><strong>{{ t.subject }}</strong></p>
-      <p>{{ t.message }}</p>
-      <small>Status: {{ t.status }}</small>
+      <div class="faq-list">
+        <div *ngFor="let faq of faqs" class="faq-item">
+          <h4>{{ faq.question }}</h4>
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
     </div>
 
-  </div>
+    <div class="help-card help-form">
+      <div class="section-title">
+        <h3>Submit a Help Request</h3>
+        <p>Send your concern to barangay staff</p>
+      </div>
+
+      <div class="form-group">
+        <label>Subject</label>
+        <input
+          type="text"
+          placeholder="Enter request subject"
+          [(ngModel)]="subject"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea
+          placeholder="Describe your issue or concern..."
+          [(ngModel)]="message"
+        ></textarea>
+      </div>
+
+      <button type="button" (click)="submitHelp()">
+        Send Request
+      </button>
+    </div>
+
+  </section>
+
+  <section class="help-card ticket-section">
+    <div class="section-title">
+      <h3>Your Requests</h3>
+      <p>Track the status of your submitted concerns</p>
+    </div>
+
+    <div *ngIf="tickets.length === 0" class="empty-state">
+      No help requests submitted yet.
+    </div>
+
+    <div class="ticket-list" *ngIf="tickets.length > 0">
+      <div *ngFor="let t of tickets" class="ticket-card">
+        <div class="ticket-content">
+          <h4>{{ t.subject }}</h4>
+          <p>{{ t.message }}</p>
+        </div>
+
+        <span
+          class="status-badge"
+          [class.pending]="t.status === 'Pending'"
+          [class.resolved]="t.status === 'Resolved'"
+          [class.processing]="t.status === 'Processing'"
+        >
+          {{ t.status }}
+        </span>
+      </div>
+    </div>
+  </section>
 
 </div>

@@ -1,0 +1,218 @@
+.help-container {
+  min-height: 100%;
+  padding: 2rem;
+  background: #f4f7fb;
+  color: #1f2937;
+
+  .help-header {
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    p {
+      margin: 0.4rem 0 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+  }
+
+  .help-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .help-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+  }
+
+  .section-title {
+    margin-bottom: 1.2rem;
+
+    h3 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0.3rem 0 0;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .faq-item {
+    padding: 1rem;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+
+    h4 {
+      margin: 0 0 0.4rem;
+      color: #1e293b;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  }
+
+  .help-form {
+    .form-group {
+      margin-bottom: 1rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.4rem;
+        color: #475569;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+        font-size: 0.9rem;
+        color: #1e293b;
+        background: #f8fafc;
+        outline: none;
+        transition: 0.25s ease;
+
+        &:focus {
+          border-color: #2563eb;
+          background: #ffffff;
+          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+      }
+
+      textarea {
+        min-height: 130px;
+        resize: vertical;
+      }
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.25s ease;
+
+      &:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .empty-state {
+    padding: 2rem;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px dashed #cbd5e1;
+    background: #f8fafc;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+
+  .ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .ticket-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+
+    .ticket-content {
+      h4 {
+        margin: 0 0 0.35rem;
+        color: #1e293b;
+        font-size: 1rem;
+      }
+
+      p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  .status-badge {
+    white-space: nowrap;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: #e5e7eb;
+    color: #475569;
+
+    &.pending {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    &.processing {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    &.resolved {
+      background: #dcfce7;
+      color: #15803d;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .help-container {
+    padding: 1rem;
+
+    .help-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ticket-card {
+      flex-direction: column;
+    }
+  }
+}

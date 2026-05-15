@@ -1,87 +1,109 @@
 <div class="profile-info-container">
 
-  <div *ngIf="loading">
+  <div *ngIf="loading" class="loading-card">
     Loading profile...
   </div>
 
-  <div *ngIf="!loading && !resident">
+  <div *ngIf="!loading && !resident" class="empty-card">
     <h3>No resident information linked.</h3>
+    <p>Please contact the barangay staff to link your resident record.</p>
   </div>
 
   <div *ngIf="resident" class="profile-card">
 
-    <!-- PROFILE IMAGE -->
-    <div class="profile-image-section">
+    <div class="profile-header">
+      <div class="profile-image-section">
 
-  <img
-    *ngIf="user?.profileImage || resident.photo"
-    [src]="user?.profileImage || resident.photo"
-    class="profile-image"
-    alt="Profile Image"
-  />
+        <img
+          *ngIf="user?.profileImage || resident.photo"
+          [src]="user?.profileImage || resident.photo"
+          class="profile-image"
+          alt="Profile Image"
+        />
 
-  <div
-    *ngIf="!user?.profileImage && !resident.photo"
-    class="profile-placeholder"
-  >
-    {{ resident.fullname.charAt(0) }}
-  </div>
+        <div
+          *ngIf="!user?.profileImage && !resident.photo"
+          class="profile-placeholder"
+        >{{ resident.fullname.charAt(0) || '?' }}
+          
+        </div>
 
-  <input
-    type="file"
-    accept="image/*"
-    (change)="onProfileImageSelected($event)"
-  />
+        <label class="upload-btn">
+          Change Photo
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onProfileImageSelected($event)"
+          />
+        </label>
+      </div>
 
-</div>
-    <h2>{{ resident.fullname }}</h2>
+      <div class="profile-title">
+        <h2>{{ resident.fullname }}</h2>
+        <p>{{ user?.email || 'No email available' }}</p>
+
+        <span class="role-badge">
+          {{ user?.role || 'Resident' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h3>Personal Information</h3>
+      <p>Your registered barangay resident details</p>
+    </div>
 
     <div class="info-grid">
 
       <div class="info-item">
-        <label>Email</label>
-        <p>{{ user?.email }}</p>
+        <label>Full Name</label>
+        <p>{{ resident.fullname || 'Not provided' }}</p>
+      </div>
+
+      <div class="info-item">
+        <label>Email Address</label>
+        <p>{{ user?.email || 'Not provided' }}</p>
       </div>
 
       <div class="info-item">
         <label>Role</label>
-        <p>{{ user?.role }}</p>
+        <p>{{ user?.role || 'Resident' }}</p>
       </div>
 
       <div class="info-item">
         <label>Birthdate</label>
-        <p>{{ resident.birthdate }}</p>
+        <p>{{ resident.birthdate || 'Not provided' }}</p>
       </div>
 
       <div class="info-item">
         <label>Gender</label>
-        <p>{{ resident.gender }}</p>
+        <p>{{ resident.gender || 'Not provided' }}</p>
       </div>
 
       <div class="info-item">
         <label>Civil Status</label>
-        <p>{{ resident.civilStatus }}</p>
+        <p>{{ resident.civilStatus || 'Not provided' }}</p>
       </div>
 
       <div class="info-item">
         <label>Voter Status</label>
-
         <p>
-          {{
-            resident.isVoter
-              ? 'Registered Voter'
-              : 'Not Registered'
-          }}
+          <span
+            class="status-badge"
+            [class.registered]="resident.isVoter"
+            [class.not-registered]="!resident.isVoter"
+          >
+            {{ resident.isVoter ? 'Registered Voter' : 'Not Registered' }}
+          </span>
         </p>
       </div>
 
-      <div class="info-item">
-        <label>Address</label>
-
+      <div class="info-item full-width">
+        <label>Complete Address</label>
         <p>
-          Zone {{ resident.address.zone }},
-          {{ resident.address.street }},
-          {{ resident.address.barangay }}
+          Zone {{ resident.address.zone || 'N/A' }},
+                {{ resident.address.street || 'N/A' }},
+                {{ resident.address.barangay || 'N/A' }}
         </p>
       </div>
 
