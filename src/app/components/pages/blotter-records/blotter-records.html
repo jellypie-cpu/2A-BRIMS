@@ -2,6 +2,7 @@
 
   <div class="blotter-header">
     <div>
+      <span class="eyebrow">Case Management</span>
       <h1>Barangay Blotter Records</h1>
       <p>Manage complaints, active cases, schedules, and settled reports.</p>
     </div>
@@ -12,91 +13,118 @@
     </button>
   </div>
 
-  <div class="blotter-layout">
-
-    <div class="summary-boxes">
-      <div class="summary-card active">
+  <div class="summary-boxes">
+    <div class="summary-card active">
+      <div>
         <span>Active Cases</span>
         <h2>{{ getCount('Active') }}</h2>
       </div>
+      <i class="pi pi-exclamation-circle"></i>
+    </div>
 
-      <div class="summary-card settled">
-        <span>Settled Cases</span>
-        <h2>{{ getCount('Settled') }}</h2>
-      </div>
-
-      <div class="summary-card scheduled">
+    <div class="summary-card scheduled">
+      <div>
         <span>Scheduled Cases</span>
         <h2>{{ getCount('Scheduled') }}</h2>
       </div>
+      <i class="pi pi-calendar"></i>
     </div>
 
-    <div class="case-panel">
+    <div class="summary-card settled">
+      <div>
+        <span>Settled Cases</span>
+        <h2>{{ getCount('Settled') }}</h2>
+      </div>
+      <i class="pi pi-check-circle"></i>
+    </div>
+  </div>
 
-      <div class="case-toolbar">
+  <div class="case-panel">
+
+    <div class="case-panel-header">
+      <div>
+        <h2>Blotter Case List</h2>
+        <p>Search and filter barangay blotter records.</p>
+      </div>
+
+      <span class="record-count">
+        {{ filteredCases.length }} record{{ filteredCases.length === 1 ? '' : 's' }}
+      </span>
+    </div>
+
+    <div class="case-toolbar">
+      <div class="search-box">
+        <i class="pi pi-search"></i>
         <input
           type="text"
           placeholder="Search by resident name..."
           [(ngModel)]="searchText"
           (input)="filterCases()"
         />
-
-        <select [(ngModel)]="selectedStatus" (change)="filterCases()">
-          <option value="">All Status</option>
-          <option value="Active">Active</option>
-          <option value="Settled">Settled</option>
-          <option value="Scheduled">Scheduled</option>
-        </select>
       </div>
 
-      <div class="case-table-header">
-        <span>Resident</span>
-        <span>Complaint</span>
-        <span>Status</span>
-        <span>Description</span>
-        <span>Date</span>
-        <span>Actions</span>
-      </div>
-
-      <div class="case-row" *ngFor="let blotter of filteredCases">
-        <div class="resident-cell">
-          <div class="resident-avatar">
-            {{ blotter.residentName?.charAt(0) }}
-          </div>
-          <strong>{{ blotter.residentName }}</strong>
-        </div>
-
-        <span class="complaint">{{ blotter.complaint }}</span>
-
-        <span
-          class="status-badge"
-          [ngClass]="{
-            'status-active': blotter.status === 'Active',
-            'status-settled': blotter.status === 'Settled',
-            'status-scheduled': blotter.status === 'Scheduled'
-          }">
-          {{ blotter.status }}
-        </span>
-
-        <span class="description">{{ blotter.description }}</span>
-        <span class="date">{{ blotter.date }}</span>
-
-        <div class="row-actions">
-          <button class="view-btn" type="button" (click)="viewCase(blotter)">
-            View
-          </button>
-
-          <button class="delete-btn" type="button" (click)="archiveCase(blotter)">
-  Archive
-</button>
-        </div>
-      </div>
-
-     <div class="empty-state" *ngIf="filteredCases.length === 0">
-  No blotter records found.
-</div>
-
+      <select [(ngModel)]="selectedStatus" (change)="filterCases()">
+        <option value="">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Settled">Settled</option>
+        <option value="Scheduled">Scheduled</option>
+      </select>
     </div>
+
+    <div class="case-table-header">
+      <span>Resident</span>
+      <span>Complaint</span>
+      <span>Status</span>
+      <span>Description</span>
+      <span>Date</span>
+      <span>Actions</span>
+    </div>
+
+    <div class="case-row" *ngFor="let blotter of filteredCases">
+      <div class="resident-cell">
+        <div class="resident-avatar">
+          {{ blotter.residentName?.charAt(0) || '?' }}
+        </div>
+
+        <div>
+          <strong>{{ blotter.residentName }}</strong>
+          <small>{{ blotter.type || 'Blotter case' }}</small>
+        </div>
+      </div>
+
+      <span class="complaint">{{ blotter.complaint }}</span>
+
+      <span
+        class="status-badge"
+        [ngClass]="{
+          'status-active': blotter.status === 'Active',
+          'status-settled': blotter.status === 'Settled',
+          'status-scheduled': blotter.status === 'Scheduled'
+        }"
+      >
+        {{ blotter.status }}
+      </span>
+
+      <span class="description">{{ blotter.description }}</span>
+      <span class="date">{{ blotter.date }}</span>
+
+      <div class="row-actions">
+        <button class="view-btn" type="button" (click)="viewCase(blotter)">
+          View
+        </button>
+
+        <button class="delete-btn" type="button" (click)="archiveCase(blotter)">
+          Archive
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredCases.length === 0">
+      <i class="pi pi-folder-open"></i>
+      <h3>No blotter records found</h3>
+      <p>Try changing your search or status filter.</p>
+    </div>
+
   </div>
 </div>
 
