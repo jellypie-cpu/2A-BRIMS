@@ -1,9 +1,20 @@
 <div class="settings-container">
 
-  <div class="settings-header">
+  <div class="settings-hero">
     <div>
+      <span class="eyebrow">My Account</span>
       <h2>Account Settings</h2>
-      <p>Manage your personal account information and security.</p>
+      <p>Manage your profile, account preferences, and security information.</p>
+    </div>
+
+    <div class="profile-pill">
+      <div class="avatar">
+        {{ username.charAt(0) || 'U' }}
+      </div>
+      <div>
+        <strong>{{ username || 'User' }}</strong>
+        <span>{{ user?.role || 'Account User' }}</span>
+      </div>
     </div>
   </div>
 
@@ -13,19 +24,31 @@
 
   <div *ngIf="!loading" class="settings-layout">
 
+    <!-- ACCOUNT OVERVIEW -->
+    <section class="settings-card overview-card">
+      <div class="overview-avatar">
+        {{ username.charAt(0) || 'U' }}
+      </div>
+
+      <div>
+        <h3>{{ username }}</h3>
+        <p>{{ email }}</p>
+        <span class="status-badge">Active Account</span>
+      </div>
+    </section>
+
     <!-- PROFILE SETTINGS -->
     <section class="settings-card">
-
       <div class="section-title">
-        <h3>Profile Information</h3>
-        <p>Update your account details and personal information.</p>
+        <div>
+          <h3>Profile Information</h3>
+          <p>Update your visible account details.</p>
+        </div>
       </div>
 
       <div class="form-grid">
-
         <div class="form-group">
           <label>Username</label>
-
           <input
             [(ngModel)]="username"
             type="text"
@@ -35,90 +58,106 @@
 
         <div class="form-group">
           <label>Email Address</label>
-
           <input
             [(ngModel)]="email"
             type="email"
             placeholder="Enter email address"
           />
         </div>
-
       </div>
 
       <button class="save-btn" (click)="saveSettings()">
         Save Changes
       </button>
-
     </section>
 
     <!-- SECURITY -->
     <section class="settings-card">
-
       <div class="section-title">
-        <h3>Security</h3>
-        <p>Protect your account and credentials.</p>
+        <div>
+          <h3>Security</h3>
+          <p>Review your account protection settings.</p>
+        </div>
       </div>
 
-      <div class="security-item">
-        <div>
-          <h4>Password</h4>
-          <p>Change your account password regularly.</p>
+      <div class="info-list">
+
+        <div class="info-item">
+          <div class="icon-box lock">🔒</div>
+          <div>
+            <h4>Password</h4>
+            <p *ngIf="isResident">
+              Residents are not allowed to change their password. Please contact the barangay staff for assistance.
+            </p>
+            <p *ngIf="!isResident">
+              Keep your account secure by updating your password regularly.
+            </p>
+          </div>
+
+          <button
+            *ngIf="!isResident"
+            class="outline-btn"
+            type="button"
+          >
+            Change Password
+          </button>
+
+          <span *ngIf="isResident" class="disabled-badge">
+            Restricted
+          </span>
         </div>
 
-        <button class="outline-btn">
-          Change Password
-        </button>
-      </div>
+        <div class="info-item">
+          <div class="icon-box shield">✓</div>
+          <div>
+            <h4>Account Status</h4>
+            <p>Your account is currently active and verified in the system.</p>
+          </div>
 
-      <div class="security-item">
-        <div>
-          <h4>Account Status</h4>
-          <p>Your account is currently active.</p>
+          <span class="status-badge">Active</span>
         </div>
 
-        <span class="status-badge">
-          Active
-        </span>
       </div>
-
     </section>
 
     <!-- PREFERENCES -->
     <section class="settings-card">
-
       <div class="section-title">
-        <h3>Preferences</h3>
-        <p>Customize your account experience.</p>
+        <div>
+          <h3>Preferences</h3>
+          <p>Control how you receive account updates.</p>
+        </div>
       </div>
 
-      <div class="preference-item">
+      <div class="info-list">
 
-        <div>
-          <h4>Email Notifications</h4>
-          <p>Receive updates about requests and announcements.</p>
+        <div class="info-item">
+          <div class="icon-box bell">🔔</div>
+          <div>
+            <h4>Email Notifications</h4>
+            <p>Receive updates about requests, announcements, and account activity.</p>
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
         </div>
 
-        <label class="switch">
-          <input type="checkbox" checked />
-          <span class="slider"></span>
-        </label>
+        <div class="info-item">
+          <div class="icon-box doc">📄</div>
+          <div>
+            <h4>Document Request Updates</h4>
+            <p>Get notified when your certificate or permit request status changes.</p>
+          </div>
 
-      </div>
-
-      <div class="preference-item">
-
-        <div>
-          <h4>Dark Mode</h4>
-          <p>Enable dark appearance for the interface.</p>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
         </div>
 
-        <label class="switch">
-          <input type="checkbox" />
-          <span class="slider"></span>
-        </label>
-
       </div>
-
     </section>
 
   </div>

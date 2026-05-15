@@ -20,6 +20,7 @@ export class ProfileAccountSettings implements OnInit {
   email = '';
 
   loading = true;
+  isResident = false;
 
   constructor(
     private authService: AuthService,
@@ -27,19 +28,24 @@ export class ProfileAccountSettings implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.user = this.authService.getCurrentUser();
 
-    if (!this.user) return;
+    if (!this.user) {
+      this.loading = false;
+      return;
+    }
 
-    this.username = this.user.username;
-    this.email = this.user.email;
+    this.username = this.user.username || '';
+    this.email = this.user.email || '';
+
+    this.isResident =
+      this.user.role?.toLowerCase() === 'resident' ||
+      this.user.userType?.toLowerCase() === 'resident';
 
     this.loading = false;
   }
 
   async saveSettings() {
-
     if (!this.user?.id) return;
 
     await this.userService.updateUser(this.user.id, {
