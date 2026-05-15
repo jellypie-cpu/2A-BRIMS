@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth';
-import { UserService } from '../../../../core/services/user';
+import { ResidentService } from '../../../../core/services/resident';
 import { ActivityLogService } from '../../../../core/services/activity-log';
 
 @Component({
@@ -12,30 +13,53 @@ import { ActivityLogService } from '../../../../core/services/activity-log';
   templateUrl: './overview.html',
   styleUrls: ['./overview.scss']
 })
-export class ProfileOverview implements OnInit {
-
-  user: any;
+export class ProfileOverview implements OnInit, OnDestroy {
+  user: any = null;
+  resident: any = null;
   logs: any[] = [];
+  loading = true;
 
-  profileImage: string = '';
+  private subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
-    private userService: UserService,
+    private residentService: ResidentService,
     private logService: ActivityLogService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.subscription.add(
+      this.authService.currentUser$.subscribe(user => {
+        this.user = user;
 
-    this.user = this.authService.getCurrentUser();
+        if (!user?.id) {
+          this.loading = false;
+          return;
+        }
 
-    if (!this.user) return;
+        const residentId = user.residentId || user.id;
 
-    this.profileImage = this.user.profileImage || '';
+        this.subscription.add(
+          this.residentService.getById(residentId).subscribe(resident => {
+            this.resident = resident || null;
+            this.loading = false;
+          })
+        );
 
-    this.logService.getLogs(this.user.id!)
-      .subscribe(data => {
-        this.logs = data;
-      });
+        this.subscription.add(
+          this.logService.getLogs(user.id).subscribe(logs => {
+            this.logs = logs || [];
+          })
+        );
+      })
+    );
+  }
+
+  get profileImage(): string {
+    return this.user?.profileImage || this.resident?.photo || '';
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

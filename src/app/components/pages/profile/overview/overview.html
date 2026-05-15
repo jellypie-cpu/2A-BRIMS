@@ -1,9 +1,24 @@
 <div class="profile-overview">
 
-  <!-- PROFILE -->
-  <div class="header">
+  <div *ngIf="loading">
+    Loading profile...
+  </div>
 
-    <img [src]="profileImage || 'assets/default-avatar.png'" />
+  <div *ngIf="!loading" class="header">
+
+    <img
+      *ngIf="profileImage"
+      [src]="profileImage"
+      class="profile-img"
+      alt="Profile"
+    />
+
+    <div
+      *ngIf="!profileImage"
+      class="profile-placeholder"
+    >
+      {{ user?.username?.charAt(0) || '?' }}
+    </div>
 
     <h2>{{ user?.username }}</h2>
     <p>{{ user?.email }}</p>
@@ -12,12 +27,15 @@
 
   <hr />
 
-  <!-- ACTIVITY LOGS -->
   <h3>Activity Logs</h3>
+
+  <div *ngIf="logs.length === 0">
+    No activity logs yet.
+  </div>
 
   <div *ngFor="let log of logs">
     <p>{{ log.action }}</p>
-    <small>{{ log.createdAt?.toDate() | date:'short' }}</small>
+    <small>{{ log.createdAt?.toDate?.() | date:'short' }}</small>
   </div>
 
 </div>

@@ -5,7 +5,10 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../../core/services/auth';
 import { AppUser } from '../../../core/models/user.model';
-import { NotificationService, AppNotification } from '../../../core/services/notifications';
+import {
+  NotificationService,
+  AppNotification
+} from '../../../core/services/notifications';
 
 @Component({
   selector: 'app-topbar',
@@ -15,6 +18,8 @@ import { NotificationService, AppNotification } from '../../../core/services/not
   styleUrl: './topbar.scss'
 })
 export class TopbarComponent implements OnDestroy {
+  currentUser: AppUser | null = null;
+
   username = '';
   userRole = '';
   showDropdown = false;
@@ -36,14 +41,19 @@ export class TopbarComponent implements OnDestroy {
         this.notificationSubscription?.unsubscribe();
 
         if (user) {
-          this.username = user.username;
-          this.userRole = user.role;
+          this.currentUser = user;
+          this.username = user.username || '';
+          this.userRole = user.role || '';
           this.loadNotifications(user.role);
           return;
         }
 
+        this.currentUser = null;
+        this.username = '';
+        this.userRole = '';
         this.notifications = [];
         this.notificationCount = 0;
+
         this.router.navigate(['/login']);
       })
     );

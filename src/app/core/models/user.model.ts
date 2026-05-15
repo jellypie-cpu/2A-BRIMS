@@ -1,4 +1,7 @@
-export type UserRole = 'admin' | 'staff' | 'resident';
+export type UserRole =
+  | 'admin'
+  | 'staff'
+  | 'resident';
 
 export interface ActivityLog {
   action: string;
@@ -7,6 +10,7 @@ export interface ActivityLog {
 
 export interface AppUser {
   id?: string;
+
   username: string;
   email: string;
   role: UserRole;

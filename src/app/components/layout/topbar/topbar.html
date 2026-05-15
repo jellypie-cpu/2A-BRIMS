@@ -1,49 +1,90 @@
 <header class="topbar">
+
+  <!-- LEFT -->
   <div class="left">
-    <div class="brand-mark">G6</div>
+
+    <div class="brand-mark">
+      G6
+    </div>
+
     <div class="brand-text">
       <span>BRIMS</span>
-      <small>Barangay Resident's Information Management System</small>
+
+      <small>
+        Barangay Resident's Information Management System
+      </small>
     </div>
+
   </div>
 
+  <!-- RIGHT -->
   <div class="right">
+
+    <!-- NOTIFICATIONS -->
     <div class="notification-wrapper">
+
       <button
         type="button"
         class="notification-button"
         [class.has-notifications]="notificationCount > 0"
         (click)="toggleNotificationDialog()"
-        title="Open notifications"
-        aria-label="Open notifications"
+        title="Notifications"
       >
+
         <i class="pi pi-bell"></i>
 
-        <span class="notification-badge" *ngIf="notificationCount > 0">
+        <span
+          class="notification-badge"
+          *ngIf="notificationCount > 0"
+        >
           {{ notificationCount > 99 ? '99+' : notificationCount }}
         </span>
+
       </button>
 
-      <div class="notification-dialog" *ngIf="showNotificationDialog">
+      <!-- NOTIFICATION DIALOG -->
+      <div
+        class="notification-dialog"
+        *ngIf="showNotificationDialog"
+      >
+
         <div class="notification-dialog-header">
+
           <div>
             <h3>Notifications</h3>
-            <p>{{ notificationCount }} unread update{{ notificationCount === 1 ? '' : 's' }}</p>
+
+            <p>
+              {{ notificationCount }}
+              unread notification{{ notificationCount === 1 ? '' : 's' }}
+            </p>
           </div>
 
-          <button type="button" class="close-btn" (click)="closeNotificationDialog()">
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeNotificationDialog()"
+          >
             <i class="pi pi-times"></i>
           </button>
+
         </div>
 
-        <div class="notification-dialog-body" *ngIf="notifications.length > 0">
+        <!-- NOTIFICATION LIST -->
+        <div
+          class="notification-dialog-body"
+          *ngIf="notifications.length > 0"
+        >
+
           <div
             class="notification-item"
             *ngFor="let notification of notifications"
             [class.read]="notification.isRead"
             (click)="openNotification(notification)"
           >
+
+            <!-- ICON -->
             <div class="notification-icon">
+
               <i
                 class="pi"
                 [ngClass]="{
@@ -53,18 +94,36 @@
                   'pi-info-circle': notification.type === 'system'
                 }"
               ></i>
+
             </div>
 
+            <!-- CONTENT -->
             <div class="notification-content">
+
               <div class="notification-title-row">
-                <h4>{{ notification.title }}</h4>
-                <span class="unread-dot" *ngIf="!notification.isRead"></span>
+
+                <h4>
+                  {{ notification.title }}
+                </h4>
+
+                <span
+                  class="unread-dot"
+                  *ngIf="!notification.isRead"
+                ></span>
+
               </div>
 
-              <p>{{ notification.message }}</p>
-              <small>{{ notification.type }}</small>
+              <p>
+                {{ notification.message }}
+              </p>
+
+              <small>
+                {{ notification.type }}
+              </small>
+
             </div>
 
+            <!-- READ BUTTON -->
             <button
               type="button"
               class="mark-read-btn"
@@ -73,35 +132,100 @@
             >
               Read
             </button>
+
           </div>
+
         </div>
 
-        <div class="empty-notification" *ngIf="notifications.length === 0">
+        <!-- EMPTY -->
+        <div
+          class="empty-notification"
+          *ngIf="notifications.length === 0"
+        >
+
           <i class="pi pi-bell-slash"></i>
+
           <h4>No notifications</h4>
-          <p>You are all caught up.</p>
+
+          <p>
+            You are all caught up.
+          </p>
+
         </div>
+
       </div>
+
     </div>
 
-    <div class="user-menu" (click)="toggleDropdown()">
-      <img src="bg.png" alt="Profile" class="profile-img" />
-      <span class="username">{{ username }}</span>
+    <!-- USER MENU -->
+    <div
+      class="user-menu"
+      (click)="toggleDropdown()"
+    >
+
+      <!-- PROFILE IMAGE -->
+      <img
+        *ngIf="currentUser?.profileImage"
+        [src]="currentUser?.profileImage"
+        alt="Profile"
+        class="profile-img"
+      />
+
+      <!-- PROFILE PLACEHOLDER -->
+      <div
+        *ngIf="!currentUser?.profileImage"
+        class="profile-placeholder"
+      >
+        {{ username.charAt(0) }}
+      </div>
+
+      <!-- USER INFO -->
+      <div class="user-info">
+
+        <span class="username">
+          {{ username }}
+        </span>
+
+        <small class="role">
+          {{ userRole }}
+        </small>
+
+      </div>
+
       <i class="pi pi-chevron-down dropdown-icon"></i>
 
-      <div class="dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
-        <button type="button" (click)="goToProfile()">
-          <i class="pi pi-user"></i> Profile
+      <!-- DROPDOWN -->
+      <div
+        class="dropdown"
+        *ngIf="showDropdown"
+        (click)="$event.stopPropagation()"
+      >
+
+        <button
+          type="button"
+          (click)="goToProfile()"
+        >
+          <i class="pi pi-user"></i>
+          Profile
         </button>
 
-        <button type="button" (click)="logout()">
-          <i class="pi pi-sign-out"></i> Logout
+        <button
+          type="button"
+          (click)="logout()"
+        >
+          <i class="pi pi-sign-out"></i>
+          Logout
         </button>
+
       </div>
+
     </div>
+
   </div>
+
 </header>
 
+<!-- BACKDROP -->
 <div
   class="notification-backdrop"
   *ngIf="showNotificationDialog"

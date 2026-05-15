@@ -1,21 +1,52 @@
 <div class="profile-info-container">
 
-  <!-- LOADING -->
   <div *ngIf="loading">
     Loading profile...
   </div>
 
-  <!-- NO PROFILE -->
   <div *ngIf="!loading && !resident">
     <h3>No resident information linked.</h3>
   </div>
 
-  <!-- PROFILE -->
   <div *ngIf="resident" class="profile-card">
 
+    <!-- PROFILE IMAGE -->
+    <div class="profile-image-section">
+
+  <img
+    *ngIf="user?.profileImage || resident.photo"
+    [src]="user?.profileImage || resident.photo"
+    class="profile-image"
+    alt="Profile Image"
+  />
+
+  <div
+    *ngIf="!user?.profileImage && !resident.photo"
+    class="profile-placeholder"
+  >
+    {{ resident.fullname.charAt(0) }}
+  </div>
+
+  <input
+    type="file"
+    accept="image/*"
+    (change)="onProfileImageSelected($event)"
+  />
+
+</div>
     <h2>{{ resident.fullname }}</h2>
 
     <div class="info-grid">
+
+      <div class="info-item">
+        <label>Email</label>
+        <p>{{ user?.email }}</p>
+      </div>
+
+      <div class="info-item">
+        <label>Role</label>
+        <p>{{ user?.role }}</p>
+      </div>
 
       <div class="info-item">
         <label>Birthdate</label>
@@ -34,17 +65,23 @@
 
       <div class="info-item">
         <label>Voter Status</label>
+
         <p>
-          {{ resident.isVoter ? 'Registered Voter' : 'Not Registered' }}
+          {{
+            resident.isVoter
+              ? 'Registered Voter'
+              : 'Not Registered'
+          }}
         </p>
       </div>
 
       <div class="info-item">
         <label>Address</label>
+
         <p>
           Zone {{ resident.address.zone }},
-              {{ resident.address.street }},
-              {{ resident.address.barangay }}
+          {{ resident.address.street }},
+          {{ resident.address.barangay }}
         </p>
       </div>
 
