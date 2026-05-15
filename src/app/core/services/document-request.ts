@@ -29,37 +29,47 @@ export class RequestService {
     );
   }
 
-  async create(
-    residentId: string,
-    type: DocumentRequest['type'],
-    residentName = '',
-    residentEmail = ''
-  ) {
-    const requestDoc = await addDoc(this.requestRef, {
-      residentId,
-      residentName,
-      residentEmail,
-      type,
-      status: 'pending',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-
-    await this.notificationService.createDocumentRequestNotification(
-      residentName,
-      type,
-      requestDoc.id
-    );
-
-    return requestDoc;
-  }
-
   getPending(): Observable<DocumentRequest[]> {
     const q = query(this.requestRef, where('status', '==', 'pending'));
 
     return (collectionData(q, { idField: 'id' }) as Observable<DocumentRequest[]>).pipe(
       map(requests => this.sortByNewest(requests || []))
     );
+  }
+
+  getByResident(residentId: string): Observable<DocumentRequest[]> {
+    const q = query(this.requestRef, where('residentId', '==', residentId));
+
+    return (collectionData(q, { idField: 'id' }) as Observable<DocumentRequest[]>).pipe(
+      map(requests => this.sortByNewest(requests || []))
+    );
+  }
+
+  async create(
+    residentId: string,
+    type: DocumentRequest['type'],
+    residentName = '',
+    residentEmail = '',
+    purpose = ''
+  ) {
+    const requestDoc = await addDoc(this.requestRef, {
+      residentId,
+      residentName,
+      residentEmail,
+      type,
+      purpose,
+      status: 'pending',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+
+    await this.notificationService.createDocumentRequestNotification(
+      residentName || 'Resident',
+      type,
+      requestDoc.id
+    );
+
+    return requestDoc;
   }
 
   async updateStatus(id: string, status: DocumentRequest['status']) {

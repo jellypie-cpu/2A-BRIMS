@@ -16,6 +16,7 @@ export interface DocumentRequest {
   residentName?: string;
   residentEmail?: string;
   type: DocumentRequestType;
+  purpose?: string;
   status: DocumentRequestStatus;
   createdAt?: any;
   updatedAt?: any;
