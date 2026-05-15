@@ -1,74 +1,74 @@
 <div class="clearance-container">
 
-  <!-- OFFICIAL HEADER -->
-  <div class="gov-header">
+  <div class="clearance-page-header">
     <div>
       <h1>Barangay Clearance System</h1>
       <p>Official Resident Certification Portal</p>
     </div>
   </div>
 
-  <!-- FILTER BAR -->
-  <div class="filter-bar">
+  <div class="header-section">
 
-    <!-- Zone Filter -->
-    <select [(ngModel)]="selectedZone" (change)="filterResidents()">
-      <option value="">All Zones</option>
-      <option *ngFor="let zone of zones" [value]="zone">
-        {{ zone }}
-      </option>
-    </select>
+    <div class="zone-select">
+      <label>Filter by Zone</label>
+      <select [(ngModel)]="selectedZone" (change)="filterResidents()">
+        <option value="">All Zones</option>
+        <option *ngFor="let zone of zones" [value]="zone">
+          Zone {{ zone }}
+        </option>
+      </select>
+    </div>
 
-    <!-- Search -->
-    <input 
-      type="text"
-      placeholder="Search resident name..."
-      [(ngModel)]="searchText"
-      (input)="filterResidents()"
-    />
+    <div class="search-resident">
+      <label>Search Resident</label>
+      <input
+        type="text"
+        placeholder="Search resident name..."
+        [(ngModel)]="searchText"
+        (input)="filterResidents()"
+      />
+    </div>
 
   </div>
 
-  <!-- RESIDENT CARDS -->
-  <div class="resident-grid">
+  <div class="resident-list">
 
-    <div class="resident-card" *ngFor="let resident of filteredResidents">
+    <div class="resident-row" *ngFor="let resident of filteredResidents">
 
-      <!-- PHOTO -->
-      <div class="photo">
-        <img 
+      <div class="resident-avatar">
+        <img
           *ngIf="resident.photo"
           [src]="resident.photo"
           alt="resident photo"
         />
-        <div *ngIf="!resident.photo" class="placeholder">
+
+        <span *ngIf="!resident.photo">
           {{ resident.fullname?.charAt(0) }}
-        </div>
+        </span>
       </div>
 
-      <!-- DETAILS -->
-      <div class="details">
+      <div class="resident-info">
+        <h3>{{ resident.fullname }}</h3>
 
-        <h2>{{ resident.fullname }}</h2>
-
-        <p class="meta">
-          Zone:
-          <span class="badge">Zone {{ resident.address?.zone }}</span>
+        <p>
+          <strong>Zone:</strong>
+          <span class="zone-badge">Zone {{ resident.address?.zone }}</span>
         </p>
 
-        <p class="meta">
-          Address:
+        <p>
+          <strong>Address:</strong>
           {{ resident.address?.street }}, {{ resident.address?.barangay }}
         </p>
-
       </div>
 
-      <!-- ACTION BUTTON -->
-      <div class="actions">
-        <button class="btn-generate" (click)="generateClearance(resident)">
-          Generate Clearance
-        </button>
-      </div>
+      <button
+        type="button"
+        class="generate-btn"
+        (click)="generateClearance(resident)"
+      >
+        <span class="btn-icon">✓</span>
+        Generate Clearance
+      </button>
 
     </div>
 
@@ -76,9 +76,6 @@
 
 </div>
 
-<!-- ========================= -->
-<!-- PRINT MODAL (OUTSIDE LOOP) -->
-<!-- ========================= -->
 <app-baranggay-clearance-form
   *ngIf="showModal"
   [selectedResident]="selectedResident"
