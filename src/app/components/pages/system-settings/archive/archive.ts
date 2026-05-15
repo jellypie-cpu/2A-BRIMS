@@ -36,7 +36,7 @@ export class Archive implements OnInit {
     this.loadingResidents = true;
 
     this.residentService.getArchived().subscribe({
-      next: residents => {
+      next: (residents) => {
         this.archivedResidents = residents || [];
         this.loadingResidents = false;
       },
@@ -51,7 +51,7 @@ export class Archive implements OnInit {
     this.loadingBlotters = true;
 
     this.blotterService.getArchived().subscribe({
-      next: blotters => {
+      next: (blotters) => {
         this.archivedBlotters = blotters || [];
         this.loadingBlotters = false;
       },
@@ -67,18 +67,29 @@ export class Archive implements OnInit {
 
     const result = await Swal.fire({
       title: 'Restore Resident?',
-      text: `Restore ${resident.fullname}?`,
+      text: `Restore ${resident.fullname || 'this resident'}?`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Restore',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Yes, restore',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#64748b'
     });
 
     if (!result.isConfirmed) return;
 
-    await this.residentService.restore(resident.id);
+    try {
+      await this.residentService.restore(resident.id);
 
-    Swal.fire('Restored', 'Resident restored successfully.', 'success');
+      Swal.fire({
+        title: 'Restored',
+        text: 'Resident restored successfully.',
+        icon: 'success',
+        confirmButtonColor: '#16a34a'
+      });
+    } catch {
+      Swal.fire('Error', 'Unable to restore resident.', 'error');
+    }
   }
 
   async restoreBlotter(blotter: Blotter): Promise<void> {
@@ -86,17 +97,28 @@ export class Archive implements OnInit {
 
     const result = await Swal.fire({
       title: 'Restore Blotter?',
-      text: `Restore blotter case for ${blotter.victims}?`,
+      text: `Restore blotter case for ${blotter.victims || 'this record'}?`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Restore',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Yes, restore',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#64748b'
     });
 
     if (!result.isConfirmed) return;
 
-    await this.blotterService.restore(blotter.id);
+    try {
+      await this.blotterService.restore(blotter.id);
 
-    Swal.fire('Restored', 'Blotter record restored successfully.', 'success');
+      Swal.fire({
+        title: 'Restored',
+        text: 'Blotter record restored successfully.',
+        icon: 'success',
+        confirmButtonColor: '#16a34a'
+      });
+    } catch {
+      Swal.fire('Error', 'Unable to restore blotter record.', 'error');
+    }
   }
 }

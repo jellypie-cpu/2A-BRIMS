@@ -24,9 +24,9 @@
         <div
           *ngIf="!user?.profileImage && !resident.photo"
           class="profile-placeholder"
-        >{{ resident.fullname.charAt(0) || '?' }}
-          
-        </div>
+        >
+  {{ resident.fullname[0] }}
+</div>
 
         <label class="upload-btn">
           Change Photo

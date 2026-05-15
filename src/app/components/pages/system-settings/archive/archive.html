@@ -1,96 +1,164 @@
 <div class="archive-container">
 
   <div class="page-header">
-    <h2>System Archive</h2>
-    <p>Archived residents and blotter records.</p>
+    <div>
+      <span class="eyebrow">Archive Management</span>
+      <h2>System Archive</h2>
+      <p>View and restore archived residents and blotter records.</p>
+    </div>
+
+    <div class="header-stats">
+      <div class="stat-card">
+        <span>Residents</span>
+        <strong>{{ archivedResidents.length }}</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>Blotters</span>
+        <strong>{{ archivedBlotters.length }}</strong>
+      </div>
+    </div>
   </div>
 
   <!-- ARCHIVED RESIDENTS -->
   <section class="archive-section">
-    <h3>Archived Residents</h3>
+    <div class="section-header">
+      <div>
+        <h3>Archived Residents</h3>
+        <p>Residents removed from the active population list.</p>
+      </div>
 
-    <div *ngIf="loadingResidents" class="empty-state">
-      Loading archived residents...
+      <span class="count-badge">
+        {{ archivedResidents.length }} records
+      </span>
     </div>
 
-    <div *ngIf="!loadingResidents && archivedResidents.length === 0" class="empty-state">
-      No archived residents found.
+    <div *ngIf="loadingResidents" class="state-card">
+      <div class="loader"></div>
+      <p>Loading archived residents...</p>
     </div>
 
-    <table *ngIf="!loadingResidents && archivedResidents.length > 0">
-      <thead>
-        <tr>
-          <th>User / Resident ID</th>
-          <th>Full Name</th>
-          <th>Email</th>
-          <th>Zone</th>
-          <th>Street</th>
-          <th>Barangay</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+    <div *ngIf="!loadingResidents && archivedResidents.length === 0" class="state-card empty">
+      <div class="empty-icon">🗂️</div>
+      <h4>No archived residents</h4>
+      <p>Archived residents will appear here.</p>
+    </div>
 
-      <tbody>
-        <tr *ngFor="let resident of archivedResidents">
-          <td>{{ resident.id }}</td>
-          <td>{{ resident.fullname }}</td>
-          <td>{{ resident.userEmail }}</td>
-          <td>Zone {{ resident.address.zone }}</td>
-          <td>{{ resident.address.street }}</td>
-          <td>{{ resident.address.barangay }}</td>
+    <div *ngIf="!loadingResidents && archivedResidents.length > 0" class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>User / Resident ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Zone</th>
+            <th>Street</th>
+            <th>Barangay</th>
+            <th>Action</th>
+          </tr>
+        </thead>
 
-          <td>
-            <button (click)="restoreResident(resident)">
-              Restore
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr *ngFor="let resident of archivedResidents">
+            <td>
+              <span class="id-text">{{ resident.id }}</span>
+            </td>
+
+            <td>
+              <div class="person-cell">
+                <div class="avatar">
+                  {{ resident.fullname.charAt(0) }}
+                </div>
+                <strong>{{ resident.fullname || 'No name' }}</strong>
+              </div>
+            </td>
+
+            <td>{{ resident.userEmail || 'No email' }}</td>
+          <td>Zone {{ resident.address.zone || 'N/A' }}</td>
+          <td>{{ resident.address.street || 'N/A' }}</td>
+          <td>{{ resident.address.barangay || 'N/A' }}</td>
+
+            <td>
+              <button class="restore-btn" type="button" (click)="restoreResident(resident)">
+                Restore
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <!-- ARCHIVED BLOTTERS -->
   <section class="archive-section">
-    <h3>Archived Blotter Records</h3>
+    <div class="section-header">
+      <div>
+        <h3>Archived Blotter Records</h3>
+        <p>Archived complaints, reports, and blotter cases.</p>
+      </div>
 
-    <div *ngIf="loadingBlotters" class="empty-state">
-      Loading archived blotter records...
+      <span class="count-badge warning">
+        {{ archivedBlotters.length }} records
+      </span>
     </div>
 
-    <div *ngIf="!loadingBlotters && archivedBlotters.length === 0" class="empty-state">
-      No archived blotter records found.
+    <div *ngIf="loadingBlotters" class="state-card">
+      <div class="loader"></div>
+      <p>Loading archived blotter records...</p>
     </div>
 
-    <table *ngIf="!loadingBlotters && archivedBlotters.length > 0">
-      <thead>
-        <tr>
-          <th>Blotter ID</th>
-          <th>Victim</th>
-          <th>Respondent</th>
-          <th>Complaint</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+    <div *ngIf="!loadingBlotters && archivedBlotters.length === 0" class="state-card empty">
+      <div class="empty-icon">📁</div>
+      <h4>No archived blotters</h4>
+      <p>Archived blotter records will appear here.</p>
+    </div>
 
-      <tbody>
-        <tr *ngFor="let blotter of archivedBlotters">
-          <td>{{ blotter.id }}</td>
-          <td>{{ blotter.victims }}</td>
-          <td>{{ blotter.respondent }}</td>
-          <td>{{ blotter.complaint }}</td>
-          <td>{{ blotter.status }}</td>
-          <td>{{ blotter.date }}</td>
+    <div *ngIf="!loadingBlotters && archivedBlotters.length > 0" class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Blotter ID</th>
+            <th>Victim</th>
+            <th>Respondent</th>
+            <th>Complaint</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
 
-          <td>
-            <button (click)="restoreBlotter(blotter)">
-              Restore
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr *ngFor="let blotter of archivedBlotters">
+            <td>
+              <span class="id-text">{{ blotter.id }}</span>
+            </td>
+
+            <td>{{ blotter.victims || 'N/A' }}</td>
+            <td>{{ blotter.respondent || 'N/A' }}</td>
+
+            <td>
+              <span class="complaint-text">
+                {{ blotter.complaint || 'No complaint details' }}
+              </span>
+            </td>
+
+            <td>
+              <span class="status-badge">
+                {{ blotter.status || 'Archived' }}
+              </span>
+            </td>
+
+            <td>{{ blotter.date || 'N/A' }}</td>
+
+            <td>
+              <button class="restore-btn" type="button" (click)="restoreBlotter(blotter)">
+                Restore
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
 </div>
