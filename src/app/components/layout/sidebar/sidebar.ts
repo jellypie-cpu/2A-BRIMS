@@ -79,8 +79,7 @@ export class SidebarComponent implements OnDestroy {
 
     this.menu = [
       { label: 'Dashboard', routerLink: '/dashboard', icon: 'pi pi-home' },
-      { label: 'My Profile', routerLink: '/dashboard/profile/my-information', icon: 'pi pi-user' },
-      { label: 'Request Documents', routerLink: '/dashboard/certificates-request', icon: 'pi pi-file' }
+      { label: 'My Profile', routerLink: '/dashboard/profile/my-information', icon: 'pi pi-user' }
     ];
   }
 
