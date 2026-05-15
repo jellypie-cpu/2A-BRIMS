@@ -1,0 +1,32 @@
+<div class="certificate-page">
+
+  <div class="page-header">
+    <h1>Request Documents</h1>
+    <p>Select the certificate or permit you want to request.</p>
+  </div>
+
+  <div class="certificate-grid">
+
+    <div class="certificate-card" *ngFor="let cert of certificateTypes">
+
+      <div class="icon">
+        {{ cert.icon }}
+      </div>
+
+      <h2>{{ cert.type }}</h2>
+
+      <p>{{ cert.description }}</p>
+
+      <button
+        type="button"
+        (click)="requestCertificate(cert.type)"
+        [disabled]="loadingType === cert.type"
+      >
+        {{ loadingType === cert.type ? 'Submitting...' : 'Request Certificate' }}
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
