@@ -140,7 +140,7 @@ export class ResidentsInformation implements OnInit {
       address: {
         zone: String(resident.address.zone),
         street: resident.address.street,
-        barangay: resident.address.barangay
+        barangay: 'San Martin'
       }
     };
 

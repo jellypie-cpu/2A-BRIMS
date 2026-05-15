@@ -62,12 +62,18 @@ form {
 
 .photo-section {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 20px;
   background: #f8fafc;
   border: 1px dashed #94a3b8;
   padding: 16px;
   border-radius: 14px;
+}
+
+.photo-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
 }
 
 .photo-section img,
@@ -83,16 +89,58 @@ form {
   font-weight: 700;
 }
 
+.remove-photo-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  background: #dc2626;
+  color: white;
+  font-size: 20px;
+  line-height: 1;
+}
+
 .photo-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
+.upload-btn,
+.camera-btn,
+.cancel-photo-btn {
+  border: none;
+  padding: 11px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  color: white;
+}
+
+.upload-btn,
+.camera-btn {
+  background: #0f766e;
+}
+
+.cancel-photo-btn {
+  background: #64748b;
+}
+
+.upload-btn input {
+  display: none;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
+}
+
+.field {
+  margin-bottom: 14px;
 }
 
 .field label {
@@ -114,6 +162,14 @@ form {
 .field select:disabled {
   background: #f1f5f9;
   color: #475569;
+}
+
+.field small,
+.photo-section small {
+  display: block;
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 12px;
 }
 
 .form-buttons {
@@ -145,11 +201,6 @@ button {
 
 .close-btn {
   background: #64748b;
-  color: white;
-}
-
-.photo-actions button {
-  background: #0f766e;
   color: white;
 }
 

@@ -1,10 +1,10 @@
-<div class="modal" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+<div class="modal">
+  <div class="modal-content">
 
     <div class="modal-header">
       <div>
         <h2>{{ isEditMode ? (residentData ? 'Edit Resident' : 'Add Resident') : 'Resident Details' }}</h2>
-        <p>All required credentials must be completed before saving.</p>
+        <p>All required information must be completed before saving.</p>
       </div>
 
       <button type="button" class="x-btn" (click)="onClose()">×</button>
@@ -21,78 +21,97 @@
     <form (ngSubmit)="onSubmit()" #residentForm="ngForm">
 
       <div class="photo-section">
-        <img
-          *ngIf="resident.photo"
-          [src]="resident.photo"
-          alt="Resident Photo"
-        />
-
-        <div *ngIf="!resident.photo" class="photo-placeholder">
-          No Photo
-        </div>
-
-        <div class="photo-actions" *ngIf="isEditMode">
-          <input
-            type="file"
-            accept="image/*"
-            (change)="onFileSelected($event)"
+        <div class="photo-wrapper">
+          <img
+            *ngIf="resident.photo"
+            [src]="resident.photo"
+            alt="Resident Photo"
           />
 
-          <button type="button" (click)="openCamera()">
-            📸 Take Photo
+          <div *ngIf="!resident.photo" class="photo-placeholder">
+            No Photo
+          </div>
+
+          <button
+            type="button"
+            class="remove-photo-btn"
+            *ngIf="isEditMode && resident.photo"
+           (click)="removePhoto()"
+          >
+            ×
           </button>
         </div>
 
-        <small>
-          Firestore-only photo. Use image below 500KB.
-        </small>
+        <div class="photo-actions" *ngIf="isEditMode">
+  <input
+    #photoInput
+    type="file"
+    accept="image/*"
+    class="hidden-file-input"
+    (change)="onFileSelected($event)"
+  />
+
+  <button
+    type="button"
+    class="upload-btn"
+    (click)="photoInput.click()"
+  >
+    Upload Photo
+  </button>
+
+  <button
+    type="button"
+    class="camera-btn"
+    (click)="openCamera()"
+  >
+    📸 Take Photo
+  </button>
+
+  <button
+    type="button"
+    class="cancel-photo-btn"
+    *ngIf="resident.photo"
+    (click)="removePhoto(photoInput)"
+  >
+    Cancel Photo
+  </button>
+</div>
+
+        <small>Use image below 500KB.</small>
       </div>
 
       <div class="field">
-  <label>Resident User Account *</label>
+        <label>Resident User Account *</label>
 
-  <select
-    [(ngModel)]="resident.userId"
-    name="userId"
-    [disabled]="!isEditMode || !!residentData"
-    (change)="onUserSelected()"
-    required
-  >
-    <option value="">Select resident user account</option>
+        <select
+          [(ngModel)]="resident.userId"
+          name="userId"
+          [disabled]="!isEditMode || !!residentData"
+          (change)="onUserSelected()"
+          required
+        >
+          <option value="">Select resident user account</option>
 
-    <option *ngFor="let user of residentUsers" [ngValue]="user.id || ''">
-      {{ user.username || 'No username' }} - {{ user.email || 'No email' }}
-    </option>
-  </select>
+          <option *ngFor="let user of residentUsers" [ngValue]="user.id || ''">
+            {{ user.username || 'No username' }} - {{ user.email || 'No email' }}
+          </option>
+        </select>
 
-  <small>Total users loaded: {{ residentUsers.length }}</small>
-</div>
+        <small>Total users loaded: {{ residentUsers.length }}</small>
+      </div>
 
-<div class="field">
-  <label>User Email *</label>
+      <div class="field">
+        <label>User Email *</label>
+        <input
+          type="email"
+          [(ngModel)]="resident.userEmail"
+          name="userEmail"
+          disabled
+          required
+        />
+      </div>
 
-  <input
-    type="email"
-    [(ngModel)]="resident.userEmail"
-    name="userEmail"
-    disabled
-    required
-  />
-</div>
-
-<div class="field">
-  <label>Contact Number *</label>
-
-  <input
-    type="text"
-    [(ngModel)]="resident.contactNumber"
-    name="contactNumber"
-    [disabled]="!isEditMode"
-    required
-  />
-</div>
       <div class="form-grid">
-
         <div class="field">
           <label>Full Name *</label>
           <input
@@ -146,6 +165,17 @@
         </div>
 
         <div class="field">
+          <label>Contact Number *</label>
+          <input
+            type="text"
+            [(ngModel)]="resident.contactNumber"
+            name="contactNumber"
+            [disabled]="!isEditMode"
+            required
+          />
+        </div>
+
+        <div class="field">
           <label>Voter Status *</label>
           <select
             [(ngModel)]="resident.isVoter"
@@ -190,15 +220,14 @@
             type="text"
             [(ngModel)]="resident.address.barangay"
             name="barangay"
-            [disabled]="!isEditMode"
+            disabled
             required
           />
+          <small>Barangay is automatically set to San Martin.</small>
         </div>
-
       </div>
 
       <div class="form-buttons">
-
         <button
           type="button"
           *ngIf="!isEditMode"
@@ -219,10 +248,8 @@
         <button type="button" class="close-btn" (click)="onClose()">
           Close
         </button>
-
       </div>
 
     </form>
-
   </div>
 </div>
