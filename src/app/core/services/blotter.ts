@@ -58,4 +58,22 @@ export class BlotterService {
       updatedAt: serverTimestamp()
     });
   }
+  getArchived(): Observable<Blotter[]> {
+  const q = query(
+    this.blotterRef,
+    where('isArchived', '==', true)
+  );
+
+  return collectionData(q, { idField: 'id' }) as Observable<Blotter[]>;
+}
+
+async restore(id: string) {
+  const ref = doc(this.firestore, `blotters/${id}`);
+
+  return updateDoc(ref, {
+    isArchived: false,
+    restoredAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+}
 }
