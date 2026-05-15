@@ -1,86 +1,117 @@
 <div class="modal">
+
   <div class="modal-content">
 
     <div class="modal-header">
+
       <div>
-        <h2>{{ isEditMode ? (residentData ? 'Edit Resident' : 'Add Resident') : 'Resident Details' }}</h2>
-        <p>All required information must be completed before saving.</p>
+        <h2>
+          {{ residentData ? 'Resident Details' : 'Add Resident' }}
+        </h2>
+
+        <p>
+          Manage resident information.
+        </p>
       </div>
 
-      <button type="button" class="x-btn" (click)="onClose()">×</button>
+      <button
+        type="button"
+        class="x-btn"
+        (click)="onClose()"
+      >
+        ×
+      </button>
+
     </div>
 
-    <div *ngIf="checkDuplicateLive()" class="warning">
-      ⚠ This resident already exists in the system.
+    <div
+      *ngIf="submitted && missingFields.length > 0"
+      class="warning"
+    >
+      Please complete:
+      {{ missingFields.join(', ') }}
     </div>
 
-    <div *ngIf="submitted && missingFields.length > 0" class="warning">
-      ⚠ Please complete: {{ missingFields.join(', ') }}
+    <div
+      *ngIf="checkDuplicateLive()"
+      class="warning"
+    >
+      Resident already exists.
     </div>
 
-    <form (ngSubmit)="onSubmit()" #residentForm="ngForm">
+    <form (ngSubmit)="onSubmit()">
 
       <div class="photo-section">
+
         <div class="photo-wrapper">
+
           <img
             *ngIf="resident.photo"
             [src]="resident.photo"
-            alt="Resident Photo"
-          />
+          >
 
-          <div *ngIf="!resident.photo" class="photo-placeholder">
+          <div
+            *ngIf="!resident.photo"
+            class="photo-placeholder"
+          >
             No Photo
           </div>
 
           <button
+            *ngIf="resident.photo && isEditMode"
             type="button"
             class="remove-photo-btn"
-            *ngIf="isEditMode && resident.photo"
-           (click)="removePhoto()"
+            (click)="removePhoto()"
           >
             ×
           </button>
+
         </div>
 
-        <div class="photo-actions" *ngIf="isEditMode">
-  <input
-    #photoInput
-    type="file"
-    accept="image/*"
-    class="hidden-file-input"
-    (change)="onFileSelected($event)"
-  />
+        <div
+          class="photo-actions"
+          *ngIf="isEditMode"
+        >
 
-  <button
-    type="button"
-    class="upload-btn"
-    (click)="photoInput.click()"
-  >
-    Upload Photo
-  </button>
+          <input
+            #photoInput
+            type="file"
+            accept="image/*"
+            class="hidden-file-input"
+            (change)="onFileSelected($event)"
+          >
 
-  <button
-    type="button"
-    class="camera-btn"
-    (click)="openCamera()"
-  >
-    📸 Take Photo
-  </button>
+          <button
+            type="button"
+            class="upload-btn"
+            (click)="photoInput.click()"
+          >
+            Upload Photo
+          </button>
 
-  <button
-    type="button"
-    class="cancel-photo-btn"
-    *ngIf="resident.photo"
-    (click)="removePhoto(photoInput)"
-  >
-    Cancel Photo
-  </button>
-</div>
+          <button
+            type="button"
+            class="camera-btn"
+            (click)="openCamera()"
+          >
+            📸 Camera
+          </button>
 
-        <small>Use image below 500KB.</small>
+          <button
+            *ngIf="resident.photo"
+            type="button"
+            class="cancel-photo-btn"
+            (click)="removePhoto(photoInput)"
+          >
+            Cancel Photo
+          </button>
+
+        </div>
+
       </div>
 
       <div class="field">
+
         <label>Resident User Account *</label>
 
         <select
@@ -88,61 +119,91 @@
           name="userId"
           [disabled]="!isEditMode || !!residentData"
           (change)="onUserSelected()"
-          required
         >
-          <option value="">Select resident user account</option>
 
-          <option *ngFor="let user of residentUsers" [ngValue]="user.id || ''">
-            {{ user.username || 'No username' }} - {{ user.email || 'No email' }}
+          <option value="">
+            Select resident account
           </option>
+
+          <option
+            *ngFor="let user of residentUsers"
+            [ngValue]="user.id || ''"
+          >
+            {{ user.username }} - {{ user.email }}
+          </option>
+
         </select>
 
-        <small>Total users loaded: {{ residentUsers.length }}</small>
       </div>
 
       <div class="field">
+
         <label>User Email *</label>
+
         <input
           type="email"
           [(ngModel)]="resident.userEmail"
           name="userEmail"
           disabled
-          required
-        />
+        >
+
       </div>
 
       <div class="form-grid">
+
         <div class="field">
-          <label>Full Name *</label>
+          <label>First Name *</label>
+
           <input
             type="text"
-            [(ngModel)]="resident.fullname"
-            name="fullname"
+            [(ngModel)]="resident.firstname"
+            name="firstname"
             [disabled]="!isEditMode"
-            required
-          />
+          >
+        </div>
+
+        <div class="field">
+          <label>Middle Name</label>
+
+          <input
+            type="text"
+            [(ngModel)]="resident.middlename"
+            name="middlename"
+            [disabled]="!isEditMode"
+          >
+        </div>
+
+        <div class="field">
+          <label>Last Name *</label>
+
+          <input
+            type="text"
+            [(ngModel)]="resident.lastname"
+            name="lastname"
+            [disabled]="!isEditMode"
+          >
         </div>
 
         <div class="field">
           <label>Birthdate *</label>
+
           <input
             type="date"
             [(ngModel)]="resident.birthdate"
             name="birthdate"
             [disabled]="!isEditMode"
-            required
-          />
+          >
         </div>
 
         <div class="field">
           <label>Civil Status *</label>
+
           <select
             [(ngModel)]="resident.civilStatus"
             name="civilStatus"
             [disabled]="!isEditMode"
-            required
           >
-            <option value="">Select status</option>
+            <option value="">Select</option>
             <option value="Single">Single</option>
             <option value="Married">Married</option>
             <option value="Widowed">Widowed</option>
@@ -152,13 +213,13 @@
 
         <div class="field">
           <label>Gender *</label>
+
           <select
             [(ngModel)]="resident.gender"
             name="gender"
             [disabled]="!isEditMode"
-            required
           >
-            <option value="">Select gender</option>
+            <option value="">Select</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
@@ -166,71 +227,62 @@
 
         <div class="field">
           <label>Contact Number *</label>
+
           <input
             type="text"
             [(ngModel)]="resident.contactNumber"
             name="contactNumber"
             [disabled]="!isEditMode"
-            required
-          />
-        </div>
-
-        <div class="field">
-          <label>Voter Status *</label>
-          <select
-            [(ngModel)]="resident.isVoter"
-            name="isVoter"
-            [disabled]="!isEditMode"
-            required
           >
-            <option [ngValue]="true">Registered Voter</option>
-            <option [ngValue]="false">Not a Voter</option>
-          </select>
         </div>
 
         <div class="field">
           <label>Zone *</label>
+
           <select
             [(ngModel)]="resident.address.zone"
             name="zone"
             [disabled]="!isEditMode"
-            required
           >
-            <option value="">Select zone</option>
-            <option *ngFor="let z of zones" [ngValue]="z">
-              Zone {{ z }}
+            <option value="">Select Zone</option>
+
+            <option
+              *ngFor="let zone of zones"
+              [ngValue]="zone"
+            >
+              Zone {{ zone }}
             </option>
           </select>
         </div>
 
         <div class="field">
           <label>Street *</label>
+
           <input
             type="text"
             [(ngModel)]="resident.address.street"
             name="street"
             [disabled]="!isEditMode"
-            required
-          />
+          >
         </div>
 
         <div class="field">
-          <label>Barangay *</label>
+          <label>Barangay</label>
+
           <input
             type="text"
-            [(ngModel)]="resident.address.barangay"
-            name="barangay"
+            [value]="defaultBarangay"
             disabled
-            required
-          />
-          <small>Barangay is automatically set to San Martin.</small>
+          >
         </div>
+
       </div>
 
       <div class="form-buttons">
+
         <button
-          type="button"
           *ngIf="!isEditMode"
+          type="button"
           class="edit-btn"
           (click)="enableEdit()"
         >
@@ -238,18 +290,25 @@
         </button>
 
         <button
-          type="submit"
           *ngIf="isEditMode"
+          type="submit"
           class="save-btn"
         >
           Save Resident
         </button>
 
-        <button type="button" class="close-btn" (click)="onClose()">
+        <button
+          type="button"
+          class="close-btn"
+          (click)="onClose()"
+        >
           Close
         </button>
+
       </div>
 
     </form>
+
   </div>
+
 </div>

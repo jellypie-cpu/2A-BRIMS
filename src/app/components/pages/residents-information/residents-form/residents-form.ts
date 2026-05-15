@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
+
 import { Resident } from '../../../../core/models/resident.model';
 import { AppUser } from '../../../../core/models/user.model';
 
@@ -19,6 +20,7 @@ import { AppUser } from '../../../../core/models/user.model';
   styleUrls: ['./residents-form.scss'],
 })
 export class ResidentForm implements OnChanges {
+
   @Input() residentData: Resident | null = null;
   @Input() isEditMode = false;
   @Input() allResidents: Resident[] = [];
@@ -32,9 +34,11 @@ export class ResidentForm implements OnChanges {
   zones = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
   resident: Resident = this.getEmptyResident();
+
   submitted = false;
 
   ngOnChanges(): void {
+
     this.submitted = false;
 
     if (this.residentData) {
@@ -49,16 +53,25 @@ export class ResidentForm implements OnChanges {
   getEmptyResident(): Resident {
     return {
       id: '',
+
       userId: '',
       userEmail: '',
+
+      firstname: '',
+      middlename: '',
+      lastname: '',
       fullname: '',
+
       birthdate: '',
       civilStatus: '',
       gender: '',
       contactNumber: '',
+
       isVoter: false,
       isArchived: false,
+
       photo: null,
+
       address: {
         zone: '',
         street: '',
@@ -69,10 +82,10 @@ export class ResidentForm implements OnChanges {
 
   enableEdit(): void {
     this.isEditMode = true;
-    this.resident.address.barangay = this.defaultBarangay;
   }
 
   removePhoto(fileInput?: HTMLInputElement): void {
+
     this.resident.photo = null;
 
     if (fileInput) {
@@ -80,39 +93,82 @@ export class ResidentForm implements OnChanges {
     }
   }
 
+  private buildFullName(): void {
+
+    const first = this.resident.firstname?.trim() || '';
+    const middle = this.resident.middlename?.trim() || '';
+    const last = this.resident.lastname?.trim() || '';
+
+    this.resident.fullname = [first, middle, last]
+      .filter(Boolean)
+      .join(' ');
+  }
+
   get missingFields(): string[] {
+
     const missing: string[] = [];
 
-    this.resident.address.barangay = this.defaultBarangay;
+    if (!this.resident.firstname?.trim()) {
+      missing.push('First Name');
+    }
 
-    if (!this.resident.fullname?.trim()) missing.push('Full Name');
-    if (!this.resident.birthdate) missing.push('Birthdate');
-    if (!this.resident.civilStatus) missing.push('Civil Status');
-    if (!this.resident.gender) missing.push('Gender');
-    if (!this.resident.contactNumber?.trim()) missing.push('Contact Number');
-    if (!this.resident.address.zone) missing.push('Zone');
-    if (!this.resident.address.street?.trim()) missing.push('Street');
+    if (!this.resident.lastname?.trim()) {
+      missing.push('Last Name');
+    }
+
+    if (!this.resident.birthdate) {
+      missing.push('Birthdate');
+    }
+
+    if (!this.resident.civilStatus) {
+      missing.push('Civil Status');
+    }
+
+    if (!this.resident.gender) {
+      missing.push('Gender');
+    }
+
+    if (!this.resident.contactNumber?.trim()) {
+      missing.push('Contact Number');
+    }
+
+    if (!this.resident.address.zone) {
+      missing.push('Zone');
+    }
+
+    if (!this.resident.address.street?.trim()) {
+      missing.push('Street');
+    }
 
     return missing;
   }
 
   checkDuplicateLive(): boolean {
+
+    this.buildFullName();
+
     if (!this.resident.fullname || !this.resident.birthdate) {
       return false;
     }
 
     return this.allResidents.some(r =>
       r.id !== this.resident.id &&
-      r.fullname?.trim().toLowerCase() === this.resident.fullname.trim().toLowerCase() &&
+      r.fullname?.trim().toLowerCase() ===
+      this.resident.fullname.trim().toLowerCase() &&
       r.birthdate === this.resident.birthdate
     );
   }
 
   onSubmit(): void {
+
     this.submitted = true;
+
+    this.buildFullName();
+
     this.resident.address.barangay = this.defaultBarangay;
 
     if (this.missingFields.length > 0) return;
+
     if (this.checkDuplicateLive()) return;
 
     this.save.emit(this.resident);
@@ -123,6 +179,7 @@ export class ResidentForm implements OnChanges {
   }
 
   onUserSelected(): void {
+
     const selectedUser = this.residentUsers.find(
       user => user.id === this.resident.userId
     );
@@ -134,28 +191,21 @@ export class ResidentForm implements OnChanges {
 
     this.resident.userId = selectedUser.id || '';
     this.resident.userEmail = selectedUser.email || '';
-
-    if (!this.resident.fullname?.trim()) {
-      this.resident.fullname = selectedUser.username || '';
-    }
-
-    this.resident.address.barangay = this.defaultBarangay;
   }
 
   onFileSelected(event: any): void {
+
     const file = event.target.files[0];
 
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file.');
-      event.target.value = '';
+      alert('Please select a valid image.');
       return;
     }
 
     if (file.size > 500 * 1024) {
       alert('Image must be below 500KB.');
-      event.target.value = '';
       return;
     }
 
@@ -169,28 +219,38 @@ export class ResidentForm implements OnChanges {
   }
 
   openCamera(): void {
+
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
+
         const video = document.createElement('video');
+
         video.srcObject = stream;
         video.play();
 
         const canvas = document.createElement('canvas');
 
         setTimeout(() => {
+
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
 
           const ctx = canvas.getContext('2d');
+
           ctx?.drawImage(video, 0, 0);
 
-          this.resident.photo = canvas.toDataURL('image/jpeg', 0.6);
+          this.resident.photo = canvas.toDataURL(
+            'image/jpeg',
+            0.6
+          );
 
           stream.getTracks().forEach(track => track.stop());
+
         }, 1000);
+
       })
       .catch(() => {
-        alert('Camera access denied or unavailable.');
+        alert('Camera access denied.');
       });
   }
 }

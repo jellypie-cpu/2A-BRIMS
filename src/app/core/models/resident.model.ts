@@ -1,11 +1,15 @@
 export interface Resident {
   id?: string;
 
-  // This MUST be the same as the user document id.
   userId: string;
   userEmail: string;
 
+  firstname: string;
+  middlename?: string;
+  lastname: string;
+
   fullname: string;
+
   birthdate: string;
   civilStatus: string;
   gender: string;
@@ -14,7 +18,6 @@ export interface Resident {
   isVoter: boolean;
   isArchived: boolean;
 
-  // Firestore-only image storage.
   photo?: string | null;
 
   address: {
