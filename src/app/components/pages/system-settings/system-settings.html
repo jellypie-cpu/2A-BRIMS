@@ -1,35 +1,41 @@
 <div class="settings-page">
   <div class="settings-header">
     <div>
-      <span class="eyebrow">Admin Configuration</span>
+      <span>System Configuration</span>
       <h2>System Settings</h2>
-      <p>Manage barangay system preferences, archives, and general configurations.</p>
+      <p>Select what settings you want to manage.</p>
     </div>
   </div>
 
-  <div class="settings-layout">
-    <aside class="settings-menu">
-      <div class="menu-title">Settings Menu</div>
+  <div class="settings-cards">
+    <a
+      routerLink="/dashboard/system-settings/general"
+      routerLinkActive="active"
+      class="settings-card"
+    >
+      <div class="card-icon">⚙️</div>
+      <div>
+        <h3>General Settings</h3>
+        <p>Manage barangay information, request rules, fees, and notifications.</p>
+      </div>
+      <span class="arrow">→</span>
+    </a>
 
-      <a routerLink="/dashboard/system-settings/general" routerLinkActive="active">
-        <span class="icon">⚙️</span>
-        <div>
-          <strong>General Settings</strong>
-          <small>Barangay info and rules</small>
-        </div>
-      </a>
+    <a
+      routerLink="/dashboard/system-settings/archive"
+      routerLinkActive="active"
+      class="settings-card"
+    >
+      <div class="card-icon">🗃️</div>
+      <div>
+        <h3>Archive</h3>
+        <p>View and manage archived residents, records, and system data.</p>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+  </div>
 
-      <a routerLink="/dashboard/system-settings/archive" routerLinkActive="active">
-        <span class="icon">🗃️</span>
-        <div>
-          <strong>Archive</strong>
-          <small>Archived records</small>
-        </div>
-      </a>
-    </aside>
-
-    <main class="settings-content">
-      <router-outlet></router-outlet>
-    </main>
+  <div class="settings-content">
+    <router-outlet></router-outlet>
   </div>
 </div>

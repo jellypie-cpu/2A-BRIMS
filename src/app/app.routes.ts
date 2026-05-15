@@ -52,11 +52,6 @@ export const routes: Routes = [
   component: SystemSettings,
   children: [
     {
-      path: '',
-      redirectTo: 'archive',
-      pathMatch: 'full'
-    },
-    {
       path: 'archive',
       component: Archive
     },
