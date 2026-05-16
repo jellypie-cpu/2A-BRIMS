@@ -1,33 +1,141 @@
 <div class="notifications-page">
   <div class="page-header">
     <div>
+      <span class="eyebrow">Notification Center</span>
       <h1>Notifications</h1>
-      <p>Unread notifications: {{ unreadCount() }}</p>
-    </div>
-  </div>
-
-  <div *ngIf="!loading && filteredNotifications.length === 0" class="empty-state">
-  No notifications found.
-</div>
-
-<div
-  class="notification-card"
-  *ngFor="let notification of filteredNotifications"
-  [class.read]="notification.isRead"
-  (click)="open(notification)"
->
-    <div>
-      <h3>{{ notification.title }}</h3>
-      <p>{{ notification.message }}</p>
-      <small>{{ notification.type }}</small>
+      <p>Monitor requests, concerns, and system updates in real time.</p>
     </div>
 
     <button
+      class="mark-all-btn"
       type="button"
-      *ngIf="!notification.isRead"
-      (click)="markRead(notification, $event)"
+      *ngIf="unreadCount() > 0"
+      (click)="markAllAsRead()"
     >
-      Mark as read
+      Mark all as read
     </button>
+  </div>
+
+  <div class="summary-grid">
+    <button
+      class="summary-card"
+      [class.active]="statusFilter === 'all'"
+      type="button"
+      (click)="setStatusFilter('all')"
+    >
+      <span>Total</span>
+      <strong>{{ notifications.length }}</strong>
+    </button>
+
+    <button
+      class="summary-card unread"
+      [class.active]="statusFilter === 'unread'"
+      type="button"
+      (click)="setStatusFilter('unread')"
+    >
+      <span>Unread</span>
+      <strong>{{ getUnreadTotal() }}</strong>
+    </button>
+
+    <button
+      class="summary-card read"
+      [class.active]="statusFilter === 'read'"
+      type="button"
+      (click)="setStatusFilter('read')"
+    >
+      <span>Read</span>
+      <strong>{{ getReadTotal() }}</strong>
+    </button>
+  </div>
+
+  <div class="filter-tabs">
+    <button
+      type="button"
+      [class.active]="selectedType === 'all'"
+      (click)="setTypeFilter('all')"
+    >
+      All
+    </button>
+
+    <button
+      type="button"
+      [class.active]="selectedType === 'document-request'"
+(click)="setTypeFilter('document-request')"
+    >
+      Documents
+    </button>
+
+    <button
+      type="button"
+      [class.active]="selectedType === 'concern'"
+      (click)="setTypeFilter('concern')"
+    >
+      Concerns
+    </button>
+
+    <button
+      type="button"
+      [class.active]="selectedType === 'system'"
+      (click)="setTypeFilter('system')"
+    >
+      System
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="empty-state">
+    Loading notifications...
+  </div>
+
+  <div *ngIf="!loading && filteredNotifications.length === 0" class="empty-state">
+    <div class="empty-icon">🔔</div>
+    <h3>No notifications found</h3>
+    <p>There are no notifications matching your selected filter.</p>
+  </div>
+
+  <div class="notification-list" *ngIf="!loading && filteredNotifications.length > 0">
+    <div
+      class="notification-card"
+      *ngFor="let notification of filteredNotifications"
+      [class.read]="notification.isRead"
+    >
+      <div class="notification-icon" [ngClass]="notification.type">
+        {{ getNotificationIcon(notification.type) }}
+      </div>
+
+      <div class="notification-content" (click)="open(notification)">
+        <div class="notification-top">
+          <h3>{{ notification.title }}</h3>
+
+          <span class="status-badge" [class.read]="notification.isRead">
+            {{ notification.isRead ? 'Read' : 'Unread' }}
+          </span>
+        </div>
+
+        <p>{{ notification.message }}</p>
+
+        <div class="notification-meta">
+          <span class="type-badge">{{ notification.type }}</span>
+        </div>
+      </div>
+
+      <div class="notification-actions">
+        <button
+  class="open-btn"
+  type="button"
+  (click)="openNotification(notification, $event)"
+>
+  Open
+</button>
+
+        <button
+          class="read-btn"
+          type="button"
+          *ngIf="!notification.isRead"
+          (click)="markRead(notification, $event)"
+        >
+          Mark as read
+        </button>
+      </div>
+    </div>
   </div>
 </div>

@@ -17,7 +17,9 @@ export class Notifications implements OnInit, OnDestroy {
   notifications: AppNotification[] = [];
   filteredNotifications: AppNotification[] = [];
   loading = true;
+
   selectedType: AppNotification['type'] | 'all' = 'all';
+  statusFilter: 'all' | 'read' | 'unread' = 'all';
 
   private subscription = new Subscription();
 
@@ -57,15 +59,57 @@ export class Notifications implements OnInit, OnDestroy {
     );
   }
 
+  setTypeFilter(type: AppNotification['type'] | 'all'): void {
+    this.selectedType = type;
+    this.applyFilter();
+  }
+
+  setStatusFilter(status: 'all' | 'read' | 'unread'): void {
+    this.statusFilter = status;
+    this.applyFilter();
+  }
+
   applyFilter(): void {
-    this.filteredNotifications =
-      this.selectedType === 'all'
-        ? this.notifications
-        : this.notifications.filter(n => n.type === this.selectedType);
+    let result = [...this.notifications];
+
+    if (this.selectedType !== 'all') {
+      result = result.filter(notification => notification.type === this.selectedType);
+    }
+
+    if (this.statusFilter === 'read') {
+      result = result.filter(notification => notification.isRead);
+    }
+
+    if (this.statusFilter === 'unread') {
+      result = result.filter(notification => !notification.isRead);
+    }
+
+    this.filteredNotifications = result;
   }
 
   unreadCount(): number {
     return this.filteredNotifications.filter(notification => !notification.isRead).length;
+  }
+
+  getUnreadTotal(): number {
+    return this.notifications.filter(notification => !notification.isRead).length;
+  }
+
+  getReadTotal(): number {
+    return this.notifications.filter(notification => notification.isRead).length;
+  }
+
+  getNotificationIcon(type: AppNotification['type']): string {
+    switch (type) {
+      case 'document-request':
+  return '📄';
+      case 'concern':
+        return '⚠️';
+      case 'system':
+        return '⚙️';
+      default:
+        return '🔔';
+    }
   }
 
   async open(notification: AppNotification): Promise<void> {
@@ -80,10 +124,28 @@ export class Notifications implements OnInit, OnDestroy {
     event.stopPropagation();
 
     if (!notification.id || notification.isRead) return;
+
     await this.notificationService.markAsRead(notification.id);
+  }
+
+  async markAllAsRead(): Promise<void> {
+    const unreadNotifications = this.filteredNotifications.filter(
+      notification => notification.id && !notification.isRead
+    );
+
+    for (const notification of unreadNotifications) {
+      await this.notificationService.markAsRead(notification.id!);
+    }
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
+  async openNotification(
+  notification: AppNotification,
+  event: Event
+): Promise<void> {
+  event.stopPropagation();
+  await this.open(notification);
+}
 }
