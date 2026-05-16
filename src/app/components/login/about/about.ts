@@ -11,6 +11,6 @@ export class About {
   constructor(private router: Router) {}
 
   goBack() {
-    this.router.navigate(['/login']); // change if your route is different
+    this.router.navigate(['/login']); 
   }
 }

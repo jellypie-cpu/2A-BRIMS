@@ -1,4 +1,3 @@
-/* ===== HEADER ===== */
 .contact-header {
   width: 100%;
   background: linear-gradient(135deg, #000513, #010818);
@@ -13,14 +12,13 @@
   z-index: 1000;
 }
 
-/* ===== LEFT SIDE ===== */
+
 .header-left {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-/* ===== LOGO ===== */
 .system-logo {
   width: 55px;
   height: 55px;
@@ -38,7 +36,6 @@
   border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* ===== SYSTEM INFO ===== */
 .system-info h1 {
   margin: 0;
   color: white;
@@ -54,14 +51,13 @@
   font-weight: 500;
 }
 
-/* ===== RIGHT SIDE ===== */
 .header-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
-/* ===== BACK BUTTON ===== */
+
 .back-btn {
   background: white;
   color: #01040e;
@@ -82,7 +78,7 @@
   box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 
-/* ===== RESPONSIVE ===== */
+
 @media (max-width: 768px) {
 
   .contact-header {
@@ -109,7 +105,6 @@
   }
 }
 
-/* ===== MAIN SECTION ===== */
 .contact-section {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -118,7 +113,6 @@
   background: #f1f5f9;
 }
 
-/* ===== LEFT SIDE ===== */
 .contact-info {
   background: linear-gradient(135deg, #04184e, #062975);
   color: white;
